@@ -19,8 +19,11 @@ fail () {
 TARGET="$1"
 
 [ ! -z "$2" ] && BRANCH="$2"
-[ ! -z "$3" ] && REVISION="$3"
-[ ! -z "$4" ] && VERSION="$4"
+[ ! -z "$3" ] && OCTEZ_PKGNAME="$3"
+[ ! -z "$4" ] && REVISION="$4"
+[ ! -z "$5" ] && VERSION="$5"
+
+export OCTEZ_PKGNAME
 
 # If there is apt it's a Debian style system
 # We assume everything else uses RPM and YUM
@@ -31,29 +34,6 @@ if [ "$?" = "0" ]; then
 	DEBIAN=1
 fi
 
-# XXX Hacks for old-style packages
-SHORT=""
-case ${TARGET} in
-	debian-11)
-		SHORT="deb11"
-		;;
-	debian-12)
-		SHORT="deb12"
-		;;
-	ubuntu-2004-lts) 
-		SHORT="ubt20"
-		;;
-	ubuntu-2204-lts)
-		SHORT="ubt220"
-		;;
-	*)
-		;;
-esac
-
-if [ ! -z "${SHORT}" ]; then
-	OCTEZ_PKGNAME=octez-${SHORT}-unoff
-	export OCTEZ_PKGNAME
-fi
 # XXX end of hack
 
 # Update the OS and get the dependencies

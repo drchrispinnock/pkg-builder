@@ -27,8 +27,8 @@ STATUSSLEEP=120 # 2 minutes
 CLEANUPSH=cleanup.sh
 LOCALLOG=log.txt
 
-X86=e2-standard-2
-X86ZONE=europe-west6-a
+X86=c3-standard-8
+X86ZONE=europe-west1-b
 ARM64=t2a-standard-4
 ARMZONE=us-central1-a
 
@@ -54,6 +54,31 @@ rm -f ${CLEANUPSH}
 # Debian to begin
 #
 for OS in ${TARGETS}; do
+
+	# XXX Hack
+
+	PKGNAME=octez
+	# XXX Hacks for old-style packages
+	SHORT=""
+	case ${TARGET} in
+       	 debian-11)
+                SHORT="deb11"
+                ;;
+        debian-12)
+                SHORT="deb12"
+                ;;
+        ubuntu-2004-lts)
+                SHORT="ubt20"
+                ;;
+        ubuntu-2204-lts)
+                SHORT="ubt220"
+                ;;
+        *)
+                ;;
+	esac
+	[ ! -z "$SHORT" ] && PKGNAME=octez-${SHORT}-unoff
+	# XXX
+
 
 	NAME=bd-${seed}-${OS}
 	echo "===> ${NAME}"
@@ -113,7 +138,7 @@ for OS in ${TARGETS}; do
 			VMLIST="${VMLIST} ${NAME}"
 			gcloud -q compute ssh ${NAME} --zone=${ZONE} \
 				--project=${PROJECT} \
-				--command="nohup sh ./buildscript.sh ${TARGETDIR} ${BRANCH} > buildlog.log 2>&1 &" \
+				--command="nohup sh ./buildscript.sh ${TARGETDIR} ${PKGNAME} ${BRANCH} > buildlog.log 2>&1 &" \
 				>> ${LOCALLOG} 2>&1
 			echo "gcloud -q compute instances delete ${NAME} \
 		        --zone=${ZONE} --delete-disks=all --project=${PROJECT}" >> ${CLEANUPSH}
