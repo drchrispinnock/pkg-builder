@@ -4,7 +4,7 @@ TARGET=""
 BRANCH=latest-release
 REVISION=1
 VERSION="" # if set, override dune output
-OCTEZ_PKGMAINTAINER="tezos@localhost"
+OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
 
 status () {
 	echo "$1" > /tmp/status
@@ -30,6 +30,31 @@ which apt >/dev/null 2>&1
 if [ "$?" = "0" ]; then
 	DEBIAN=1
 fi
+
+# XXX Hacks for old-style packages
+SHORT=""
+case ${TARGET} in
+	debian-11)
+		SHORT="deb11"
+		;;
+	debian-12)
+		SHORT="deb12"
+		;;
+	ubuntu-2004-lts) 
+		SHORT="ubt20"
+		;;
+	ubuntu-2204-lts)
+		SHORT="ubt220"
+		;;
+	*)
+		;;
+esac
+
+if [ ! -z "${SHORT}" ]; then
+	OCTEZ_PKGNAME=octez-${SHORT}-unoff
+	export OCTEZ_PKGNAME
+fi
+# XXX end of hack
 
 # Update the OS and get the dependencies
 # 
@@ -75,7 +100,20 @@ chmod +x rustup-init.sh
 status "SOURCE CHECKOUT"
 git clone https://gitlab.com/tezos/tezos.git tezos
 cd tezos
+# XXX
+git checkout chrispinnock@pkg
+git pull
+cp -pR scripts/dpkg $HOME
+cp -pR scripts/rpm $HOME
+cp -pR scripts/pkg-common $HOME
 git checkout ${BRANCH}
+git pull
+cd scripts
+ln -s $HOME/dpkg .
+ln -s $HOME/rpm .
+ln -s $HOME/pkg-common .
+cd ..
+# XXX
 
 # Rev up OPAM
 #
@@ -104,7 +142,8 @@ export OCTEZ_PKGMAINTAINER
 EXT=""
 if [ "$DEBIAN" = "1" ]; then
 	status "DPKG PACKAGES"
-	make dpkg
+	./scripts/dpkg/make_dpkg.sh
+#	make dpkg
 	[ "$?" != "0" ] && fail "DPKG PACKAGES"
 	EXT=".deb"
 else

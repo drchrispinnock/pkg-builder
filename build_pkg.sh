@@ -9,15 +9,18 @@ SERVICEACCT="782994889379-compute@developer.gserviceaccount.com"
 TARGETS="debian-10 debian-11 debian-12 debian-12-arm64"
 TARGETS="${TARGETS} ubuntu-2004-lts ubuntu-2204-lts" # ubuntu-2204-lts-arm64
 TARGETS="${TARGETS} ubuntu-2210-amd64 ubuntu-2304-amd64"
-TARGETS="${TARGETS} fedora-cloud-37 fedora-cloud-38"
+#TARGETS="${TARGETS} fedora-cloud-37 fedora-cloud-38"
+
+# XXX until we get going
+TARGETS="debian-11 debian-12"
+TARGETS="${TARGETS} ubuntu-2004-lts ubuntu-2204-lts"
+# XXX
 
 [ ! -z "$1" ] && TARGETS=$@
 
 FORCE=1
 BUCKET="gs://pkgbeta-test-bucket"
 BRANCH="latest-release"
-
-BRANCH="chrispinnock@pkg" # XXX
 
 STATUSSLEEP=120 # 2 minutes
 
