@@ -19,7 +19,7 @@ TARGETS="${TARGETS} ubuntu-2004-lts ubuntu-2204-lts"
 [ ! -z "$1" ] && TARGETS=$@
 
 FORCE=1
-BUCKET="gs://pkgbeta-test-bucket"
+BUCKET="gs://pkgbeta-tzinit-org"
 BRANCH="latest-release"
 
 STATUSSLEEP=120 # 2 minutes
@@ -76,13 +76,16 @@ for OS in ${TARGETS}; do
         *)
                 ;;
 	esac
-	[ ! -z "$SHORT" ] && PKGNAME=octez-${SHORT}-unoff
 
 	NAME=bd-${seed}-${OS}
 	echo "===> ${NAME}"
 
 	IMAGE=`./parse_images.pl ${OS}`
 	TARGETDIR=${BUCKET}/${OS}
+
+	[ ! -z "$SHORT" ] && PKGNAME=octez-${SHORT}-unoff
+	[ ! -z "$SHORT" ] && TARGETDIR=${BUCKET}/${SHORT}/17.2
+# XXX
 
 	
 	# Bring up a VM
