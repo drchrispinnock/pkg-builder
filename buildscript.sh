@@ -25,6 +25,8 @@ TARGET="$1"
 
 export OCTEZ_PKGNAME
 
+echo "PKGNAME: ${OCTEZ_PKGNAME}"
+
 # If there is apt it's a Debian style system
 # We assume everything else uses RPM and YUM
 #
@@ -33,8 +35,6 @@ which apt >/dev/null 2>&1
 if [ "$?" = "0" ]; then
 	DEBIAN=1
 fi
-
-# XXX end of hack
 
 # Update the OS and get the dependencies
 # 

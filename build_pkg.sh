@@ -60,7 +60,7 @@ for OS in ${TARGETS}; do
 	PKGNAME=octez
 	# XXX Hacks for old-style packages
 	SHORT=""
-	case ${TARGET} in
+	case ${OS} in
        	 debian-11)
                 SHORT="deb11"
                 ;;
@@ -77,8 +77,6 @@ for OS in ${TARGETS}; do
                 ;;
 	esac
 	[ ! -z "$SHORT" ] && PKGNAME=octez-${SHORT}-unoff
-	# XXX
-
 
 	NAME=bd-${seed}-${OS}
 	echo "===> ${NAME}"
@@ -138,7 +136,7 @@ for OS in ${TARGETS}; do
 			VMLIST="${VMLIST} ${NAME}"
 			gcloud -q compute ssh ${NAME} --zone=${ZONE} \
 				--project=${PROJECT} \
-				--command="nohup sh ./buildscript.sh ${TARGETDIR} ${PKGNAME} ${BRANCH} > buildlog.log 2>&1 &" \
+				--command="nohup sh ./buildscript.sh ${TARGETDIR} ${BRANCH} ${PKGNAME} > buildlog.log 2>&1 &" \
 				>> ${LOCALLOG} 2>&1
 			echo "gcloud -q compute instances delete ${NAME} \
 		        --zone=${ZONE} --delete-disks=all --project=${PROJECT}" >> ${CLEANUPSH}
