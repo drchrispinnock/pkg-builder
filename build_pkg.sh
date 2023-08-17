@@ -17,7 +17,7 @@ shift
 [ ! -z "$1" ] && TARGETS=$@
 
 FORCE=1
-BUCKET="gs://pkgbeta-tzinit-org"
+BUCKET="gs://pkgbeta-tzinit-org/incoming"
 
 STATUSSLEEP=120 # 2 minutes
 
@@ -53,15 +53,37 @@ echo "Building from branch: ${BRANCH}"
 #
 for OS in ${TARGETS}; do
 
-	# XXX Hack
-
 	PKGNAME=octez
 
-	NAME=bd-${seed}-${OS}
+	# Remap to our ideal of the universe
+	SHORT=""
+	case ${OS} in
+       	 	debian-11)
+                SHORT="deb11"
+                ;;
+	        debian-12)
+                SHORT="deb12"
+                ;;
+        	ubuntu-2004-lts)
+                SHORT="ubt20"
+                ;;
+	        ubuntu-2204-lts)
+                SHORT="ubt220"
+                ;;
+	esac
+
+	if [ -z "$SHORT" ]; then
+		SHORT="$OS"
+	else
+		PKGNAME=octez-${SHORT}-unoff
+	fi
+
+
+	NAME=bd-${seed}-${OS}-${BRANCH}
 	echo "===> ${NAME}"
 
 	IMAGE=`./parse_images.pl ${OS}`
-	TARGETDIR=${BUCKET}/${OS}
+	TARGETDIR=${BUCKET}/${SHORT}
 	
 	# Bring up a VM
 	#
