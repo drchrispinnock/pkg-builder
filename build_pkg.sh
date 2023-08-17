@@ -145,6 +145,8 @@ for OS in ${TARGETS}; do
 
 done
 
+echo "rm -f ${CLEANUPSH}" >> ${CLEANUPSH}
+
 while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 
 	echo "====> Status at `date`"
@@ -189,5 +191,6 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 	fi
 	VMLIST="${NEWVMLIST}"
 done
+rm -f ${CLEANUPSH}
 
 
