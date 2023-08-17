@@ -1,0 +1,9 @@
+#!/bin/sh
+
+echo "<html><body><ul>"
+for item in $(ls); do
+	[ "$item" = "index.html" ] && continue
+	echo "<li><a href=\"$item\">$item</a></li>"
+done
+echo "</ul></body></html>"
+
