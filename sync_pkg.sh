@@ -7,15 +7,19 @@ root="Sources"
 site2="$root/pkgbeta-tzinit-org"
 prod21="gs://pkgbeta-tzinit-org/"
 
+mkdir -p $site2
+
 SYNC=up
 if [ "$1" = "down" ]; then
 	SYNC=down
+else
+	if [ ! -f $site2/index.html ]; then
+		echo "Sync down first, otherwise you will lose the lot!"
+		exit 2
+	fi
 fi
 
-if [ `hostname -s` != "sylow" ]; then
-	echo "Only run on sylow!"
-	exit 1
-fi
+
 
 if [ $SYNC = "up" ]; then
 	echo "===> Syncing to $prod21"
