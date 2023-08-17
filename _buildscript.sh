@@ -82,7 +82,7 @@ git clone https://gitlab.com/tezos/tezos.git tezos
 cd tezos
 # XXX
 git checkout chrispinnock@pkg
-git pull
+git fetch
 cp -pR scripts/dpkg $HOME
 cp -pR scripts/rpm $HOME
 cp -pR scripts/pkg-common $HOME
@@ -112,6 +112,7 @@ eval `opam env`
 # Make
 #
 status "MAKE"
+export BLST_PORTABLE=yes
 make BLST_PORTABLE=yes
 [ "$?" != "0" ] && fail "MAKE"
 

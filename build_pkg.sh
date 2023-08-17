@@ -6,25 +6,23 @@
 PROJECT=tf-pkg-build
 
 SERVICEACCT="782994889379-compute@developer.gserviceaccount.com"
-TARGETS="debian-10 debian-11 debian-12 debian-12-arm64"
+TARGETS="debian-11 debian-12 debian-12-arm64"
 TARGETS="${TARGETS} ubuntu-2004-lts ubuntu-2204-lts" # ubuntu-2204-lts-arm64
-TARGETS="${TARGETS} ubuntu-2210-amd64 ubuntu-2304-amd64"
+#TARGETS="${TARGETS} ubuntu-2210-amd64 ubuntu-2304-amd64"
 #TARGETS="${TARGETS} fedora-cloud-37 fedora-cloud-38"
 
-# XXX until we get going
-TARGETS="debian-11 debian-12"
-TARGETS="${TARGETS} ubuntu-2004-lts ubuntu-2204-lts"
-# XXX
-
+BRANCH="latest-release"
+[ ! -z "$1" ] && BRANCH=$1
+shift
 [ ! -z "$1" ] && TARGETS=$@
 
 FORCE=1
 BUCKET="gs://pkgbeta-tzinit-org"
-BRANCH="latest-release"
 
 STATUSSLEEP=120 # 2 minutes
 
-CLEANUPSH=cleanup.sh
+CLEANUPSH=cleanup.$$.sh
+rm -f ${CLEANUPSH}
 LOCALLOG=log.txt
 
 X86=c3-standard-8
@@ -49,7 +47,7 @@ if [ "$FORCE" = "0" ]; then
 	fi
 fi
 
-rm -f ${CLEANUPSH}
+echo "Building from branch: ${BRANCH}"
 
 # Debian to begin
 #
@@ -58,35 +56,12 @@ for OS in ${TARGETS}; do
 	# XXX Hack
 
 	PKGNAME=octez
-	# XXX Hacks for old-style packages
-	SHORT=""
-	case ${OS} in
-       	 debian-11)
-                SHORT="deb11"
-                ;;
-        debian-12)
-                SHORT="deb12"
-                ;;
-        ubuntu-2004-lts)
-                SHORT="ubt20"
-                ;;
-        ubuntu-2204-lts)
-                SHORT="ubt220"
-                ;;
-        *)
-                ;;
-	esac
 
 	NAME=bd-${seed}-${OS}
 	echo "===> ${NAME}"
 
 	IMAGE=`./parse_images.pl ${OS}`
 	TARGETDIR=${BUCKET}/${OS}
-
-	[ ! -z "$SHORT" ] && PKGNAME=octez-${SHORT}-unoff
-	[ ! -z "$SHORT" ] && TARGETDIR=${BUCKET}/${SHORT}/17.2
-# XXX
-
 	
 	# Bring up a VM
 	#
@@ -125,7 +100,7 @@ for OS in ${TARGETS}; do
 		echo "=> Starting build"
 		FAIL=3
 		while [ $FAIL -gt 0 ]; do
-			gcloud -q compute scp buildscript.sh ${NAME}: --zone=${ZONE} \
+			gcloud -q compute scp _buildscript.sh ${NAME}:buildscript.sh --zone=${ZONE} \
 				--project=${PROJECT} >> ${LOCALLOG} 2>&1
 			[ "$?" = "0" ] && break
 			FAIL=$((FAIL-1))
@@ -177,7 +152,8 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 
 		if [ "$state" = "FINISHED" ]; then
 			gcloud -q compute instances delete ${NAME} \
-		        --zone=${ZONE} --delete-disks=all --project=${PROJECT} >> ${LOCALLOG} 2>&1
+			        --zone=${ZONE} --delete-disks=all \
+				--project=${PROJECT} >> ${LOCALLOG} 2>&1
 			echo "FINISHED"
 		else
 			echo "$state"
