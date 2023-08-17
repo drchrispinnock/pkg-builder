@@ -23,7 +23,7 @@ STATUSSLEEP=120 # 2 minutes
 
 CLEANUPSH=cleanup.$$.sh
 rm -f ${CLEANUPSH}
-LOCALLOG=log.txt
+LOCALLOG=log.$$.txt
 
 X86=c3-standard-8
 X86ZONE=europe-west1-b
@@ -192,5 +192,5 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 	VMLIST="${NEWVMLIST}"
 done
 rm -f ${CLEANUPSH}
-
+rm -f ${LOCALLOG}
 
