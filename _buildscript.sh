@@ -80,20 +80,21 @@ chmod +x rustup-init.sh
 status "SOURCE CHECKOUT"
 git clone https://gitlab.com/tezos/tezos.git tezos
 cd tezos
-# XXX
-git checkout chrispinnock@pkg
-git fetch
-cp -pR scripts/dpkg $HOME
-cp -pR scripts/rpm $HOME
-cp -pR scripts/pkg-common $HOME
-git checkout ${BRANCH}
-git pull
-cd scripts
-ln -s $HOME/dpkg .
-ln -s $HOME/rpm .
-ln -s $HOME/pkg-common .
-cd ..
-# XXX
+if [ ! -d scripts/dpkg ]; then
+	# Hackery until we have make dpkg
+	#
+	git checkout chrispinnock@pkg
+	cp -pR scripts/dpkg $HOME
+	cp -pR scripts/rpm $HOME
+	cp -pR scripts/pkg-common $HOME
+	git checkout ${BRANCH}
+	git pull
+	cd scripts
+	ln -s $HOME/dpkg .
+	ln -s $HOME/rpm .
+	ln -s $HOME/pkg-common .
+	cd ..
+fi
 
 # Rev up OPAM
 #
