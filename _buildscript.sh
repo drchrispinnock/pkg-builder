@@ -2,7 +2,7 @@
 #
 TARGET=""
 BRANCH=latest-release
-REVISION=1
+REVISION=2
 VERSION="" # if set, override dune output
 OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
 
@@ -81,9 +81,9 @@ status "SOURCE CHECKOUT"
 git clone https://gitlab.com/tezos/tezos.git tezos
 cd tezos
 if [ ! -d scripts/dpkg ]; then
-	# Hackery until we have make dpkg
+	# Hackery for branches without the scripts!
 	#
-	git checkout chrispinnock@pkg
+	git checkout master
 	cp -pR scripts/dpkg $HOME
 	cp -pR scripts/rpm $HOME
 	cp -pR scripts/pkg-common $HOME
@@ -118,6 +118,7 @@ make BLST_PORTABLE=yes
 [ "$?" != "0" ] && fail "MAKE"
 
 export OCTEZ_PKGMAINTAINER
+eval `opam env`
 
 # Use the correct target to build the packages
 #
@@ -144,8 +145,4 @@ gcloud storage cp octez-*${EXT} ${TARGET}
 # Sending this will tell the master process to take down this VM
 #
 status "FINISHED"
-
-
-
-
 
