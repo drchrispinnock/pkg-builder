@@ -10,7 +10,9 @@ prod21="gs://pkgbeta-tzinit-org/"
 mkdir -p $site2
 
 SYNC=down
-if [ "$1" = "down" ]; then
+[ ! -z "$1" ] && SYNC="$1"
+
+if [ "$SYNC" = "down" ]; then
 	SYNC=down
 else
 	if [ ! -f $site2/index.html ]; then
@@ -18,8 +20,6 @@ else
 		exit 2
 	fi
 fi
-
-
 
 if [ $SYNC = "up" ]; then
 	echo "===> Syncing to $prod21"

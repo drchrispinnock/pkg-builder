@@ -57,13 +57,13 @@ else
 	sudo yum install -y rsync git m4 patch unzip wget jq bc
 	sudo yum install -y make gcc gcc-c++ bubblewrap bzip2 libffi libffi-devel
 	sudo yum install -y autoconf libev zlib zlib-devel cmake gmp gmp-devel 
-	sudo yum install -y libev-devel hidapi hidapi-devel opam
+	sudo yum install -y libev-devel hidapi hidapi-devel 
 
 	# HID Api
 	#wget https://github.com/libusb/hidapi/archive/refs/tags/hidapi-0.13.1.tar.gz
 
-	# Ocaml
-	#sudo bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)"
+	# Ocaml - needed for Redhet
+	sudo bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)"
 
 fi
 
@@ -84,7 +84,7 @@ git checkout ${BRANCH}
 if [ ! -d scripts/dpkg ]; then
 	# Hackery for branches without the scripts!
 	#
-	git checkout master
+	git checkout chrispinnock@pkg18w
 	cp -pR scripts/dpkg $HOME
 	cp -pR scripts/rpm $HOME
 	cp -pR scripts/pkg-common $HOME

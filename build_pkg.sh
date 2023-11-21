@@ -18,7 +18,7 @@ shift
 [ ! -z "$1" ] && TARGETS=$@
 
 FORCE=1
-BUCKET="gs://pkgbeta-tzinit-org/"
+BUCKET="gs://pkgbeta-tzinit-org"
 
 STATUSSLEEP=120 # 2 minutes
 
