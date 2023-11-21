@@ -9,7 +9,7 @@ prod21="gs://pkgbeta-tzinit-org/"
 
 mkdir -p $site2
 
-SYNC=up
+SYNC=down
 if [ "$1" = "down" ]; then
 	SYNC=down
 else
