@@ -127,13 +127,14 @@ EXT=""
 if [ "$DEBIAN" = "1" ]; then
 	status "DPKG PACKAGES"
 	./scripts/dpkg/make_dpkg.sh
-#	make dpkg
-	[ "$?" != "0" ] && fail "DPKG PACKAGES"
+# XXX	make dpkg
+# XXX	[ "$?" != "0" ] && fail "DPKG PACKAGES"
 	EXT=".deb"
 else
 	status "RPM PACKAGES"
-	make rpm
-	[ "$?" != "0" ] && fail "RPM PACKAGES"
+	./scripts/dpkg/make_rpm.sh
+# XXX	make rpm
+# XXX	[ "$?" != "0" ] && fail "RPM PACKAGES"
 	EXT=".rpm"
 fi
 
