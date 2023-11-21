@@ -80,6 +80,7 @@ chmod +x rustup-init.sh
 status "SOURCE CHECKOUT"
 git clone https://gitlab.com/tezos/tezos.git tezos
 cd tezos
+git checkout ${BRANCH}
 if [ ! -d scripts/dpkg ]; then
 	# Hackery for branches without the scripts!
 	#
