@@ -56,35 +56,11 @@ for OS in ${TARGETS}; do
 
 	PKGNAME=octez
 
-	# Remap to our ideal of the universe
-	SHORT=""
-	case ${OS} in
-       	 	debian-11)
-                SHORT="deb11"
-                ;;
-	        debian-12)
-                SHORT="deb12"
-                ;;
-        	ubuntu-2004-lts)
-                SHORT="ubt20"
-                ;;
-	        ubuntu-2204-lts)
-                SHORT="ubt220"
-                ;;
-	esac
-
-	if [ -z "$SHORT" ]; then
-		SHORT="$OS"
-	else
-		PKGNAME=octez-${SHORT}-unoff
-	fi
-
-
 	NAME=bd-${seed}-${OS}
 	echo "===> ${NAME}"
 
 	IMAGE=`./parse_images.pl ${OS}`
-	TARGETDIR=${BUCKET}/${SHORT}
+	TARGETDIR=${BUCKET}/${OS}
 	
 	# Bring up a VM
 	#
