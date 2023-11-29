@@ -2,7 +2,7 @@
 #
 TARGET=""
 BRANCH=latest-release
-REVISION=2
+OCTEZ_PKGREV=4
 VERSION="" # if set, override dune output
 OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
 
@@ -20,10 +20,10 @@ TARGET="$1"
 
 [ ! -z "$2" ] && BRANCH="$2"
 [ ! -z "$3" ] && OCTEZ_PKGNAME="$3"
-[ ! -z "$4" ] && REVISION="$4"
+[ ! -z "$4" ] && OCTEZ_PKGREV="$4"
 [ ! -z "$5" ] && VERSION="$5"
 
-export OCTEZ_PKGNAME
+export OCTEZ_PKGNAME OCTEZ_PKGREV
 
 echo "PKGNAME: ${OCTEZ_PKGNAME}"
 
