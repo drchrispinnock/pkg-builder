@@ -23,6 +23,7 @@ BUCKET="gs://pkgbeta-tzinit-org"
 STATUSSLEEP=120 # 2 minutes
 
 CLEANUPSH=cleanup.$$.sh
+CONNECT=connect.$$.txt
 rm -f ${CLEANUPSH}
 LOCALLOG=log.$$.txt
 
@@ -96,6 +97,9 @@ for OS in ${TARGETS}; do
 		
 		echo "=> Waiting for VM"
 		sleep 30
+		echo "=> To connect use:"
+		echo "gcloud compute ssh ${NAME} --zone=${ZONE} --project=${PROJECT}"
+		echo "gcloud compute ssh ${NAME} --zone=${ZONE} --project=${PROJECT}" >> ${CONNECT}
 		echo "=> Starting build"
 		FAIL=3
 		while [ $FAIL -gt 0 ]; do
@@ -170,4 +174,5 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 done
 rm -f ${CLEANUPSH}
 rm -f ${LOCALLOG}
+rm -f ${CONNECT}
 

@@ -2,9 +2,10 @@
 #
 TARGET=""
 BRANCH=latest-release
-OCTEZ_PKGREV=4
+OCTEZ_PKGREV=1
 VERSION="" # if set, override dune output
 OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
+export OPAMYES="true"
 
 status () {
 	echo "$1" > /tmp/status
