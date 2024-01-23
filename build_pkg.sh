@@ -1,15 +1,28 @@
 #!/bin/sh
 
+# $0 [branch [target1 [target2 [ ... ]]]]
+
 # Project - must be setup
 #
-
 PROJECT=tf-pkg-build
-
 SERVICEACCT="782994889379-compute@developer.gserviceaccount.com"
+BUCKET="gs://pkgbeta-tzinit-org"
+X86=c3-standard-8
+X86ZONE=europe-west1-b
+ARM64=t2a-standard-4
+ARMZONE=us-central1-a
+SIZE=150
+
+# Currently Debian-style works
+#
 TARGETS="debian-11 debian-12" 
 TARGETS="${TARGETS} ubuntu-2004-lts ubuntu-2204-lts" # ubuntu-2204-lts-arm64
 TARGETS="${TARGETS} debian-12-arm64"
+
+# It would be nice if...
 #TARGETS="${TARGETS} ubuntu-2210-amd64 ubuntu-2304-amd64"
+
+# Disc expansion needs solving
 #TARGETS="${TARGETS} fedora-cloud-37 fedora-cloud-38"
 
 BRANCH="latest-release"
@@ -18,21 +31,12 @@ shift
 [ ! -z "$1" ] && TARGETS=$@
 
 FORCE=1
-BUCKET="gs://pkgbeta-tzinit-org"
-
 STATUSSLEEP=120 # 2 minutes
 
 CLEANUPSH=cleanup.$$.sh
 CONNECT=connect.$$.txt
 rm -f ${CLEANUPSH}
 LOCALLOG=log.$$.txt
-
-X86=c3-standard-8
-X86ZONE=europe-west1-b
-ARM64=t2a-standard-4
-ARMZONE=us-central1-a
-
-SIZE=150
 
 seed=`date +%Y%m%d%H%M%S`
 
@@ -41,6 +45,9 @@ log() {
 	echo "$date: $1"
 }
 
+# Can be run from cron and will use git-monitor to see if 
+# there are any changes on the branch
+#
 if [ "$FORCE" = "0" ]; then
 	git-monitor check | grep ${BRANCH}
 	if [ "$?" != "0" ]; then
@@ -49,9 +56,9 @@ if [ "$FORCE" = "0" ]; then
 	fi
 fi
 
-echo "Building from branch: ${BRANCH}"
+echo "===> Building from branch: ${BRANCH}"
 
-# Debian to begin
+# Setup VMs and despatch
 #
 for OS in ${TARGETS}; do
 
@@ -72,7 +79,6 @@ for OS in ${TARGETS}; do
 		MACHINE=${ARM64}
 		ZONE=${ARMZONE}
 	fi
-	
 	
 	echo "=> Using image ${IMAGE}"
 	gcloud -q compute instances create ${NAME} \
