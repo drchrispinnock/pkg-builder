@@ -141,7 +141,8 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 	echo "====> Status at `date`"
 
 	NEWVMLIST=""
-	
+
+	statusfile="status.$$"	
 	for NAME in ${VMLIST}; do
 	
 		ZONE=${X86ZONE}
@@ -153,12 +154,13 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 		
 		printf "${NAME}\t"
 		# Poll for success
-		rm -f status
+		rm -f $statusfile
 		state="NONE"
 		gcloud -q compute scp ${NAME}:/tmp/status . --zone=${ZONE} --project=${PROJECT} >> ${LOCALLOG} 2>&1
-		if [ -f "status" ]; then
-			state=`cat status`
+		if [ -f "$statusfile" ]; then
+			state=`cat $statusfile`
 		fi
+		rm -f $statusfile
 
 		# Statuses
 		#
