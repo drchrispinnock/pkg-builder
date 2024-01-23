@@ -5,7 +5,9 @@ BRANCH=latest-release
 OCTEZ_PKGREV=1
 VERSION="" # if set, override dune output
 OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
-export OPAMYES="true"
+
+IGNOREOPAMDEPS=0
+
 
 status () {
 	echo "$1" > /tmp/status
@@ -44,7 +46,7 @@ fi
 #
 
 if [ "$DEBIAN" = "1" ]; then
-	status "DEBIAN OS UPDATE"
+	status "OS UPDATE (APT)"
 	sudo apt-get update
 	sudo apt-get upgrade -y
 
@@ -54,18 +56,26 @@ if [ "$DEBIAN" = "1" ]; then
 
 
 else
-	status "REDHAT OS UPDATE"
+	status "OS UPDATE (YUM)"
 	sudo yum install -y rsync git m4 patch unzip wget jq bc
 	sudo yum install -y make gcc gcc-c++ bubblewrap bzip2 libffi libffi-devel
 	sudo yum install -y autoconf libev zlib zlib-devel cmake gmp gmp-devel 
-	sudo yum install -y libev-devel hidapi hidapi-devel 
+	sudo yum install -y hidapi 
+
+#	CentOS
+	sudo yum install -y epel-release
+	sudo yum install -y cmake3 hidapi-devel libev-devel
+	sudo yum install -y rpmdevtools
 
 	# HID Api
 	#wget https://github.com/libusb/hidapi/archive/refs/tags/hidapi-0.13.1.tar.gz
 
 	# Ocaml - needed for Redhet
-	sudo bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)"
+	curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh > install.sh.in
+	sed -e 's/read BINDIR/BINDIR=""/g' < install.sh.in > install.sh
+	bash install.sh
 
+	IGNOREOPAMDEPS=1
 fi
 
 # Rust
@@ -102,7 +112,11 @@ fi
 #
 status "OPAM INIT"
 opam init --bare --yes
-#opam option depext-run-installs=false
+
+if [ "$IGNOREOPAMDEPS" = "1" ]; then
+	#opam option depext-run-installs=true
+	opam option depext=false
+fi
 
 # Make all the build dependencies
 #
@@ -127,15 +141,13 @@ eval `opam env`
 EXT=""
 if [ "$DEBIAN" = "1" ]; then
 	status "DPKG PACKAGES"
-	./scripts/dpkg/make_dpkg.sh
-# XXX	make dpkg
-# XXX	[ "$?" != "0" ] && fail "DPKG PACKAGES"
+	make dpkg
+	[ "$?" != "0" ] && fail "DPKG PACKAGES"
 	EXT=".deb"
 else
 	status "RPM PACKAGES"
-	./scripts/dpkg/make_rpm.sh
-# XXX	make rpm
-# XXX	[ "$?" != "0" ] && fail "RPM PACKAGES"
+	make rpm
+	[ "$?" != "0" ] && fail "RPM PACKAGES"
 	EXT=".rpm"
 fi
 

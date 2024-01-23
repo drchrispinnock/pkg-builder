@@ -13,17 +13,19 @@ ARM64=t2a-standard-4
 ARMZONE=us-central1-a
 SIZE=150
 
-# Currently Debian-style works
+# Debian-style
 #
 TARGETS="debian-11 debian-12" 
 TARGETS="${TARGETS} ubuntu-2004-lts ubuntu-2204-lts" # ubuntu-2204-lts-arm64
 TARGETS="${TARGETS} debian-12-arm64"
 
+# RPM-style
+#
+TARGETS="${TARGETS} centos-stream-8 centos-stream-9"
+
 # It would be nice if...
 #TARGETS="${TARGETS} ubuntu-2210-amd64 ubuntu-2304-amd64"
 
-# Disc expansion needs solving
-#TARGETS="${TARGETS} fedora-cloud-37 fedora-cloud-38"
 
 BRANCH="latest-release"
 [ ! -z "$1" ] && BRANCH=$1
