@@ -52,7 +52,7 @@ if [ "$DEBIAN" = "1" ]; then
 
 	status "OCTEZ DEPENDENCIES"
 	sudo apt-get install -y rsync git m4 build-essential patch unzip wget opam jq bc
-	sudo apt-get install -y autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev
+	sudo apt-get install -y autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev libprotobuf-dev protobuf-compiler
 
 
 else
@@ -65,7 +65,7 @@ else
 #	CentOS
 	sudo yum install -y epel-release
 	sudo yum install -y cmake3 hidapi-devel libev-devel
-	sudo yum install -y rpmdevtools
+	sudo yum install -y rpmdevtools protobuf-compiler protobuf-devel
 
 	# HID Api
 	#wget https://github.com/libusb/hidapi/archive/refs/tags/hidapi-0.13.1.tar.gz
