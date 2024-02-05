@@ -64,8 +64,10 @@ else
 
 #	CentOS
 	sudo yum install -y epel-release
-	sudo yum install -y cmake3 hidapi-devel libev-devel
-	sudo yum install -y rpmdevtools protobuf-compiler protobuf-devel
+	sudo yum install -y cmake3 
+	sudo yum install -y hidapi-devel libev-devel
+	sudo yum install -y rpmdevtools 
+	sudo yum install -y protobuf-compiler protobuf-c protobuf-c-compiler protobuf-c-devel protobuf-lite
 
 	# HID Api
 	#wget https://github.com/libusb/hidapi/archive/refs/tags/hidapi-0.13.1.tar.gz
