@@ -156,7 +156,7 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 		# Poll for success
 		rm -f $statusfile
 		state="NONE"
-		gcloud -q compute scp ${NAME}:/tmp/status . --zone=${ZONE} --project=${PROJECT} >> ${LOCALLOG} 2>&1
+		gcloud -q compute scp ${NAME}:/tmp/status ${statusfile} --zone=${ZONE} --project=${PROJECT} >> ${LOCALLOG} 2>&1
 		if [ -f "$statusfile" ]; then
 			state=`cat $statusfile`
 		fi
