@@ -45,6 +45,9 @@ fi
 # which speeds things up (and is not possible on Ubuntu)
 #
 
+PATH=/usr/local/bin:$PATH
+export PATH
+
 if [ "$DEBIAN" = "1" ]; then
 	status "OS UPDATE (APT)"
 	sudo apt-get update
@@ -57,27 +60,26 @@ if [ "$DEBIAN" = "1" ]; then
 
 else
 	status "OS UPDATE (YUM)"
-	sudo yum install -y rsync git m4 patch unzip wget jq bc
-	sudo yum install -y make gcc gcc-c++ bubblewrap bzip2 libffi libffi-devel
-	sudo yum install -y autoconf libev zlib zlib-devel cmake gmp gmp-devel 
-	sudo yum install -y hidapi 
+	sudo dnf install -y 'dnf-command(config-manager)'
+	sudo dnf config-manager --set-enabled devel
+	sudo dnf config-manager --set-enabled crb
 
-#	CentOS
-	sudo yum install -y epel-release
-	sudo yum install -y cmake3 
-	sudo yum install -y hidapi-devel libev-devel
-	sudo yum install -y rpmdevtools 
-	sudo yum install -y protobuf-compiler protobuf-c protobuf-c-compiler protobuf-c-devel protobuf-lite
-
-	# HID Api
-	#wget https://github.com/libusb/hidapi/archive/refs/tags/hidapi-0.13.1.tar.gz
+	sudo dnf update -y
+	sudo dnf install -y \
+	  libev-devel gmp-devel hidapi-devel libffi-devel zlib-devel \
+	  libpq-devel m4 perl git pkg-config rpmdevtools python3-devel \
+	  python3-setuptools wget rsync which cargo autoconf \
+	  systemd systemd-rpm-macros cmake python3-wheel \
+	  gcc-c++ bubblewrap protobuf-compiler protobuf-devel
+	  
+	sudo dnf install -y python3-tox-current-env mock
 
 	# Ocaml - needed for Redhet
 	curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh > install.sh.in
 	sed -e 's/read BINDIR/BINDIR=""/g' < install.sh.in > install.sh
 	bash install.sh
 
-	IGNOREOPAMDEPS=1
+	IGNOREOPAMDEPS=0
 fi
 
 # Rust

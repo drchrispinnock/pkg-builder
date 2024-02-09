@@ -21,11 +21,11 @@ TARGETS="${TARGETS} debian-12-arm64"
 
 # RPM-style
 #
+TARGETS="${TARGETS} rocky-linux-8 rocky-linux-9"
 TARGETS="${TARGETS} centos-stream-8 centos-stream-9"
 
 # It would be nice if...
 #TARGETS="${TARGETS} ubuntu-2210-amd64 ubuntu-2304-amd64"
-
 
 BRANCH="latest-release"
 [ ! -z "$1" ] && BRANCH=$1
