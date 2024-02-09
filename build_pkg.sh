@@ -16,16 +16,12 @@ SIZE=150
 # Debian-style
 #
 TARGETS="debian-11 debian-12" 
-TARGETS="${TARGETS} ubuntu-2004-lts ubuntu-2204-lts" # ubuntu-2204-lts-arm64
 TARGETS="${TARGETS} debian-12-arm64"
+TARGETS="${TARGETS} ubuntu-2004-lts ubuntu-2204-lts ubuntu-2310-amd64"
 
 # RPM-style
 #
-TARGETS="${TARGETS} rocky-linux-8 rocky-linux-9"
-TARGETS="${TARGETS} centos-stream-8 centos-stream-9"
-
-# It would be nice if...
-#TARGETS="${TARGETS} ubuntu-2210-amd64 ubuntu-2304-amd64"
+TARGETS="${TARGETS} rocky-linux-9"
 
 BRANCH="latest-release"
 [ ! -z "$1" ] && BRANCH=$1
