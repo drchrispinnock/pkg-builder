@@ -65,15 +65,15 @@ else
 	sudo dnf config-manager --set-enabled crb
 
 	sudo dnf update -y
-	sudo dnf install -y \
-	  libev-devel gmp-devel hidapi-devel libffi-devel zlib-devel \
-	  libpq-devel m4 perl git pkg-config rpmdevtools python3-devel \
-	  python3-setuptools wget rsync which cargo autoconf \
-	  systemd systemd-rpm-macros cmake python3-wheel \
-	  gcc-c++ bubblewrap protobuf-compiler protobuf-devel
+ 	for pkg in libev-devel gmp-devel hidapi-devel libffi-devel zlib-devel \
+          libpq-devel m4 perl git pkg-config rpmdevtools python3-devel \
+          python3-setuptools wget rsync which cargo autoconf \
+          systemd systemd-rpm-macros cmake python3-wheel \
+          gcc-c++ bubblewrap protobuf-compiler protobuf-devel \
+        python3-tox-current-env mock ; do
+                sudo dnf install -y $pkg
+        done
 	  
-	sudo dnf install -y python3-tox-current-env mock
-
 	# Ocaml - needed for Redhet
 	curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh > install.sh.in
 	sed -e 's/read BINDIR/BINDIR=""/g' < install.sh.in > install.sh
