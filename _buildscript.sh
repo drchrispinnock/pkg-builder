@@ -56,6 +56,7 @@ if [ "$DEBIAN" = "1" ]; then
 	status "OCTEZ DEPENDENCIES"
 	sudo apt-get install -y rsync git m4 build-essential patch unzip wget opam jq bc
 	sudo apt-get install -y autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev libprotobuf-dev protobuf-compiler
+	sudo apt-get install -y sqlite3
 
 
 else
@@ -70,7 +71,7 @@ else
           python3-setuptools wget rsync which cargo autoconf \
           systemd systemd-rpm-macros cmake python3-wheel \
           gcc-c++ bubblewrap protobuf-compiler protobuf-devel \
-        python3-tox-current-env mock ; do
+        python3-tox-current-env mock sqlite3 ; do
                 sudo dnf install -y $pkg
         done
 	  
