@@ -14,7 +14,7 @@ status () {
 }
 
 fail () {
-	echo "$1" > /tmp/status
+	echo "FAILED: $1" > /tmp/status
 	exit 1
 }
 

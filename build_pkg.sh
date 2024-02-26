@@ -166,6 +166,8 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 			        --zone=${ZONE} --delete-disks=all \
 				--project=${PROJECT} >> ${LOCALLOG} 2>&1
 			echo "FINISHED"
+		elsif [[ "$state" =~ "FAILED:".* ]; then
+			echo "$state"
 		else
 			echo "$state"
 			NEWVMLIST="${NEWVMLIST} ${NAME}"
