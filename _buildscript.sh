@@ -71,7 +71,7 @@ else
           python3-setuptools wget rsync which cargo autoconf \
           systemd systemd-rpm-macros cmake python3-wheel \
           gcc-c++ bubblewrap protobuf-compiler protobuf-devel \
-        python3-tox-current-env mock sqlite3 ; do
+        python3-tox-current-env mock sqlite sqlite-devel ; do
                 sudo dnf install -y $pkg
         done
 	  
