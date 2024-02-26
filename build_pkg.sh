@@ -130,7 +130,7 @@ for OS in ${TARGETS}; do
 
 done
 
-echo "rm -f ${CLEANUPSH}" >> ${CLEANUPSH}
+echo "rm -f ${CLEANUPSH} ${CONNECT} ${LOCALLOG}" >> ${CLEANUPSH}
 
 while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 
@@ -178,6 +178,8 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 	fi
 	VMLIST="${NEWVMLIST}"
 done
+
+
 rm -f ${CLEANUPSH}
 rm -f ${LOCALLOG}
 rm -f ${CONNECT}
