@@ -27,6 +27,7 @@ TARGET="$1"
 [ ! -z "$5" ] && VERSION="$5"
 
 export OCTEZ_PKGNAME OCTEZ_PKGREV
+export OPAMYES="true"
 
 echo "PKGNAME: ${OCTEZ_PKGNAME}"
 
@@ -65,6 +66,8 @@ else
 	sudo dnf config-manager --set-enabled devel
 	sudo dnf config-manager --set-enabled crb
 
+	# XXX may not be neededd
+	status "OCTEZ DEPENDENCIES"
 	sudo dnf update -y
  	for pkg in libev-devel gmp-devel hidapi-devel libffi-devel zlib-devel \
           libpq-devel m4 perl git pkg-config rpmdevtools python3-devel \
@@ -97,6 +100,7 @@ status "SOURCE CHECKOUT"
 git clone https://gitlab.com/tezos/tezos.git tezos
 cd tezos
 git checkout ${BRANCH}
+
 if [ ! -d scripts/dpkg ]; then
 	# Hackery for branches without the scripts!
 	#
