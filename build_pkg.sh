@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # $0 [branch [target1 [target2 [ ... ]]]]
 
@@ -12,6 +12,7 @@ X86ZONE=europe-west1-b
 ARM64=t2a-standard-4
 ARMZONE=us-central1-a
 SIZE=150
+FAIL=0
 
 # Debian-style
 #
@@ -125,6 +126,7 @@ for OS in ${TARGETS}; do
 				>> ${LOCALLOG} 2>&1
 			echo "gcloud -q compute instances delete ${NAME} \
 		        --zone=${ZONE} --delete-disks=all --project=${PROJECT}" >> ${CLEANUPSH}
+			chmod +x ${CLEANUPSH}
 		fi
 	fi
 
@@ -166,12 +168,14 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 			        --zone=${ZONE} --delete-disks=all \
 				--project=${PROJECT} >> ${LOCALLOG} 2>&1
 			echo "FINISHED"
-		elsif [[ "$state" =~ "FAILED:".* ]; then
+		else if [[ "$state" =~ "FAILED:".* ]]; then
 			echo "$state"
+			FAIL=1
+			FAILVMLIST="${FAILVMLIST} ${NAME}"
 		else
 			echo "$state"
 			NEWVMLIST="${NEWVMLIST} ${NAME}"
-		fi
+		fi; fi
 
 	done
 
@@ -182,6 +186,7 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 done
 
 
+[ "$FAIL" = "1" ] && echo "Failed - please clean up by hand!" && echo "$FAILVMLIST" && exit 1
 rm -f ${CLEANUPSH}
 rm -f ${LOCALLOG}
 rm -f ${CONNECT}
