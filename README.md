@@ -1,13 +1,21 @@
 
 # Prototype bulk package builder
 
+```
+sh build_pkg.sh 
+```
 
-sh build_pkg.sh latest-release
+or
+
+```
+sh build_pkg.sh mybranch
+```
+
+# To manually build the package directories:
+
+```
 sh sync_pkg.sh down
-
-cd Sources/pkgbeta-tzinit-org/incoming/
-# Move where you want
-# Tidy up Sources/pkg*/
-sh index.sh 17.3
-sh sync_pkg.sh
+sh index.sh 
+sh sync_pkg.sh up
+```
 

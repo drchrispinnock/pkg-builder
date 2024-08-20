@@ -16,9 +16,9 @@ FAIL=0
 
 # Debian-style
 #
-TARGETS="debian-11 debian-12" 
+TARGETS="debian-12" 
 TARGETS="${TARGETS} debian-12-arm64"
-TARGETS="${TARGETS} ubuntu-2004-lts ubuntu-2204-lts ubuntu-2310-amd64"
+TARGETS="${TARGETS} ubuntu-2204-lts ubuntu-2310-amd64"
 
 # RPM-style
 #
