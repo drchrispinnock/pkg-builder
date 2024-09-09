@@ -57,7 +57,7 @@ if [ "$DEBIAN" = "1" ]; then
 	status "OCTEZ DEPENDENCIES"
 	sudo apt-get install -y rsync git m4 build-essential patch unzip wget opam jq bc
 	sudo apt-get install -y autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev libprotobuf-dev protobuf-compiler
-	sudo apt-get install -y sqlite3
+	sudo apt-get install -y sqlite3 libpq-dev libsqlite3-dev
 
 
 else
@@ -121,6 +121,7 @@ fi
 #
 status "OPAM INIT"
 opam init --bare --yes
+opam option depext-run-installs=false
 
 if [ "$IGNOREOPAMDEPS" = "1" ]; then
 	#opam option depext-run-installs=true
