@@ -82,7 +82,7 @@ else
 	  
 	# Ocaml - needed for Redhet
 	curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh > install.sh.in
-	sed -e 's/read -r BINDIR/BINDIR=""/g' < install.sh.in > install.sh
+	sed -e 's/read_tty BINDIR/BINDIR=""/g' < install.sh.in > install.sh
 	bash install.sh
 
 	IGNOREOPAMDEPS=0

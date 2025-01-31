@@ -24,6 +24,8 @@ TARGETS="${TARGETS} ubuntu-2204-lts ubuntu-2310-amd64"
 #
 TARGETS="${TARGETS} rocky-linux-9"
 
+[ -z "$OVERRIDE" ] && echo "Override version: $OVERRIDE"
+
 BRANCH="latest-release"
 [ ! -z "$1" ] && BRANCH=$1
 shift
