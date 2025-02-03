@@ -108,7 +108,7 @@ for OS in ${TARGETS}; do
 		echo "=> Starting build"
 		FAIL=3
 		while [ $FAIL -gt 0 ]; do
-			gcloud -q compute scp _buildscript.sh ${NAME}:buildscript.sh --zone=${ZONE} \
+			gcloud -q compute scp helpers/_buildscript.sh ${NAME}:buildscript.sh --zone=${ZONE} \
 				--project=${PROJECT} >> ${LOCALLOG} 2>&1
 			[ "$?" = "0" ] && break
 			FAIL=$((FAIL-1))
