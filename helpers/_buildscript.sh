@@ -6,6 +6,8 @@ OCTEZ_PKGREV=1
 VERSION="" # if set, override dune output
 OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
 
+#export CI_COMMIT_TAG=octez-v21.0
+
 IGNOREOPAMDEPS=0
 
 
@@ -57,7 +59,7 @@ if [ "$DEBIAN" = "1" ]; then
 	status "OCTEZ DEPENDENCIES"
 	sudo apt-get install -y rsync git m4 build-essential patch unzip wget opam jq bc
 	sudo apt-get install -y autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev libprotobuf-dev protobuf-compiler
-	sudo apt-get install -y sqlite3
+	sudo apt-get install -y sqlite3 libpq-dev libsqlite3-dev
 
 
 else
@@ -72,7 +74,7 @@ else
  	for pkg in libev-devel gmp-devel hidapi-devel libffi-devel zlib-devel \
           libpq-devel m4 perl git pkg-config rpmdevtools python3-devel \
           python3-setuptools wget rsync which cargo autoconf \
-          systemd systemd-rpm-macros cmake python3-wheel \
+          systemd systemd-rpm-macros cmake openssl-devel python3-wheel \
           gcc-c++ bubblewrap protobuf-compiler protobuf-devel \
         python3-tox-current-env mock sqlite3 sqlite sqlite-devel jq ; do
                 sudo dnf install -y $pkg
@@ -80,7 +82,7 @@ else
 	  
 	# Ocaml - needed for Redhet
 	curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh > install.sh.in
-	sed -e 's/read BINDIR/BINDIR=""/g' < install.sh.in > install.sh
+	sed -e 's/read -r BINDIR/BINDIR=""/g' < install.sh.in > install.sh
 	bash install.sh
 
 	IGNOREOPAMDEPS=0
@@ -98,8 +100,11 @@ chmod +x rustup-init.sh
 #
 status "SOURCE CHECKOUT"
 git clone https://gitlab.com/tezos/tezos.git tezos
+#git clone https://github.com/tez-capital/tezos.git
 cd tezos
 git checkout ${BRANCH}
+#export CI_COMMIT_REF_NAME=${BRANCH}
+#export CI_COMMIT_REF_PROTECTED=false
 
 if [ ! -d scripts/dpkg ]; then
 	# Hackery for branches without the scripts!
@@ -121,6 +126,7 @@ fi
 #
 status "OPAM INIT"
 opam init --bare --yes
+opam option depext-run-installs=false
 
 if [ "$IGNOREOPAMDEPS" = "1" ]; then
 	#opam option depext-run-installs=true
@@ -150,11 +156,13 @@ eval `opam env`
 EXT=""
 if [ "$DEBIAN" = "1" ]; then
 	status "DPKG PACKAGES"
+#	export CI_COMMIT_TAG="octez-v21.0"
 	make dpkg
 	[ "$?" != "0" ] && fail "DPKG PACKAGES"
 	EXT=".deb"
 else
 	status "RPM PACKAGES"
+#	export CI_COMMIT_TAG="octez-v21.0"
 	make rpm
 	[ "$?" != "0" ] && fail "RPM PACKAGES"
 	EXT=".rpm"
