@@ -2,32 +2,32 @@
 
 # $0 [branch [target1 [target2 [ ... ]]]]
 
+[ -z "$1" ] && echo "Usage: $0 branch [targets [revision]]" && exit 1
+
 # Project - must be setup
 #
-PROJECT=tf-pkg-build
-SERVICEACCT="782994889379-compute@developer.gserviceaccount.com"
-BUCKET="gs://pkgbeta-tzinit-org"
-X86=c3-standard-8
-X86ZONE=europe-west1-b
-ARM64=t2a-standard-4
-ARMZONE=us-central1-a
-SIZE=150
+[ -f environment ] && . environment
+
+[ -z "${PROJECT}" ] && echo "PROJECT must be set" && exit 1
+[ -z "${SERVICEACCT}" ] && echo "SERVICEACCT must be set" && exit 1
+[ -z "${BUCKET}" ] && echo "BUCKET must be set" && exit 1
+
+X86=${X86:-c3-standard-8}
+X86ZONE=${X86ZONE:-europe-west1-b}
+ARM64=${ARM64:-t2a-standard-8}
+ARMZONE=${ARMZONE:-us-central1-a}
+SIZE=${SIZE:-200}
+
 FAIL=0
 
-# Debian-style
-#
 TARGETS="debian-12" 
-TARGETS="${TARGETS} debian-12-arm64"
-TARGETS="${TARGETS} ubuntu-2204-lts ubuntu-2310-amd64"
 
-# RPM-style
-#
-TARGETS="${TARGETS} rocky-linux-9"
+[ -f "platforms" ] && TARGETS=$(cat platforms)
 
 BRANCH="latest-release"
 [ ! -z "$1" ] && BRANCH=$1
-shift
-[ ! -z "$1" ] && TARGETS=$@
+[ ! -z "$2" ] && TARGETS="$2"
+[ ! -z "$3" ] && REVISION="$3"
 
 FORCE=1
 STATUSSLEEP=120 # 2 minutes
@@ -108,6 +108,10 @@ for OS in ${TARGETS}; do
 		echo "=> Starting build"
 		FAIL=3
 		while [ $FAIL -gt 0 ]; do
+			gcloud -q compute scp --recurse pkgscripts \
+				${NAME}:pkgscripts \
+				--zone=${ZONE} \
+				--project=${PROJECT}
 			gcloud -q compute scp helpers/_buildscript.sh ${NAME}:buildscript.sh --zone=${ZONE} \
 				--project=${PROJECT} >> ${LOCALLOG} 2>&1
 			[ "$?" = "0" ] && break
@@ -122,7 +126,7 @@ for OS in ${TARGETS}; do
 			VMLIST="${VMLIST} ${NAME}"
 			gcloud -q compute ssh ${NAME} --zone=${ZONE} \
 				--project=${PROJECT} \
-				--command="nohup sh ./buildscript.sh ${TARGETDIR} ${BRANCH} ${PKGNAME} > buildlog.log 2>&1 &" \
+				--command="nohup sh ./buildscript.sh ${TARGETDIR} ${BRANCH} ${PKGNAME} ${REVISION} > buildlog.log 2>&1 &" \
 				>> ${LOCALLOG} 2>&1
 			echo "gcloud -q compute instances delete ${NAME} \
 		        --zone=${ZONE} --delete-disks=all --project=${PROJECT}" >> ${CLEANUPSH}
