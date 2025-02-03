@@ -113,7 +113,7 @@ warnings() {
 getOctezVersion() {
 
   BR=$(git branch)
-  COMMIT_SHORT_SHA=${CI_COMMIT_SHORT_SHA:-$(git rev-parse --short HEAD)}
+  COMMIT_SHORT_SHA=$(git rev-parse --short HEAD)
 
   if ! _vers=$(dune exec octez-version 2>/dev/null); then
     echo "Cannot get version. Try eval \`opam env\`?" >&2
