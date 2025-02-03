@@ -115,15 +115,18 @@ getOctezVersion() {
   BR=$(git branch)
   COMMIT_SHORT_SHA=${CI_COMMIT_SHORT_SHA:-$(git rev-parse --short HEAD)}
 
-  case "$BR" in
-    octez-v*)  
-	    # rpm version do not accept '-' as a character
-	    # https://rpm-software-management.github.io/rpm/manual/spec.html
-	    RET=$(echo $BR | sed -e/^octez-v//g)
-    ;;
-  *)
-    RET=$COMMIT_SHORT_SHA
-    ;;
+  if ! _vers=$(dune exec octez-version 2>/dev/null); then
+    echo "Cannot get version. Try eval \`opam env\`?" >&2
+    exit 1
+  fi
+  _vers_fix=$(echo "$_vers" | sed -e 's/Octez //' -e 's/\~//' -e 's/\+//')
+  case "$_vers" in
+  	*dev)
+	    RET=$COMMIT_SHORT_SHA
+	    ;;
+	*)
+	    RET=$_vers_fix
+	    ;;
   esac
 
   echo "$RET"

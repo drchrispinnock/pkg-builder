@@ -32,6 +32,17 @@ export OCTEZ_PKGNAME OCTEZ_PKGREV
 export OPAMYES="true"
 
 echo "PKGNAME: ${OCTEZ_PKGNAME}"
+echo "BRANCH: $BRANCH"
+case BRANCH in
+	octez-v*)
+		;;
+	latest-release)
+		;;
+	*)
+
+		TARGET=${TARGET}/dev
+		;;
+esac
 
 # If there is apt it's a Debian style system
 # We assume everything else uses RPM and YUM
