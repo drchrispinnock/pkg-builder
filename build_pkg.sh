@@ -66,7 +66,7 @@ for OS in ${TARGETS}; do
 	NAME=bd-${seed}-${OS}
 	echo "===> ${NAME}"
 
-	IMAGE=`./parse_images.pl ${OS}`
+	IMAGE=`./helpers/parse_images.pl ${OS}`
 	TARGETDIR=${BUCKET}/${OS}
 	
 	# Bring up a VM
@@ -190,4 +190,8 @@ done
 rm -f ${CLEANUPSH}
 rm -f ${LOCALLOG}
 rm -f ${CONNECT}
+
+sh helpers/sync_pkg.sh down
+sh helpers/index.sh
+sh helpers/sync_pkg.sh up
 
