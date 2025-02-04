@@ -26,14 +26,13 @@ TARGET="$1"
 [ ! -z "$2" ] && BRANCH="$2"
 [ ! -z "$3" ] && OCTEZ_PKGNAME="$3"
 [ ! -z "$4" ] && OCTEZ_PKGREV="$4"
-[ ! -z "$5" ] && VERSION="$5"
 
 export OCTEZ_PKGNAME OCTEZ_PKGREV
 export OPAMYES="true"
 
 echo "PKGNAME: ${OCTEZ_PKGNAME}"
 echo "BRANCH: $BRANCH"
-case BRANCH in
+case $BRANCH in
 	octez-v*)
 		;;
 	latest-release)
