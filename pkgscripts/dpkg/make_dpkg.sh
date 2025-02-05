@@ -14,7 +14,7 @@ set -eu
 
 myhome=$HOME/pkgscripts/dpkg
 common=$HOME/pkgscripts/pkg-common
-dieonwarn=${dieonwarn:-1}
+dieonwarn=${dieonwarn:-0}
 
 export TIMESTAMP="${TIMESTAMP-$(date +'%Y%m%d%H%M')}"
 
