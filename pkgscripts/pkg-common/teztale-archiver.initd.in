@@ -31,6 +31,7 @@ logdir=/var/log/tezos
 rotateonstart=yes
 credentials="/etc/teztale/target"
 target=""
+waitforbootstrap=yes
 
 #shellcheck disable=SC1091
 [ -r /etc/octez/teztale-archiver.conf ] && . /etc/octez/teztale-archiver.conf
@@ -70,7 +71,9 @@ rotate_logs ()
 }
 
 case "$1" in
-start)  initial_checks
+start)  
+	[ "$waitforbootstrap" = "yes" ] && wait_for_bootstrap
+	initial_checks
         rotate_logs
         su $user -c "${binary} feed \"$target\" > ${logfile} 2>&1" &
 
