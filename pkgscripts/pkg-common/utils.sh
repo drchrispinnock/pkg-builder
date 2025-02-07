@@ -122,7 +122,8 @@ getOctezVersion() {
   _vers_fix=$(echo "$_vers" | sed -e 's/Octez //' -e 's/\~//' -e 's/\+//')
   case "$_vers" in
   	*dev)
-	    RET=$COMMIT_SHORT_SHA
+	    # Versions must start with numbers on dpkg
+	    RET="99$COMMIT_SHORT_SHA"
 	    ;;
 	*)
 	    RET=$_vers_fix

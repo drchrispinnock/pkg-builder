@@ -1,0 +1,93 @@
+#!/bin/bash
+# Start/stop the Octez Bakers and Accusers
+#
+### BEGIN INIT INFO
+# Provides:          octez-teztale-archiver
+# Required-Start:    octez-node
+# Required-Stop:
+# Should-Start:      $network $named
+# Should-Stop:       $network $named
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: The Octez Teztale Archiver
+# Description:       The Octez Teztale Archiver sends information to a central Teztale server for analysis
+### END INIT INFO
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+export DESC="octez teztake archiver"
+NAME=octez-teztale-archiver
+export SCRIPTNAME=/etc/init.d/"$NAME"
+
+if [ -f "/lib/lsb/init-functions" ]; then
+	. /lib/lsb/init-functions
+else
+	. /etc/rc.d/init.d/functions
+fi
+
+# Defaults
+user=tezos
+group=tezos
+logdir=/var/log/tezos
+rotateonstart=yes
+credentials="/etc/teztale/target"
+target=""
+
+#shellcheck disable=SC1091
+[ -r /etc/octez/teztale-archiver.conf ] && . /etc/octez/teztale-archiver.conf
+
+logfile="${logdir}/teztale.log"
+
+binary="/usr/bin/octez-teztalk-archiver
+
+wait_for_bootstrap()
+{
+	echo "Waiting for node to be bootstrapped" >&2
+
+	while :; do
+		/usr/bin/octez-client bootstrapped >/dev/null 2>&1 && break
+		echo "Node not ready - sleeping for 30 seconds" >&2
+		sleep 30
+	done
+}
+
+initial_checks()
+{
+	mkdir -p ${logdir}
+	chown $user:$group ${logdir}
+
+    if [ ! -f ${credentials} ]; then
+        echo "Need credentials in ${credentials}" >&2
+        exit 2
+    fi
+    target=$(cat ${credentials})
+}
+
+rotate_logs ()
+{
+	if [ ${rotateonstart} = "yes" ]; then
+		mv -f "${logfile}" "${logfile}.1"
+	fi
+}
+
+case "$1" in
+start)	initial_checks
+	rotate_logs
+	su $user -c "${binary} feed $target > ${LOGFILE} 2>&1 &
+	
+	;;
+stop)
+	pkill $NAME
+    ;;
+reload|force-reload|restart)
+    $0 stop
+    $0 start
+    ;;
+status)
+   	status_of_proc ${binary} || exit $?
+	exit 0
+        ;;
+*)	echo "Usage: $0 {start|stop|status|restart|reload|force-reload}" >&2
+        exit 2
+        ;;
+esac
+exit 0
