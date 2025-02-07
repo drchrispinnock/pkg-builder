@@ -45,7 +45,7 @@ protocols=$(tr '\n' ' ' < $proto_file | sed -e 's/ $//g')
 # Variables
 #
 # Package maintainer
-OCTEZ_PKGMAINTAINER=${OCTEZ_PKGMAINTAINER:-package@nomadic-labs.com}
+OCTEZ_PKGMAINTAINER=${OCTEZ_PKGMAINTAINER:-chris@chrispinnock.com}
 #
 # Package name used in dpkg or rpm name
 OCTEZ_PKGNAME=${OCTEZ_PKGNAME:-octez}
@@ -112,26 +112,21 @@ warnings() {
 
 getOctezVersion() {
 
-  . scripts/ci/octez-packages-version.sh
+  BR=$(git branch)
+  COMMIT_SHORT_SHA=$(git rev-parse --short HEAD)
 
-  # provide defaults for local compilation
-  COMMIT_SHORT_SHA=${CI_COMMIT_SHORT_SHA:-$(git rev-parse --short HEAD)}
-
-  case "$RELEASETYPE" in
-  ReleaseCandidate | TestReleaseCandidate | Release | TestRelease)
-    # rpm version do not accept '-' as a character
-    # https://rpm-software-management.github.io/rpm/manual/spec.html
-    RET=$(echo "$VERSION" | tr '-' '~')
-    ;;
-  SoftRelease)
-    RET=$TIMESTAMP+$(echo "${CI_COMMIT_TAG:-}" | tr '-' '_')
-    ;;
-  Master | TestBranch)
-    RET=$TIMESTAMP+$COMMIT_SHORT_SHA
-    ;;
-  *)
-    RET=$TIMESTAMP+$COMMIT_SHORT_SHA
-    ;;
+  if ! _vers=$(dune exec octez-version 2>/dev/null); then
+    echo "Cannot get version. Try eval \`opam env\`?" >&2
+    exit 1
+  fi
+  _vers_fix=$(echo "$_vers" | sed -e 's/Octez //' -e 's/\~//' -e 's/\+//')
+  case "$_vers" in
+  	*dev)
+	    RET=$COMMIT_SHORT_SHA
+	    ;;
+	*)
+	    RET=$_vers_fix
+	    ;;
   esac
 
   echo "$RET"

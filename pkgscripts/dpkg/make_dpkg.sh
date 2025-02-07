@@ -9,8 +9,11 @@ set -eu
 
 # Setup
 #
-myhome=${1:-scripts/dpkg}
-common=scripts/pkg-common
+#myhome=${1:-scripts/dpkg}
+#common=scripts/pkg-common
+
+myhome=$HOME/pkgscripts/dpkg
+common=$HOME/pkgscripts/pkg-common
 dieonwarn=${dieonwarn:-1}
 
 export TIMESTAMP="${TIMESTAMP-$(date +'%Y%m%d%H%M')}"

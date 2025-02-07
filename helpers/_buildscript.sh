@@ -26,12 +26,22 @@ TARGET="$1"
 [ ! -z "$2" ] && BRANCH="$2"
 [ ! -z "$3" ] && OCTEZ_PKGNAME="$3"
 [ ! -z "$4" ] && OCTEZ_PKGREV="$4"
-[ ! -z "$5" ] && VERSION="$5"
 
 export OCTEZ_PKGNAME OCTEZ_PKGREV
 export OPAMYES="true"
 
 echo "PKGNAME: ${OCTEZ_PKGNAME}"
+echo "BRANCH: $BRANCH"
+case $BRANCH in
+	octez-v*)
+		;;
+	latest-release)
+		;;
+	*)
+
+		TARGET=${TARGET}/dev
+		;;
+esac
 
 # If there is apt it's a Debian style system
 # We assume everything else uses RPM and YUM
@@ -82,7 +92,7 @@ else
 	  
 	# Ocaml - needed for Redhet
 	curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh > install.sh.in
-	sed -e 's/read_tty BINDIR/BINDIR=""/g' < install.sh.in > install.sh
+	sed -e 's/read -r BINDIR/BINDIR=""/g' -e 's/read_tty BINDIR/BINDIR=""/g' < install.sh.in > install.sh
 	bash install.sh
 
 	IGNOREOPAMDEPS=0
@@ -100,27 +110,8 @@ chmod +x rustup-init.sh
 #
 status "SOURCE CHECKOUT"
 git clone https://gitlab.com/tezos/tezos.git tezos
-#git clone https://github.com/tez-capital/tezos.git
 cd tezos
 git checkout ${BRANCH}
-#export CI_COMMIT_REF_NAME=${BRANCH}
-#export CI_COMMIT_REF_PROTECTED=false
-
-if [ ! -d scripts/dpkg ]; then
-	# Hackery for branches without the scripts!
-	#
-	git checkout chrispinnock@pkg18w
-	cp -pR scripts/dpkg $HOME
-	cp -pR scripts/rpm $HOME
-	cp -pR scripts/pkg-common $HOME
-	git checkout ${BRANCH}
-	git pull
-	cd scripts
-	ln -s $HOME/dpkg .
-	ln -s $HOME/rpm .
-	ln -s $HOME/pkg-common .
-	cd ..
-fi
 
 # Rev up OPAM
 #
@@ -156,14 +147,12 @@ eval `opam env`
 EXT=""
 if [ "$DEBIAN" = "1" ]; then
 	status "DPKG PACKAGES"
-#	export CI_COMMIT_TAG="octez-v21.0"
-	make dpkg
+	$HOME/pkgscripts/dpkg/make_dpkg.sh
 	[ "$?" != "0" ] && fail "DPKG PACKAGES"
 	EXT=".deb"
 else
 	status "RPM PACKAGES"
-#	export CI_COMMIT_TAG="octez-v21.0"
-	make rpm
+	$HOME/pkgscripts/rpm/make_rpm.sh
 	[ "$?" != "0" ] && fail "RPM PACKAGES"
 	EXT=".rpm"
 fi

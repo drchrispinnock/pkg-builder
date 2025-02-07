@@ -9,8 +9,8 @@ set -eu
 
 # Setup
 #
-myhome=scripts/rpm
-common=scripts/pkg-common
+myhome=$HOME/pkgscripts/rpm
+common=$HOME/pkgscripts/pkg-common
 dieonwarn=${dieonwarn:-1}
 
 #shellcheck disable=SC1091
