@@ -24,6 +24,8 @@ TARGETS="debian-12"
 
 [ -f "platforms" ] && TARGETS=$(cat platforms)
 
+[ -z "$OVERRIDE" ] && echo "Override version: $OVERRIDE"
+
 BRANCH="latest-release"
 [ ! -z "$1" ] && BRANCH=$1
 [ ! -z "$2" ] && TARGETS="$2"
