@@ -58,12 +58,12 @@ if [ "$FORCE" = "0" ]; then
 fi
 
 echo "===> Building from branch: ${BRANCH}"
+	
+PKGNAME=octez-unoff
 
 # Setup VMs and despatch
 #
 for OS in ${TARGETS}; do
-
-	PKGNAME=octez
 
 	NAME=bd-${seed}-${OS}
 	echo "===> ${NAME}"
