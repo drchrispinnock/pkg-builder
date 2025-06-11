@@ -42,13 +42,21 @@ dpkg_arch=$DEB_BUILD_ARCH
 #
 for control_file in "$myhome"/*control.in; do
   pg=$(basename "$control_file" | sed -e 's/-control.in$//g')
-  echo "===> Building package $pg v$pkg_vers rev $OCTEZ_PKGREV"
+  _pkgv=${pkg_vers}
+
+  # EVM node and others don't use the parent version number
+  #  
+  if [ -f "${common}/${pg}.vmeth" ]; then
+	_pkgv="$(sh ${common}/${pg}.vmeth)"
+  fi
+
+  echo "===> Building package $pg v$_pkgv rev $OCTEZ_PKGREV"
 
   # Derivative variables
   #
   dpkg_name=${OCTEZ_PKGNAME}-${pg}
   init_name=${OCTEZ_REALNAME}-${pg}
-  dpkg_vers=$(echo "${pkg_vers}" | tr '~' '-')
+  dpkg_vers=$(echo "${_pkgv}" | tr '~' '-')
   dpkg_dir="${dpkg_name}_${dpkg_vers}-${OCTEZ_PKGREV}_${dpkg_arch}"
   dpkg_fullname="${dpkg_dir}.deb"
 
@@ -94,7 +102,7 @@ for control_file in "$myhome"/*control.in; do
 
   # Edit the control file to contain real values
   #
-  sed -e "s/@ARCH@/${dpkg_arch}/g" -e "s/@VERSION@/$pkg_vers/g" \
+  sed -e "s/@ARCH@/${dpkg_arch}/g" -e "s/@VERSION@/$_pkgv/g" \
     -e "s/@MAINT@/${OCTEZ_PKGMAINTAINER}/g" \
     -e "s/@PKG@/${dpkg_name}/g" \
     -e "s/@DPKG@/${OCTEZ_PKGNAME}/g" \
