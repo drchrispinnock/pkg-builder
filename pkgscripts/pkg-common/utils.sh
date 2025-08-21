@@ -26,8 +26,6 @@
 # baker-binaries.in        - the list of binaries to include
 # baker.initd.in           - System V init script (optional)
 #
-# Where Protocol variations are needed use @PROTOCOL@ and @PROTOCOLS@
-#
 # You can set OCTEZ_PKGMAINTAINER and OCTEZ_PKGNAME in the environment
 # to change from the defaults.
 #
@@ -60,35 +58,6 @@ export OCTEZ_PKGMAINTAINER
 export OCTEZ_PKGNAME
 export OCTEZ_REALNAME
 export OCTEZ_PKGREV
-
-# Expand protocols in configuration and init files
-#
-expand_PROTOCOL() {
-  file="$1"
-  protocols_formatted=""
-  protocols_list=""
-
-  for i in $protocols; do
-
-    if [ "$protocols_list" = "" ]; then
-      protocols_list="$i"
-    else
-      protocols_list="$protocols_list $i"
-    fi
-
-    if [ "$i" != "alpha" ]; then
-      # Alpha is handled in an experimental package
-      #shellcheck disable=SC1003
-      protocols_formatted=$protocols_formatted'\'"1${i}"'\'"2\n"
-    fi
-
-  done
-
-  sed -e "s/@PROTOCOLS@/$protocols_list/g" \
-    -e "/@PROTOCOL@/ { s/^\(.*\)@PROTOCOL@\(.*\)$/$protocols_formatted/; s/\\n$//; }" \
-    "$file"
-
-}
 
 # Issue Warnings
 #
@@ -145,8 +114,7 @@ initdScripts() {
 
   if [ -f "${_initin}" ]; then
     mkdir -p "${_initd}"
-    expand_PROTOCOL "${_initin}" \
-      > "${_initd}/${_inittarget}"
+    cp "${_initin}" "${_initd}/${_inittarget}"
     chmod +x "${_initd}/${_inittarget}"
   fi
 
@@ -157,9 +125,6 @@ initdScripts() {
 fixBinaryList() {
   _binlist=$1
   _binaries=""
-  if [ -f "${_binlist}.in" ]; then
-    expand_PROTOCOL "${_binlist}.in" > "${_binlist}"
-  fi
 
   if [ -f "${_binlist}" ]; then
     _binaries=$(cat "${_binlist}" 2> /dev/null)
