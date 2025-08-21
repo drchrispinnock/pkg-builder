@@ -34,9 +34,8 @@ group=tezos
 nodedir=/var/tezos/.tezos-node
 logdir=/var/log/tezos
 rotateonstart=yes
-protocols="@PROTOCOLS@"
 waitfornode=yes
-othercliopts_baker_@PROTOCOL@=""
+othercliopts_baker=""
 dalurl=""
 
 nodesetup=local 
@@ -104,32 +103,24 @@ initial_checks()
 rotate_logs ()
 {
 	if [ ${rotateonstart} = "yes" ]; then
-		for p in ${protocols}; do
-			[ -f "${logfile_baseb}${p}.log" ] && \
-				mv -f "${logfile_baseb}${p}.log" "${logfile_baseb}${p}.log.1"
-			[ -f "${logfile_basea}${p}.log" ] && \
-				mv -f "${logfile_basea}${p}.log" "${logfile_basea}${p}.log.1"
-		done
+		[ -f "${logfile_baseb}.log" ] && \
+		mv -f "${logfile_baseb}.log" "${logfile_baseb}.log.1"
+		[ -f "${logfile_basea}.log" ] && \
+				mv -f "${logfile_basea}.log" "${logfile_basea}.log.1"
 	fi
 }
 
 case "$1" in
 start)	initial_checks
 	rotate_logs
-	for p in ${protocols}; do
-		[ ! -x "${baker}-$p" ] && continue
 
-		othercliopts="othercliopts_baker_$p"
-		su $user -c "${baker}-$p run with local node $nodedir $baking_key --liquidity-baking-toggle-vote $lq_vote --pidfile ${PIDFILEB}-$p ${keepalive_opt} ${!othercliopts} ${dalcli} >> ${logfile_baseb}${p}.log 2>&1 &"
-		su $user -c "${accuser}-$p run ${keepalive_opt} --pidfile ${PIDFILEA}-$p >> ${logfile_basea}${p}.log 2>&1 &"
-	done
+	su $user -c "${baker} run with local node $nodedir $baking_key --liquidity-baking-toggle-vote $lq_vote --pidfile ${PIDFILEB}-$p ${keepalive_opt} ${othercliopts_baker} ${dalcli} >> ${logfile_baseb}${p}.log 2>&1 &"
+	su $user -c "${accuser} run ${keepalive_opt} --pidfile ${PIDFILEA}-$p >> ${logfile_basea}${p}.log 2>&1 &"
 	;;
 stop)
-	for p in ${protocols}; do
-		[ -f "${PIDFILEB}-$p" ] && kill  "$(cat ${PIDFILEB}-$p)"
-		[ -f "${PIDFILEA}-$p" ] && kill  "$(cat ${PIDFILEA}-$p)"
-		rm -f ${PIDFILEB}-$p ${PIDFILEA}-$p
-	done
+	[ -f "${PIDFILEB}" ] && kill  "$(cat ${PIDFILEB})"
+	[ -f "${PIDFILEA}" ] && kill  "$(cat ${PIDFILEA})"
+	rm -f ${PIDFILEB} ${PIDFILEA}
         ;;
 restart)
         $0 stop
@@ -138,11 +129,8 @@ restart)
 reload|force-reload)
         ;;
 status)
-	for p in ${protocols}; do
-		[ ! -x "${baker}-$p" ] && continue
-        	status_of_proc -p ${PIDFILEB}-$p ${baker}-$p $NAME || exit $?
-        	status_of_proc -p ${PIDFILEA}-$p ${accuser}-$p $NAME || exit $?
-	done
+       	status_of_proc -p ${PIDFILEB} ${baker} $NAME || exit $?
+       	status_of_proc -p ${PIDFILEA} ${accuser} $NAME || exit $?
 	exit 0
         ;;
 *)	echo "Usage: $0 {start|stop|status|restart|reload|force-reload}" >&2
