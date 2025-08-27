@@ -31,7 +31,6 @@ logdir=/var/log/tezos
 rotateonstart=yes
 credentials="/etc/teztale/target"
 target=""
-waitforbootstrap=yes
 
 #shellcheck disable=SC1091
 [ -r /etc/octez/teztale-archiver.conf ] && . /etc/octez/teztale-archiver.conf
@@ -39,17 +38,6 @@ waitforbootstrap=yes
 logfile="${logdir}/teztale.log"
 
 binary="/usr/bin/octez-teztale-archiver"
-
-wait_for_bootstrap()
-{
-        echo "Waiting for node to be bootstrapped" >&2
-
-        while :; do
-                /usr/bin/octez-client bootstrapped >/dev/null 2>&1 && break
-                echo "Node not ready - sleeping for 30 seconds" >&2
-                sleep 30
-        done
-}
 
 initial_checks()
 {
@@ -72,12 +60,8 @@ rotate_logs ()
 
 case "$1" in
 start)  
-	[ "$waitforbootstrap" = "yes" ] && wait_for_bootstrap
-	initial_checks
         rotate_logs
-        su $user -c "${binary} feed \"$target\" > ${logfile} 2>&1" &
 
-        ;;
 stop)
         pkill -f $NAME
     ;;

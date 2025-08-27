@@ -34,7 +34,6 @@ group=tezos
 nodedir=/var/tezos/.tezos-node
 logdir=/var/log/tezos
 rotateonstart=yes
-waitfornode=yes
 othercliopts_baker=""
 dalurl=""
 
@@ -57,17 +56,6 @@ accuser="/usr/bin/octez-accuser"
 
 dalcli="--without-dal"
 [ "${dalurl}" != "" ] && dalcli="--dal-node ${dalurl}"
-
-wait_for_bootstrap()
-{
-	echo "Waiting for node to be bootstrapped" >&2
-
-	while :; do
-		/usr/bin/octez-client bootstrapped >/dev/null 2>&1 && break
-		echo "Node not ready - sleeping for 30 seconds" >&2
-		sleep 30
-	done
-}
 
 initial_checks()
 {
@@ -95,8 +83,6 @@ initial_checks()
 		echo "$nodedir must be set up with a local running node" >&2
 		exit 3
 	fi
-
-	[ "$waitfornode" = "yes" ] &&  wait_for_bootstrap
 
 }
 
