@@ -47,8 +47,8 @@ keepalive_opt="-K"
 #shellcheck disable=SC1091
 [ -r /etc/octez/baker.conf ] && . /etc/octez/baker.conf
 
-logfile_basea="${logdir}/accuser_"
-logfile_baseb="${logdir}/baker_"
+logfile_basea="${logdir}/accuser"
+logfile_baseb="${logdir}/baker"
 baker="/usr/bin/octez-baker"
 accuser="/usr/bin/octez-accuser"
 
@@ -104,6 +104,10 @@ start)	initial_checks
 	su $user -c "${accuser} run ${keepalive_opt} --pidfile ${PIDFILEA}-$p >> ${logfile_basea}${p}.log 2>&1 &"
 	;;
 stop)
+	# Kill all bakers (there may be other ones and it could cause double
+	# baking)
+	#
+	pkill octez-baker
 	[ -f "${PIDFILEB}" ] && kill  "$(cat ${PIDFILEB})"
 	[ -f "${PIDFILEA}" ] && kill  "$(cat ${PIDFILEA})"
 	rm -f ${PIDFILEB} ${PIDFILEA}

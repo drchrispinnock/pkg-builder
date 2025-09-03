@@ -120,16 +120,16 @@ for control_file in "$myhome"/*control.in; do
 
   # init.d scripts
   #
-  initdScripts "${common}/${pg}.initd.in" "${init_name}" "${staging_dir}"
+  initdScripts "${common}/${pg}.initd" "${init_name}" "${staging_dir}"
   if [ "$pg" = "baker" ]; then
-    initdScripts "${common}/vdf.initd.in" octez-vdf "${staging_dir}"
+    initdScripts "${common}/vdf.initd" octez-vdf "${staging_dir}"
   fi
 
   # Configuration files
   #
   if [ -f "${common}/${pg}.conf" ]; then
     mkdir -p "${staging_dir}/etc/octez"
-    expand_PROTOCOL "${common}/${pg}.conf" > "${staging_dir}/etc/octez/${pg}.conf"
+    cp "${common}/${pg}.conf" "${staging_dir}/etc/octez/${pg}.conf"
     echo "/etc/octez/${pg}.conf" > "${staging_dir}/DEBIAN/conffiles"
   fi
 
