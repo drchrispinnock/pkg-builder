@@ -3,4 +3,4 @@ Version: @VERSION@
 Architecture: @ARCH@
 Maintainer: @MAINT@
 Description: The Octez teztale archiver
-Depends: systemd, octez-node, @DEPENDS@
+Depends: systemd, octez-unoff-node, @DEPENDS@
