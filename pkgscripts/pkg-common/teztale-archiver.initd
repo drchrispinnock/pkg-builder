@@ -39,17 +39,14 @@ logfile="${logdir}/teztale.log"
 
 binary="/usr/bin/octez-teztale-archiver"
 
-initial_checks()
-{
-        mkdir -p ${logdir}
-        chown $user:$group ${logdir}
+mkdir -p ${logdir}
+chown $user:$group ${logdir}
 
-    if [ ! -f ${credentials} ]; then
-        echo "Need credentials in ${credentials}" >&2
-        exit 2
-    fi
-    target=$(cat ${credentials})
-}
+if [ ! -f ${credentials} ]; then
+    echo "Need credentials in ${credentials}" >&2
+    exit 2
+ fi
+target=$(cat ${credentials})
 
 rotate_logs ()
 {
@@ -61,7 +58,7 @@ rotate_logs ()
 case "$1" in
 start)  
         rotate_logs
-	su $user -c "${binary} feed \"$target\" > ${logfile} 2>&1" &
+	su $user -c "${binary} feed $target > ${logfile} 2>&1" &
 	;;
 
 stop)
