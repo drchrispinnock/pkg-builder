@@ -88,9 +88,9 @@ for specfile in "$myhome"/*spec.in; do
 
   # init.d scripts
   #
-  initdScripts "${common}/${pg}.initd.in" "${init_name}" "${build_dir}"
+  initdScripts "${common}/${pg}.initd" "${init_name}" "${build_dir}"
   if [ "$pg" = "baker" ]; then
-    initdScripts "${common}/vdf.initd.in" octez-vdf \
+    initdScripts "${common}/vdf.initd" octez-vdf \
       "${build_dir}"
   fi
 
@@ -99,7 +99,7 @@ for specfile in "$myhome"/*spec.in; do
   if [ -f "${common}/${pg}.conf" ]; then
     echo "=> Config files"
     mkdir -p "${build_dir}/etc/octez"
-    expand_PROTOCOL "${common}/${pg}.conf" > "${build_dir}/etc/octez/${pg}.conf"
+    cp "${common}/${pg}.conf" "${build_dir}/etc/octez/${pg}.conf"
   fi
 
   # Zcash parameters must ship with the node

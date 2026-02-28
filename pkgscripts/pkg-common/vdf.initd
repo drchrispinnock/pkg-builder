@@ -32,7 +32,6 @@ user=tezos
 group=tezos
 logdir=/var/log/tezos
 rotateonstart=yes
-protocols="@PROTOCOLS@"
 
 #shellcheck disable=SC1091
 [ -r /etc/octez/node.conf ] && . /etc/octez/node.conf
@@ -55,9 +54,8 @@ initial_checks()
 rotate_logs ()
 {
 	if [ ${rotateonstart} = "yes" ]; then
-		for p in ${protocols}; do
-			[ -f "${logfile_base}${p}.log" ] && \
-				mv -f "${logfile_base}${p}.log" "${logfile_base}${p}.log.1"
+		[ -f "${logfile_base}.log" ] && \
+			mv -f "${logfile_base}.log" "${logfile_base}.log.1"
 		done
 	fi
 }
@@ -65,17 +63,11 @@ rotate_logs ()
 case "$1" in
 start)	initial_checks
 	rotate_logs
-	for p in ${protocols}; do
-		[ ! -x "${baker}-$p" ] && continue
-		su $user -c "${baker}-$p run vdf -K >> ${logfile_base}${p}.log 2>&1 & echo \$! > ${PIDFILE}-$p"
-	done
+	su $user -c "${baker} run vdf -K >> ${logfile_base}.log 2>&1 & echo \$! > ${PIDFILE}"
 	;;
 stop)
-	for p in ${protocols}; do
-		[ ! -x "${baker}-$p" ] && continue
-    kill "$(cat ${PIDFILE}-$p)"
-		rm -f ${PIDFILE}-$p
-	done
+    	kill "$(cat ${PIDFILE})"
+	rm -f ${PIDFILE}
         ;;
 restart)
         $0 stop
@@ -84,10 +76,7 @@ restart)
 reload|force-reload)
         ;;
 status)
-	for p in ${protocols}; do
-		[ ! -x "${baker}-$p" ] && continue
-        	status_of_proc -p ${PIDFILE}-$p ${baker}-$p $NAME || exit $?
-	done
+       	status_of_proc -p ${PIDFILE} ${baker} $NAME || exit $?
 	exit 0
         ;;
 *)	echo "Usage: $0 {start|stop|status|restart|reload|force-reload}" >&2
