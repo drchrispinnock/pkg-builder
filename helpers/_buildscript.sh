@@ -6,7 +6,8 @@ OCTEZ_PKGREV=1
 VERSION="" # if set, override dune output
 OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
 
-#export CI_COMMIT_TAG=octez-v21.0
+BROKENOPAM=0 # usual
+BROKENOPAM=1 # XX
 
 IGNOREOPAMDEPS=0
 
@@ -67,12 +68,15 @@ if [ "$DEBIAN" = "1" ]; then
 	sudo apt-get upgrade -y
 
 	status "OCTEZ DEPENDENCIES"
-	sudo apt-get install -y rsync git m4 build-essential patch unzip wget opam jq bc
+	[ "${BROKENOPAM}" = "0" ] && sudo apt-get install opam
+	sudo apt-get install -y rsync git m4 build-essential patch unzip wget jq bc
+	sudo apt-get install -y bubblewrap
 	sudo apt-get install -y autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev libprotobuf-dev protobuf-compiler
 	sudo apt-get install -y sqlite3 libpq-dev libsqlite3-dev
 
 
 else
+	BROKENOPAM=1
 	status "OS UPDATE (YUM)"
 	sudo dnf install -y 'dnf-command(config-manager)'
 	sudo dnf config-manager --set-enabled devel
@@ -89,15 +93,16 @@ else
         python3-tox-current-env mock sqlite3 sqlite sqlite-devel jq ; do
                 sudo dnf install -y $pkg
         done
-	  
-	# Ocaml - needed for Redhet
-	curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh > install.sh.in
-	sed -e 's/read -r BINDIR/BINDIR=""/g' -e 's/read_tty BINDIR/BINDIR=""/g' < install.sh.in > install.sh
-	bash install.sh
 
 	IGNOREOPAMDEPS=0
 fi
 
+# Opam - need for Redhat, sometimes needed elsewhere
+if [ ${BROKENOPAM} = "1" ]; then
+	curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh > install.sh.in
+	sed -e 's/read -r BINDIR/BINDIR=""/g' -e 's/read_tty BINDIR/BINDIR=""/g' < install.sh.in > install.sh
+	bash install.sh
+fi
 # Rust
 #
 status "RUST"
