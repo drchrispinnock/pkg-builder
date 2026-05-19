@@ -1,0 +1,21 @@
+# Data Directory
+# An independent mount point of /var/tezos is recommended
+#
+DATADIR=/var/tezos/.tezos-node
+LOGDIR=/var/log/tezos
+
+# Run as
+USER=tezos
+
+# To use DAL, install the DAL node package, configure and
+# use localhost.
+#
+DAL_OPTIONS="--without-dal"
+#DAL_OPTIONS="http://localhost:8732"
+
+# This must be set and is your decision
+#LQ_VOTE="pass"
+
+# Other options to pass to the baker
+#
+RUNTIME_OPTS=""
