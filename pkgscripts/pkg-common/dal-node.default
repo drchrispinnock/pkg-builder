@@ -1,0 +1,12 @@
+# Data Directory
+# An independent mount point of /var/tezos is recommended
+#
+DATADIR=/var/tezos/.tezos-dal-node
+LOGDIR=/var/log/tezos
+
+# Run as
+USER=tezos
+
+# Other options to pass the node
+#
+RUNTIME_OPTS=""
