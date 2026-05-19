@@ -7,6 +7,8 @@
 
 set -eu
 
+packages="$1"
+
 # Setup
 #
 myhome=$HOME/pkgscripts/rpm
@@ -19,15 +21,11 @@ defaults_dir="/etc/defaults"
 #shellcheck disable=SC1091
 . ${common}/utils.sh
 
-packages=""
-
-if [ -z "$1" ]; then
+if [ -z "$packages" ]; then
     for specfile in "$myhome"/*spec.in; do
         pg=$(basename "$specfile" | sed -e 's/-spec.in$//g')
         package="$packages $pg"
     done
-else
-    packages="$1"
 fi
 
 warnings
