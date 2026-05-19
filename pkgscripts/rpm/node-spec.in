@@ -20,12 +20,11 @@ The Octez Node daemons
 
 %files
 %{_bindir}/octez-*
-%{_sysconfdir}/init.d/octez-*
 %doc /usr/share/zcash-params/*
-%config /etc/octez/node.conf
+%config %{_sysconfdir}/defaults/octez-node
+%{_unitdir}/octez-node.service
 
-%post 
+%post
 getent group tezos >/dev/null 2>&1 || groupadd tezos
 getent passwd tezos >/dev/null 2>&1 || useradd -g tezos -d /var/tezos tezos
 /usr/bin/systemctl daemon-reload
-

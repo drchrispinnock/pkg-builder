@@ -24,10 +24,10 @@ fi
 if [ $SYNC = "up" ]; then
 	echo "===> Syncing to $prod21"
 	(cd $site2 && \
-		gsutil -o "GSUtil:parallel_process_count=1"  -m rsync -d -r . $prod21)
+		gcloud storage rsync -r --delete-unmatched-destination-objects . $prod21 )
 else
 	echo "===> Syncing from $prod21"
 	(cd $site2 && \
-		gsutil -o "GSUtil:parallel_process_count=1"  -m rsync -d -r $prod21 . )
+		gcloud storage rsync -r --delete-unmatched-destination-objects $prod21 . )
 fi
 

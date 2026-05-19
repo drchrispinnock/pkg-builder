@@ -5,7 +5,10 @@
 # (c) Chris Pinnock 2022-3, Supplied under a MIT license.
 # see ../pkg-common/utils.sh for more detail
 
-set -eu
+#set -eu
+DEVELOPER=1 # XXX
+
+
 
 # Setup
 #
@@ -20,7 +23,16 @@ export TIMESTAMP="${TIMESTAMP-$(date +'%Y%m%d%H%M')}"
 
 #shellcheck disable=SC1091
 . ${common}/utils.sh
-protocols=${protocols:?protocols not specified} # Not used?
+
+packages=""
+if [ -z "$1" ]; then
+    for control_file in "$myhome"/*control.in; do
+        pg=$(basename "$control_file" | sed -e 's/-control.in$//g')
+        packages="$packages $pg"
+    done
+else
+    packages="$1"
+fi
 
 warnings
 pkg_vers=$(getOctezVersion)
@@ -40,12 +52,12 @@ dpkg_arch=$DEB_BUILD_ARCH
 
 # For each control file in the directory, build a package
 #
-for control_file in "$myhome"/*control.in; do
-  pg=$(basename "$control_file" | sed -e 's/-control.in$//g')
+for pg in $packages; do
+  control_file="$myhome/${pg}-control.in"
   _pkgv=${pkg_vers}
 
   # EVM node and others don't use the parent version number
-  #  
+  #
   if [ -f "${common}/${pg}.vmeth" ]; then
 	_pkgv="$(sh ${common}/${pg}.vmeth)"
   fi
@@ -71,6 +83,8 @@ for control_file in "$myhome"/*control.in; do
   # binaries and configuration as appropriate
   #
   staging_dir="$staging_root/$dpkg_dir"
+  systemd_dir="/lib/systemd/system"
+  defaults_dir="/etc/defaults"
 
   rm -rf "${staging_dir}"
   mkdir -p "${staging_dir}/DEBIAN"
@@ -100,6 +114,8 @@ for control_file in "$myhome"/*control.in; do
     rmdir "${staging_dir}/debian"
   fi
 
+  # Manual pages XXX
+
   # Edit the control file to contain real values
   #
   sed -e "s/@ARCH@/${dpkg_arch}/g" -e "s/@VERSION@/$_pkgv/g" \
@@ -118,20 +134,21 @@ for control_file in "$myhome"/*control.in; do
     fi
   done
 
-  # init.d scripts
-  #
-  initdScripts "${common}/${pg}.initd" "${init_name}" "${staging_dir}"
-  if [ "$pg" = "baker" ]; then
-    initdScripts "${common}/vdf.initd" octez-vdf "${staging_dir}"
-  fi
-
-  # Configuration files
-  #
-  if [ -f "${common}/${pg}.conf" ]; then
-    mkdir -p "${staging_dir}/etc/octez"
-    cp "${common}/${pg}.conf" "${staging_dir}/etc/octez/${pg}.conf"
-    echo "/etc/octez/${pg}.conf" > "${staging_dir}/DEBIAN/conffiles"
-  fi
+    # Systemctl conversation
+    #
+    if [ -f "${common}/${pg}.service" ]; then
+        mkdir -p ${staging_dir}/${systemd_dir}
+        cp ${common}/${pg}.service ${staging_dir}/${systemd_dir}/octez-${pg}.service
+        #
+        if [ -f "${common}/${pg}.default" ]; then
+            mkdir -p ${staging_dir}/${defaults_dir}
+            cp ${common}/${pg}.default ${staging_dir}/${defaults_dir}/octez-${pg}
+            echo "${defaults_dir}/octez-${pg}" >> "${staging_dir}/DEBIAN/conffiles"
+        fi
+    fi
+    if [ "$pg" = "baker" ]; then
+      cp ${common}/vdf.service ${staging_dir}/${systemd_dir}/octez-vdf.service
+    fi
 
   # Zcash parameters ships with some packages
   #

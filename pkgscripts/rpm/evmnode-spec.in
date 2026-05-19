@@ -20,11 +20,10 @@ The Octez EVM node
 
 %files
 %{_bindir}/octez-*
-%{_sysconfdir}/init.d/octez-evmnode
-%config /etc/octez/evmnode.conf
+%config %{_sysconfdir}/defaults/octez-evm-node
+%{_unitdir}/octez-evm-node.service
 
 %post
 getent group tezos >/dev/null 2>&1 || groupadd tezos
 getent passwd tezos >/dev/null 2>&1 || useradd -g tezos -d /var/tezos tezos
 /usr/bin/systemctl daemon-reload
-

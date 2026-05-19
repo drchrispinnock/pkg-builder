@@ -1,0 +1,14 @@
+# Data Directory
+# An independent mount point of /var/tezos is recommended
+#
+DATADIR=/var/tezos/.tezos-node
+LOGDIR=/var/log/tezos
+
+# Run as
+USER=tezos
+
+# Other options to pass the node
+#
+RUNTIME_OPTS=""
+# On a test network you might need:
+#RUNTIME_OPTS="--synchronisation-threshold=0"

@@ -20,8 +20,8 @@ The Octez Signer
 
 %files
 %{_bindir}/octez-*
-%{_sysconfdir}/init.d/octez-signer
-%config /etc/octez/signer.conf
+%config %{_sysconfdir}/defaults/octez-signer
+%{_unitdir}/octez-signer.service
 
 %post
 getent group tzsigner >/dev/null 2>&1 || groupadd tzsigner

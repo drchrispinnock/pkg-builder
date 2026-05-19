@@ -21,8 +21,8 @@ The Octez Baker daemons
 
 %files
 %{_bindir}/octez-*
-%{_sysconfdir}/init.d/octez-*
-%config /etc/octez/baker.conf
+%config %{_sysconfdir}/defaults/octez-baker
+%{_unitdir}/octez-baker.service
 
 %post
 /usr/bin/systemctl daemon-reload

@@ -20,10 +20,10 @@ The Octez Smart Rollup daemons
 
 %files
 %{_bindir}/octez-*
-%{_sysconfdir}/init.d/octez-*
-%config /etc/octez/smartrollup.conf
+%config %{_sysconfdir}/defaults/octez-smart-rollup
+%{_unitdir}/octez-smart-rollup.service
 
-%post 
+%post
 getent group tezos >/dev/null 2>&1 || groupadd tezos
 getent passwd tezos >/dev/null 2>&1 || useradd -g tezos -d /var/tezos tezos
 /usr/bin/systemctl daemon-reload
