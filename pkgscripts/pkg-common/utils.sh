@@ -88,7 +88,7 @@ getOctezVersion() {
     echo "Cannot get version. Try eval \`opam env\`?" >&2
     exit 1
   fi
-  _vers_fix=$(echo "$_vers" | sed -e 's/Octez //' -e 's/\(.*$//' -e 's/\~//' -e 's/\+//')
+  _vers_fix=$(echo "$_vers" | sed -e 's/Octez //' -e 's/(.*$//' -e 's/(build.*$//'  -e 's/\~//' -e 's/^\+//' -e 's/^[[:blank:]]//' -e 's/[[:blank:]]$//')
   case "$_vers" in
   	*dev)
 	    # Versions must start with numbers on dpkg
