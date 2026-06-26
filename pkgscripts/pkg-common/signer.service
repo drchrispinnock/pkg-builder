@@ -18,7 +18,7 @@ TimeoutStopSec=300s
 
 ExecStart=/usr/bin/octez-signer launch http signer \
     --data-dir $DATADIR \
-    --log-output $LOGDIR/node.log \
+    --log-output $LOGDIR/signer.log \
     --address $ADDRESS --port $PORT \
     $MAGIC_BYTES $HWM_CHECK \
     $RUNTIME_OPTS
