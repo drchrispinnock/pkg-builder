@@ -122,7 +122,7 @@ initialPrep() {
     	sudo apt-get install -y rsync git m4 build-essential patch unzip wget jq bc
     	sudo apt-get install -y bubblewrap
     	sudo apt-get install -y autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev libprotobuf-dev protobuf-compiler
-    	sudo apt-get install -y sqlite3 libpq-dev libsqlite3-dev
+    	sudo apt-get install -y sqlite3 libpq-dev libsqlite3-dev libzstd-dev
 
     else
 
@@ -182,20 +182,17 @@ fixBinaryList() {
 # Deal with Zcash parameters
 #
 zcashParams() {
-  _pkgzcash=$1
-  _zcashtgt=$2
+  _zcashtgt=$1
   # Where the zcash files are
-  _zcashdir=${3:-"_opam/share/zcash-params"}
+  _zcashdir=${2:-"_opam/share/zcash-params"}
 
-  if [ -f "${_pkgzcash}" ]; then
-    zcashstuff=$(cat "${_pkgzcash}" 2> /dev/null)
-    echo "=> Zcash"
-    mkdir -p "${_zcashtgt}"
-    for shr in ${zcashstuff}; do
-      cp "${_zcashdir}/${shr}" \
-        "${_zcashtgt}"
-    done
-  fi
+  zcashstuff=$(ls "${_zcashdir}" 2> /dev/null)
+  echo "=> Zcash"
+  mkdir -p "${_zcashtgt}"
+  for shr in ${zcashstuff}; do
+      cp "${_zcashdir}/${shr}" "${_zcashtgt}"
+  done
+
 }
 
 build() {

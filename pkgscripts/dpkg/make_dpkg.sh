@@ -150,19 +150,18 @@ for pg in $packages; do
       cp ${common}/vdf.service ${staging_dir}/${systemd_dir}/octez-vdf.service
     fi
 
-  # Zcash parameters ships with some packages
+  # Zcash parameters need slightly different handling
   #
-  if [ "$pg" = "node" ]; then
-    zcashParams "${common}/${pg}-zcash" \
-      "${staging_dir}/usr/share/zcash-params"
+  if [ "$pg" = "zcash-params" ]; then
+     zcashParams "${staging_dir}/usr/share/zcash-params"
   fi
 
+# XXX
   if [ "$pg" = "dal-node" ]; then
     # call the install script to make available the
     # zcash parameters on the build host
     scripts/install_dal_trusted_setup.sh
-    zcashParams "${common}/${pg}-zcash" \
-      "${staging_dir}/usr/share/dal-trusted-setup" \
+    zcashParams "${staging_dir}/usr/share/dal-trusted-setup" \
       _opam/share/dal-trusted-setup
   fi
 

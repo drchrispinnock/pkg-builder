@@ -8,6 +8,7 @@ License:	MIT
 URL:		http://tezos.gitlab.io
 
 Source0:	@FAKESRC@
+Requires:	@DPKG@-zcash-params
 
 %prep
 %setup -q
@@ -20,7 +21,6 @@ The Octez Node daemons
 
 %files
 %{_bindir}/octez-*
-%doc /usr/share/zcash-params/*
 %config %{_sysconfdir}/defaults/octez-node
 %{_unitdir}/octez-node.service
 
