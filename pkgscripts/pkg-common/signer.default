@@ -1,48 +1,27 @@
 # Data Directory
 
+# The Octez Signer systemctl scripts are setup for serving over HTTP only
+# If you want to do something different, you'll need to set your own one up.
 #
 DATADIR=/var/tezos/.tezos-signer
 LOGDIR=/var/log/tezos
 
 # Run as
 USER=tezos
-
-# Can be socket, local, http or https
-TYPE=http
 PORT=6732
 
 # To run on the network use 0.0.0.0
 ADDRESS=127.0.0.1
 #ADDRESS=0.0.0.0
 
-# For type=https (irrelevant for other methods)
-#
-HTTPSDIR=/etc/octez-certs
-HTTPS_CERT=${httpsdir}/certificate
-HTTPS_KEY=${httpsdir}/key
-
-# For Local you can specify the Local UNIX socket file
-#
-SOCKET_FILE=/var/tzsigner/sock
-
-# Authentication key. If set to yes, you will need to use
-# "octez-signer add authorized key"
-AUTH=no
-
 # HWM restriction check (double bake check)
 #
-HWM_CHECK="no"
+HWM_CHECK=""
+#HWM_CHECK="-W"
 
 # Restrict the signer to the following types - the default
 # is to allow all types. This may not be what you want for your
-# production system.
-#
-MAGIC_BYTES=""
-
-# For Baking and Attesting (Endorsing) you might want
-#MAGIC_BYTES="0x11,0x12,0x13"
-#HWM_CHECK=yes
-
+# production system. Prepend with -M
 # Magic bytes:
 #
 # Legacy block 		0x01
@@ -53,21 +32,12 @@ MAGIC_BYTES=""
 # Block 	    	0x11
 # Pre-attest'n 	    0x12
 # Attestation	    0x13
+#
+MAGIC_BYTES=""
 
-# Authentication key. If set, you will need to use
-# "octez-signer add authorized key"
-AUTH_KEY=""
+# For Baking and Attesting (Endorsing) you might want
+#MAGIC_BYTES="-M 0x11,0x12,0x13"
+#HWM_CHECK="-W"
 
-# Yours
-OTHER_RUNTIME_OPTS=""
-
-case $TYPE in
-
-
-if [ -n "${MAGIC_BYTES}" ]; then
-    RUNTIME_OPTS="$RUNTIME_OPTS -M ${MAGIC_BYTES}"
-fi
-
-if [ "${HWM_CHECK}" = "yes" ]; then
-    RUNTIME_OPTS="$RUNTIME_OPTS -W"
-fi
+# Your options
+RUNTIME_OPTS=""

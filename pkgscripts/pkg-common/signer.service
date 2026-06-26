@@ -1,10 +1,12 @@
 [Unit]
-Description=Octez-node
+Description=octez-signer
 Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="DATADIR=/var/tezos/.tezos-signer USER=tezos LOGDIR=/var/log/tezos"
+Environment="DATADIR=/var/tezos/.tezos-signer"
+Environment="USER=tezos LOGDIR=/var/log/tezos"
+Environment="ADDRESS=127.0.0.1 PORT=6732"
 EnvironmentFile=-/etc/default/octez-signer
 User=$USER
 WorkingDirectory=~
@@ -14,7 +16,12 @@ KillMode=control-group
 TimeoutStartSec=30s
 TimeoutStopSec=300s
 
-ExecStart=/usr/bin/octez-signer run --data-dir $DATADIR --log-output $LOGDIR/node.log $RUNTIME_OPTS $OTHER_RUNTIME_OPTS
+ExecStart=/usr/bin/octez-signer launch http signer \
+    --data-dir $DATADIR \
+    --log-output $LOGDIR/node.log \
+    --address $ADDRESS --port $PORT \
+    $MAGIC_BYTES $HWM_CHECK \
+    $RUNTIME_OPTS
 Slice=octez.slice
 
 [Install]
