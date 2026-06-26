@@ -14,7 +14,7 @@ PORT=6732
 ADDRESS=127.0.0.1
 #ADDRESS=0.0.0.0
 
-# HWM restriction check (double bake check)
+# HWM restriction check (double bake protection)
 #
 HWM_CHECK=""
 #HWM_CHECK="-W"
