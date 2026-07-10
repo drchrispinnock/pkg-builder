@@ -97,7 +97,7 @@ CLIOPTS="--revision $OCTEZ_PKGREV --pkgname $OCTEZ_PKGNAME"
 
 build $BRANCH
 status "PACKAGES"
-$TOOL --packages "${REGULARPKG}" $CLIOPTS
+$TOOL --packages \"${REGULARPKG}\" $CLIOPTS
 [ "$?" != "0" ] && fail "PACKAGES"
 mv octez*$EXT $STAGING
 
