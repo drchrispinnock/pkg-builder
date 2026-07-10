@@ -4,9 +4,10 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="USER=tezos LOGDIR=/var/log/tezos"
+Environment="LOGDIR=/var/log/tezos"
 EnvironmentFile=-/etc/default/octez-accuser
-User=$USER
+User=tezos
+Group=tezos
 WorkingDirectory=~
 Restart=on-failure
 RestartSec=10s
