@@ -20,12 +20,15 @@ pkg_name="octez"
 pkg_realname="octez"
 systemd_dir="/lib/systemd/system"
 defaults_dir="/etc/default"
+force=0
 
 eval `opam env`
 [ "$?" != "0" ] && echo "Cannot eval opam environment" >&2 && exit 1
 
 while [ $# -gt 0 ]; do
     case $1 in
+        --force)
+            force=1; ;;
         --pkgname)
             pkg_name="$2"; shift; ;;
         --package|--packages)
@@ -98,10 +101,11 @@ for pg in $packages; do
 
   binaries=$(fixBinaryList "${common}/${pg}-binaries")
 
-  if [ -f "$dpkg_fullname" ]; then
+  if [ -f "$dpkg_fullname" ] && [ "$force" = 0 ]; then
     echo "built already - skipping"
     continue
   fi
+  rm -f "$dpkg_fullname"
 
   # Populate the staging directory with control scripts
   # binaries and configuration as appropriate
