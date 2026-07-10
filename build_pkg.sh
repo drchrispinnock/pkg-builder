@@ -2,45 +2,76 @@
 
 DEVELOPER=1 # XXX
 SYNCPKG=1
+PKGNAME=octez-ng
+#PKGNAME=octez
 
-# $0 [branch [target1 [target2 [ ... ]]]]
-
-[ -z "$1" ] && echo "Usage: $0 branch [targets [revision]]" && exit 1
-
-# Project - must be setup
-#
-[ -f environment ] && . environment
-
-[ -z "${PROJECT}" ] && echo "PROJECT must be set" && exit 1
-[ -z "${SERVICEACCT}" ] && echo "SERVICEACCT must be set" && exit 1
-[ -z "${BUCKET}" ] && echo "BUCKET must be set" && exit 1
-
-X86=${X86:-e2-standard-8}
-X86ZONE=${X86ZONE:-europe-west6-a}
-ARM64=${ARM64:-c4a-standard-8}
-#ARMZONE=${ARMZONE:-us-central1-b}
-ARMZONE=${ARMZONE:-europe-west6-b}
-SIZE=${SIZE:-200}
-
-FAIL=0
-
-# targets
+# Default targets
 #
 TARGETS="debian-13"
 [ -f "platforms" ] && TARGETS=$(cat platforms)
 
+# Default branch in latest-release
+#
 BRANCH="latest-release"
+
+# Status sleep - poll every n minutes
+#
+
+STATUSSLEEP=180 # 3 minutes
+
+# Pull in environment
+#
+[ -f "environment" ] && . ./environment
+
+# The package revision
+#
 REVISION=1
-[ ! -z "$1" ] && BRANCH=$1
-[ ! -z "$2" ] && TARGETS="$2"
-[ ! -z "$3" ] && REVISION="$3"
 
-EVMBRANCH="${BRANCH}"
-SRNBRANCH="${BRANCH}"
+Usage() {
+    _exit="$1"
+    echo "" >&2
+    exit $_exit
+}
 
-if [ "${BRANCH}" = "latest-release" ] && [ -f latest-releases.env ]; then
+while [ $# -gt 0 ]; do
+    case $1 in
+        --targets|-T) TARGETS="$2"; shift; ;;
+        --branch|-B) BRANCH="$2"; shift; ;;
+        --srn-branch) SRNBRANCH="$2"; shift; ;;
+        --evm-branch) EVMBRANCH="$2"; shift; ;;
+    #    --override-version|-O) OVERRIDE="$2"; shift; ;;
+        --revision|-R) REVISION="$2"; shift; ;;
+        --project|-P) PROJECT="$2"; shift; ;;
+        --service-account|-S) SERVICEACCT="$2"; shift; ;;
+        --bucket|-b) BUCKET="$2"; shift; ;;
+        --sleep) STATUSSLEEP="$2"; shift; ;;
+        --help|-h) Usage 0; ;;
+        -*) Usage 1; ;;
+    esac
+    shift
+done
+
+# Nous the EVM and SRN branch
+if [ "$BRANCH" = "latest-release" ] && [ -z "$EVMBRANCH" ] && [ -z "$SRNBRANCH" ] && [ -f latest-releases.env ]; then
     . ./latest-releases.env
 fi
+
+[ -z "$EVMBRANCH" ] && EVMBRANCH=${BRANCH}
+[ -z "$SRNBRANCH" ] && SRNBRANCH=${BRANCH}
+
+# Project - must be setup
+#
+[ -z "${PROJECT}" ] && echo "GCP PROJECT must be set" && exit 1
+[ -z "${SERVICEACCT}" ] && echo "GCP SERVICEACCT must be set" && exit 1
+[ -z "${BUCKET}" ] && echo "GCP BUCKET must be set" && exit 1
+
+X86=${X86:-e2-standard-8}
+X86ZONE=${X86ZONE:-europe-west6-a}
+ARM64=${ARM64:-c4a-standard-8}
+ARMZONE=${ARMZONE:-europe-west6-b}
+SIZE=${SIZE:-200}
+
+FAIL=0
 
 TAG=$$
 CLEANUPSH=cleanup.$TAG.sh
@@ -61,10 +92,6 @@ echo "Log:      ${LOCALLOG}"
 echo "CTRL+C to break. Sleeping 5 seconds..."
 sleep 5
 
-STATUSSLEEP=180 # 3 minutes
-
-
-
 seed=`date +%Y%m%d%H%M%S`
 
 log() {
@@ -74,7 +101,6 @@ log() {
 
 echo "===> Building from branch: ${BRANCH}"
 
-PKGNAME=octez-unoff
 VMLIST=""
 
 # Setup VMs and despatch
