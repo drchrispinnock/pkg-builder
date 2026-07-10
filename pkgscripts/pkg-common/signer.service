@@ -5,10 +5,11 @@ After=network.target
 
 [Service]
 Environment="DATADIR=/var/tezos/.tezos-signer"
-Environment="USER=tezos LOGDIR=/var/log/tezos"
+Environment="LOGDIR=/var/log/tezos"
 Environment="ADDRESS=127.0.0.1 PORT=6732"
 EnvironmentFile=-/etc/default/octez-signer
-User=$USER
+User=tezos
+Group=tezos
 WorkingDirectory=~
 Restart=on-failure
 RestartSec=10s

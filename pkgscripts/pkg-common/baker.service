@@ -4,9 +4,10 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="LQ_VOTE=break DATADIR=/var/tezos/.tezos-node DAL_OPTIONS="--without-dal" USER=tezos LOGDIR=/var/log/tezos"
+Environment="LQ_VOTE=break DATADIR=/var/tezos/.tezos-node DAL_OPTIONS="--without-dal" LOGDIR=/var/log/tezos"
 EnvironmentFile=-/etc/default/octez-baker
-User=$USER
+User=tezos
+Group=tezos
 WorkingDirectory=~
 Restart=on-failure
 RestartSec=10s

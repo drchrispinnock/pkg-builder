@@ -4,8 +4,6 @@
 DATADIR=/var/tezos/.tezos-signer
 LOGDIR=/var/log/tezos
 
-# Run as
-USER=tezos
 PORT=6732
 
 # To run on the network use 0.0.0.0

@@ -4,9 +4,10 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="DATADIR=/var/tezos/.tezos-smart-rollup USER=tezos LOGDIR=/var/log/tezos"
+Environment="DATADIR=/var/tezos/.tezos-smart-rollup LOGDIR=/var/log/tezos"
 EnvironmentFile=-/etc/default/octez-smart-rollup
-User=$USER
+User=tezos
+Group=tezos
 WorkingDirectory=~
 Restart=on-failure
 RestartSec=10s
