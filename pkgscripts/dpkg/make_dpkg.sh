@@ -44,6 +44,8 @@ while [ $# -gt 0 ]; do
         --myroot)
             myroot="$2"; shift; ;;
         -*) echo "Unknown option $1" && exit 1 ;;
+        *) echo "What is this? $1" && exit 1 ;;
+            ;;
     esac
     shift
 done
