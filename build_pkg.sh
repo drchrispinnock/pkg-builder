@@ -231,10 +231,14 @@ for NAME in ${VMLIST}; do
 			--zone=${ZONE} \
 			--project=${PROJECT} >> ${LOCALLOG} 2>&1
 
+        DEVMODE=""
+        [ "$DEVELOPER" = "1" ] && DEVMODE="--devmode"
 		gcloud -q compute ssh ${NAME} --zone=${ZONE} \
 			--project=${PROJECT} \
-			--command="EVMBRANCH=${EVMBRANCH} SRNBRANCH=${SRNBRANCH} BRANCH=${BRANCH} \
-			    ./buildscript.sh ${TARGETDIR} ${PKGNAME} ${REVISION} ${DEVELOPER}> buildlog.log 2>&1 &" \
+			--command="./buildscript.sh --targetdir ${TARGETDIR} \
+			        --branch ${BRANCH} \
+					--evm-branch ${EVMBRANCH} --srn-branch ${SRNBRANCH} \
+					--pkgname ${PKGNAME} --revision ${REVISION} ${DEVMODE}> buildlog.log 2>&1 &" \
 			>> ${LOCALLOG} 2>&1
 		echo "gcloud -q compute instances delete ${NAME} \
 	        --zone=${ZONE} --delete-disks=all --project=${PROJECT}" >> ${CLEANUPSH}

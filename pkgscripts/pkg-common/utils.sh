@@ -26,28 +26,7 @@
 # baker-binaries.in        - the list of binaries to include
 # baker.initd.in           - System V init script (optional)
 #
-# You can set OCTEZ_PKGMAINTAINER and OCTEZ_PKGNAME in the environment
-# to change from the defaults.
 #
-
-# Variables
-#
-# Package maintainer
-OCTEZ_PKGMAINTAINER=${OCTEZ_PKGMAINTAINER:-chris@chrispinnock.com}
-#
-# Package name used in dpkg or rpm name
-OCTEZ_PKGNAME=${OCTEZ_PKGNAME:-octez}
-#
-# Real name used in scripts (usually octez)
-OCTEZ_REALNAME=${OCTEZ_REALNAME:-octez}
-#
-# Revision
-OCTEZ_PKGREV=${OCTEZ_PKGREV:-1}
-
-export OCTEZ_PKGMAINTAINER
-export OCTEZ_PKGNAME
-export OCTEZ_REALNAME
-export OCTEZ_PKGREV
 
 RUSTVERSION=${RUSTVERSION:-1.88.0}
 
@@ -62,6 +41,10 @@ warnings() {
     echo "WARNING: BLST_PORTABLE is not set to yes in your environment"
     echo "If the binaries were not made with BLST_PORTABLE=yes then they"
     echo "might not run on some platforms."
+  fi
+  if [ -z "$OCTEZ_PKGMAINTAINER" ]; then
+    echo "WARNING: OCTEZ_PKGMAINTAINER is not set"
+    exit 1
   fi
 }
 

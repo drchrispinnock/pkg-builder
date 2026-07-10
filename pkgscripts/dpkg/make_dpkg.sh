@@ -2,40 +2,62 @@
 
 # Debian/Ubuntu package build for Octez
 #
-# (c) Chris Pinnock 2022-3, Supplied under a MIT license.
+# (c) Chris Pinnock 2022, 2023, 2026, Supplied under a MIT license.
+# (c) Nomadic Labs 2023-2025
 # see ../pkg-common/utils.sh for more detail
 
-#set -eu
-DEVELOPER=1 # XXX
+#set -eu XXX
 
-
-
-# Setup
+# Defaults
 #
-#myhome=${1:-scripts/dpkg}
-#common=scripts/pkg-common
+packages=""
+myhome=../pkg-builder/pkgscripts/dpkg
+common=../pkg-builder/pkgscripts/pkg-common
+dieonwarn=${dieonwarn:-1}
+pkg_vers=""
+pkg_rev="1"
+pkg_name="octez"
+pkg_realname="octez"
 
-myhome=$HOME/pkgscripts/dpkg
-common=$HOME/pkgscripts/pkg-common
-dieonwarn=${dieonwarn:-0}
+eval `opam env`
+[ "$?" != "0" ] && echo "Cannot eval opam environment" >&2 && exit 1
+
+while [ $# -gt 0 ]; do
+    case $1 in
+        --pkgname)
+            pkg_name="$2"; shift; ;;
+        --package|packages)
+            packages="$2"; shift; ;;
+        --dieonwarn)
+            dieonwarn="1"; ;;
+        --no-dieonwarn)
+            dieonwarn="0"; ;;
+        --override-version)
+            pkg_vers="$2"; shift; ;;
+        --revision)
+            pkg_rev="$2"; shift; ;;
+        -*) Usage 1; ;;
+    esac
+    shift
+done
 
 export TIMESTAMP="${TIMESTAMP-$(date +'%Y%m%d%H%M')}"
 
 #shellcheck disable=SC1091
 . ${common}/utils.sh
 
-packages=""
-if [ -z "$1" ]; then
+if [ -z "$packages" ]; then
     for control_file in "$myhome"/*control.in; do
         pg=$(basename "$control_file" | sed -e 's/-control.in$//g')
         packages="$packages $pg"
     done
-else
-    packages="$1"
 fi
 
 warnings
-pkg_vers=$(getOctezVersion)
+if [ -z "$pkg_vers" ]; then
+    pkg_vers=$(getOctezVersion)
+    [ "$?" != "0" ] && exit 1
+fi
 staging_root=_dpkgstage
 
 # Checking prerequisites
@@ -62,14 +84,14 @@ for pg in $packages; do
 	_pkgv="$(sh ${common}/${pg}.vmeth)"
   fi
 
-  echo "===> Building package $pg v$_pkgv rev $OCTEZ_PKGREV"
+  echo "===> Building package $pg v$_pkgv rev $pkg_rev"
 
   # Derivative variables
   #
-  dpkg_name=${OCTEZ_PKGNAME}-${pg}
-  init_name=${OCTEZ_REALNAME}-${pg}
+  dpkg_name=${pkg_name}-${pg}
+  init_name=${pkg_realname}-${pg}
   dpkg_vers=$(echo "${_pkgv}" | tr '~' '-')
-  dpkg_dir="${dpkg_name}_${dpkg_vers}-${OCTEZ_PKGREV}_${dpkg_arch}"
+  dpkg_dir="${dpkg_name}_${dpkg_vers}-${pkg_rev}_${dpkg_arch}"
   dpkg_fullname="${dpkg_dir}.deb"
 
   binaries=$(fixBinaryList "${common}/${pg}-binaries")
@@ -121,7 +143,7 @@ for pg in $packages; do
   sed -e "s/@ARCH@/${dpkg_arch}/g" -e "s/@VERSION@/$_pkgv/g" \
     -e "s/@MAINT@/${OCTEZ_PKGMAINTAINER}/g" \
     -e "s/@PKG@/${dpkg_name}/g" \
-    -e "s/@DPKG@/${OCTEZ_PKGNAME}/g" \
+    -e "s/@DPKG@/${pkg_name}/g" \
     -e "s/@DEPENDS@/${deps}/g" < "$control_file" \
     > "${staging_dir}/DEBIAN/control"
 

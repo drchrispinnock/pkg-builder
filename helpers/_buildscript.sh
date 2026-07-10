@@ -1,12 +1,39 @@
 #!/bin/bash
 #
+#
+#
+#
 TARGET=""
 OCTEZ_PKGREV=1
-VERSION="" # if set, override dune output
 OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
-
 IGNOREOPAMDEPS=0
 DEVELOPER=0
+
+#EVMBRANCH=${EVMBRANCH} SRNBRANCH=${SRNBRANCH} BRANCH=${BRANCH} \
+#			    ./buildscript.sh ${TARGETDIR} ${PKGNAME} ${REVISION} ${DEVELOPER}
+
+while [ $# -gt 0 ]; do
+    case $1 in
+        --branch|-B)
+            BRANCH="$2"; shift; ;;
+        --devmode|-D)
+            DEVELOPER=1 ;;
+        --srn-branch)
+            SRNBRANCH="$2"; shift; ;;
+        --evm-branch)
+            EVMBRANCH="$2"; shift; ;;
+        --override-version|-O) OVERRIDEVERS="$2"; shift; ;;
+        --revision|-R)
+            REVISION="$2"; shift; ;;
+        --pkgname)
+            PKGNAME="$2"; shift; ;;
+        --targetdir)
+            TARGET="$2"; shift; ;;
+        -*) echo "WARN: unknown option" >&2; ;;
+    esac
+    shift
+done
+
 
 STAGING=$HOME/staging
 mkdir -p $STAGING
@@ -27,16 +54,6 @@ fail () {
 
 . pkgscripts/pkg-common/utils.sh
 
-[ -z "$1" ] && fail "GCS TARGET NOT SET"
-TARGET="$1"
-
-[ ! -z "$2" ] && OCTEZ_PKGNAME="$2"
-[ ! -z "$3" ] && OCTEZ_PKGREV="$3"
-[ ! -z "$4" ] && DEVELOPER="$4"
-
-[ "$DEVELOPER" = "1" ] && TARGET="$TARGET/_sysctldev"
-
-export OCTEZ_PKGNAME OCTEZ_PKGREV
 export OPAMYES="true"
 
 [ -z "$BRANCH" ] && BRANCH=master
@@ -74,19 +91,18 @@ REGULARPKG="client node baker dal-node teztale-archiver"
 [ "$EVMBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG evm-node"
 [ "$SRNBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG smart-rollup"
 
-# XXX Hack
-REGULARPKG="node"
+CLIOPTS="--revision $OCTEZ_PKGREV --pkgname $OCTEZ_PKGNAME"
 
 build $BRANCH
 status "PACKAGES"
-$TOOL "${REGULARPKG}"
+$TOOL --packages "${REGULARPKG}" $CLIOPTS
 [ "$?" != "0" ] && fail "PACKAGES"
 mv octez*$EXT $STAGING
 
 if [ "$EVMBRANCH" != "$BRANCH" ]; then
     build $EVMBRANCH
     status "EVM PACKAGES"
-    $TOOL "evm-node"
+    $TOOL --packages "evm-node" $CLIOPTS
     [ "$?" != "0" ] && softfail "EVM PACKAGES"
     mv octez-evm-node*$EXT $STAGING
 fi
@@ -94,7 +110,7 @@ fi
 if [ "$SRNBRANCH" != "$BRANCH" ]; then
     build $SRNBRANCH
     status "SRN PACKAGES"
-    $TOOL "smart-rollup"
+    $TOOL --packages "smart-rollup" --$CLIOPTS
     [ "$?" != "0" ] && softfail "SRN PACKAGES"
     mv octez-smart-rollup*$EXT $STAGING
 fi
