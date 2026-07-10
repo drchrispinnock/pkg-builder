@@ -12,5 +12,16 @@ getent passwd ${user} >/dev/null 2>&1 || adduser --system	\
 						--disabled-password \
 						--ingroup ${group} ${user}
 
+if [ ! -d "${homedir}" ]; then
+	mkdir -p "${homedir}"
+	chown tezos:tezos "${homedir}"
+fi
+
+
+if [ ! -d "${logdir}" ]; then
+	mkdir -p "${logdir}"
+	chown tezos:tezos "${logdir}"
+fi
+
 # Reload to get new init scripts
 systemctl daemon-reload || exit 0
