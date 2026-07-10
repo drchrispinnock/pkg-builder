@@ -13,7 +13,13 @@ getent passwd ${user} >/dev/null 2>&1 || adduser --system	\
 						--disabled-password \
 						--ingroup ${group} ${user}
 
-if [ -d "${logdir}" ]; then
+if [ ! -d "${homedir}" ]; then
+	mkdir -p "${homedir}"
+	chown tezos:tezos "${homedir}"
+fi
+
+
+if [ ! -d "${logdir}" ]; then
 	mkdir -p "${logdir}"
 	chown tezos:tezos "${logdir}"
 fi
