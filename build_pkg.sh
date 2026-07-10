@@ -224,8 +224,13 @@ for NAME in ${VMLIST}; do
     TARGETDIR=${BUCKET}/${OS}
 	[ "$DEVELOPER" = "1" ] && TARGETDIR=${BUCKET}/testing/${OS}
 	    NEWVMLIST="${NEWVMLIST} ${NAME}"
+		glcoud -q compute ssh $NAME \
+			--command "mkdir -p pkg-builder" \
+			--zone=${ZONE} \
+			--project=${PROJECT} >> ${LOCALLOG} 2>&1
+
 		gcloud -q compute scp --recurse pkgscripts \
-			${NAME}:pkgscripts \
+			${NAME}:pkg-builder/pkgscripts \
 			--zone=${ZONE} \
 			--project=${PROJECT} >> ${LOCALLOG} 2>&1
 

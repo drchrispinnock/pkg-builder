@@ -3,6 +3,7 @@
 user=tezos
 group=tezos
 homedir=/var/tezos
+logdir=/var/log/tezos
 
 # Ensure the tezos user is created
 getent group ${group} >/dev/null 2>&1 || addgroup --system ${group}

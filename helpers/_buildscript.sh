@@ -9,6 +9,8 @@ OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
 IGNOREOPAMDEPS=0
 DEVELOPER=0
 
+ME=$HOME/pkg-builder/pkgscripts
+
 #EVMBRANCH=${EVMBRANCH} SRNBRANCH=${SRNBRANCH} BRANCH=${BRANCH} \
 #			    ./buildscript.sh ${TARGETDIR} ${PKGNAME} ${REVISION} ${DEVELOPER}
 
@@ -52,7 +54,7 @@ fail () {
 	exit 1
 }
 
-. pkgscripts/pkg-common/utils.sh
+. $ME/pkg-common/utils.sh
 
 export OPAMYES="true"
 
@@ -75,12 +77,12 @@ esac
 # We assume everything else uses RPM and YUM
 #
 DEBIAN=0
-TOOL="$HOME/pkgscripts/rpm/make_rpm.sh"
+TOOL="$ME/rpm/make_rpm.sh"
 EXT=".rpm"
 which apt >/dev/null 2>&1
 if [ "$?" = "0" ]; then
 	DEBIAN=1
-	TOOL="$HOME/pkgscripts/dpkg/make_dpkg.sh"
+	TOOL="$ME/dpkg/make_dpkg.sh"
 	EXT=".deb"
 fi
 
