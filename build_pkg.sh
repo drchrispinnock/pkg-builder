@@ -1,12 +1,19 @@
 #!/bin/bash
 
+# Check for Google Cloud tools
+#
+which gcloud >/dev/null 2>&1
+if [ "$?" != "0" ]; then
+    echo "Please install gcloud and initiate a login session" >&2
+    exit 1
+fi
 
 # Defaults
 #
-DEVELOPER=1 # XXX
-#DEVELOPER=0
+DEVELOPER=0
 
 # Sync packages
+#
 SYNCPKG=1
 PKGNAME=octez-ng # XXX
 #PKGNAME=octez
@@ -22,7 +29,6 @@ BRANCH="latest-release"
 
 # Status sleep - poll every n minutes
 #
-
 STATUSSLEEP=180 # 3 minutes
 
 # Pull in environment
@@ -35,15 +41,26 @@ REVISION=1
 
 Usage() {
     _exit="$1"
-    echo "" >&2
+    echo "\
+Usage: build_pkg.sh [--branch GitBranch]\
+                    [--srn-branch Branch for Smart Rollup Node]\
+                    [--evm-branch Branch for EVM Node]\
+                    [--targets \"debian-13 ...\"]\
+                    [--revision package revision]\
+                    [--project GCP project]\
+                    [--service-account GCP service account]\
+                    [--bucket GCP storage bucket]\
+                    [--(no)-sync] whether to sync the packages to the bucket\
+                    [--sleep seconds] interval between polls\
+                    [--devmode] push a developer variable through the process" >&2
     exit $_exit
 }
 
 while [ $# -gt 0 ]; do
     case $1 in
-        --targets|-T) TARGETS="$2"; shift; ;;
+        --targets|--target|-T) TARGETS="$2"; shift; ;;
         --branch|-B) BRANCH="$2"; shift; ;;
-        --devmode|-D) DEVELOPER=1; shift; ;;
+        --devmode|-D) DEVELOPER=1 ;;
         --srn-branch) SRNBRANCH="$2"; shift; ;;
         --evm-branch) EVMBRANCH="$2"; shift; ;;
     #    --override-version|-O) OVERRIDE="$2"; shift; ;;
@@ -53,8 +70,8 @@ while [ $# -gt 0 ]; do
         --service-account|-S) SERVICEACCT="$2"; shift; ;;
         --bucket|-b) BUCKET="$2"; shift; ;;
         --sleep) STATUSSLEEP="$2"; shift; ;;
-        --sync|--sync-packages) SYNCPKG=1; shift; ;;
-        --no-sync|--no-sync-packages) SYNCPKG=0; shift; ;;
+        --sync|--sync-packages) SYNCPKG=1; ;;
+        --no-sync|--no-sync-packages) SYNCPKG=0; ;;
         --help|-h) Usage 0; ;;
         -*) Usage 1; ;;
     esac

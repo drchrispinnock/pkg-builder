@@ -74,6 +74,9 @@ REGULARPKG="client node baker dal-node teztale-archiver"
 [ "$EVMBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG evm-node"
 [ "$SRNBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG smart-rollup"
 
+# XXX Hack
+REGULARPKG="node"
+
 build $BRANCH
 status "PACKAGES"
 $TOOL "${REGULARPKG}"
