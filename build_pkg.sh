@@ -11,6 +11,7 @@ fi
 # Defaults
 #
 DEVELOPER=0
+GPGKEY=""
 
 # Sync packages
 #
@@ -58,20 +59,35 @@ Usage: build_pkg.sh [--branch GitBranch]\
 
 while [ $# -gt 0 ]; do
     case $1 in
-        --targets|--target|-T) TARGETS="$2"; shift; ;;
-        --branch|-B) BRANCH="$2"; shift; ;;
-        --devmode|-D) DEVELOPER=1 ;;
-        --srn-branch) SRNBRANCH="$2"; shift; ;;
-        --evm-branch) EVMBRANCH="$2"; shift; ;;
-    #    --override-version|-O) OVERRIDE="$2"; shift; ;;
-        --revision|-R) REVISION="$2"; shift; ;;
-        --project|-P) PROJECT="$2"; shift; ;;
-        --pkgname) PKGNAME="$2"; shift; ;;
-        --service-account|-S) SERVICEACCT="$2"; shift; ;;
-        --bucket|-b) BUCKET="$2"; shift; ;;
-        --sleep) STATUSSLEEP="$2"; shift; ;;
-        --sync|--sync-packages) SYNCPKG=1; ;;
-        --no-sync|--no-sync-packages) SYNCPKG=0; ;;
+        --targets|--target|-T)
+            TARGETS="$2"; shift; ;;
+        --branch|-B)
+            BRANCH="$2"; shift; ;;
+        --devmode|-D)
+            DEVELOPER=1 ;;
+        --srn-branch)
+            SRNBRANCH="$2"; shift; ;;
+        --evm-branch)
+            EVMBRANCH="$2"; shift; ;;
+        --override-version|-O) OVERRIDEVERS="$2"; shift; ;;
+        --revision|-R)
+            REVISION="$2"; shift; ;;
+        --project|-P)
+            PROJECT="$2"; shift; ;;
+        --pkgname)
+            PKGNAME="$2"; shift; ;;
+        --service-account|-S)
+            SERVICEACCT="$2"; shift; ;;
+        --bucket|-b)
+            BUCKET="$2"; shift; ;;
+        --sleep)
+            STATUSSLEEP="$2"; shift; ;;
+        --sync|--sync-packages)
+            SYNCPKG=1; ;;
+        --no-sync|--no-sync-packages)
+            SYNCPKG=0; ;;
+        --gpg-key|-g)
+            GPGKEY="$2"; shift ;;
         --help|-h) Usage 0; ;;
         -*) Usage 1; ;;
     esac
@@ -267,10 +283,11 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 			fi
 			echo "FINISHED"
 
-		else if [[ "$state" =~ "FAILED:".* ]]; then
-			echo "$state"
-			FAIL=1
-			FAILVMLIST="${FAILVMLIST} ${NAME}"
+		else
+		    if [[ "$state" =~ "FAILED:".* ]]; then
+				echo "$state"
+				FAIL=1
+				FAILVMLIST="${FAILVMLIST} ${NAME}"
 		    else
 				echo "$state"
 				NEWVMLIST="${NEWVMLIST} ${NAME}"
