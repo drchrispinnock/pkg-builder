@@ -11,13 +11,15 @@
 # Defaults
 #
 packages=""
-myhome=../pkg-builder/pkgscripts/dpkg
-common=../pkg-builder/pkgscripts/pkg-common
+myroot=../pkg-builder/pkgscripts
+
 dieonwarn=${dieonwarn:-1}
 pkg_vers=""
 pkg_rev="1"
 pkg_name="octez"
 pkg_realname="octez"
+systemd_dir="/lib/systemd/system"
+defaults_dir="/etc/default"
 
 eval `opam env`
 [ "$?" != "0" ] && echo "Cannot eval opam environment" >&2 && exit 1
@@ -36,10 +38,15 @@ while [ $# -gt 0 ]; do
             pkg_vers="$2"; shift; ;;
         --revision)
             pkg_rev="$2"; shift; ;;
-        -*) Usage 1; ;;
+        --myroot)
+            myroot="$2"; shift; ;;
+        -*) echo "Unknown option $1" && exit 1 ;;
     esac
     shift
 done
+
+myhome=${myroot}/dpkg
+common=${myroot}/pkg-common
 
 export TIMESTAMP="${TIMESTAMP-$(date +'%Y%m%d%H%M')}"
 
@@ -105,8 +112,7 @@ for pg in $packages; do
   # binaries and configuration as appropriate
   #
   staging_dir="$staging_root/$dpkg_dir"
-  systemd_dir="/lib/systemd/system"
-  defaults_dir="/etc/defaults"
+
 
   rm -rf "${staging_dir}"
   mkdir -p "${staging_dir}/DEBIAN"

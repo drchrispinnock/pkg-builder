@@ -40,20 +40,11 @@ STATUSSLEEP=180 # 3 minutes
 #
 REVISION=1
 
+usagestring="Usage: build_pkg.sh [--branch GitBranch]                                                            [--srn-branch Branch for Smart Rollup Node]                                     [--evm-branch Branch for EVM Node]                                              [--targets \"debian-13 ...\"]                                                     [--revision package revision]                                                   [--project GCP project]                                                         [--service-account GCP service account]                                         [--bucket GCP storage bucket]                                                   [--(no)-sync] whether to sync the packages to the bucket                        [--sleep seconds] interval between polls                                        [--devmode] push a developer variable through the process"
+
 Usage() {
     _exit="$1"
-    echo "\
-Usage: build_pkg.sh [--branch GitBranch]\
-                    [--srn-branch Branch for Smart Rollup Node]\
-                    [--evm-branch Branch for EVM Node]\
-                    [--targets \"debian-13 ...\"]\
-                    [--revision package revision]\
-                    [--project GCP project]\
-                    [--service-account GCP service account]\
-                    [--bucket GCP storage bucket]\
-                    [--(no)-sync] whether to sync the packages to the bucket\
-                    [--sleep seconds] interval between polls\
-                    [--devmode] push a developer variable through the process" >&2
+    echo "$usagestring" >&2
     exit $_exit
 }
 
