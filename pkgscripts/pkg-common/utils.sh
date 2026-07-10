@@ -53,25 +53,38 @@ warnings() {
 
 getOctezVersion() {
 
-  BR=$(git branch)
-  COMMIT_SHORT_SHA=$(git rev-parse --short HEAD)
+    _pkgcommon=$1
+    _pkgname=$2
 
-  if ! _vers=$(dune exec octez-version 2>/dev/null); then
-    echo "Cannot get version. Try eval \`opam env\`?" >&2
-    exit 1
-  fi
-  _vers_fix=$(echo "$_vers" | sed -e 's/Octez //' -e 's/(.*$//' -e 's/(build.*$//'  -e 's/\~//' -e 's/^\+//' -e 's/^[[:blank:]]//' -e 's/[[:blank:]]$//')
-  case "$_vers" in
-  	*dev)
-	    # Versions must start with numbers on dpkg
-	    RET="99$COMMIT_SHORT_SHA"
-	    ;;
-	*)
-	    RET=$_vers_fix
-	    ;;
-  esac
+    if [ -f "${_pkgcommon}/${_pkgname}.version" ]; then
+        # Specials like zcash
+        RET=$(cat ${_pkgcommon}/${_pkgname}.version)
+    else
+        if [ -f "${_pkgcommon}/${_pkgname}.vshell" ]; then
+            _pkgv="$(sh ${common}/${pg}.vshell)"
+        else
 
-  echo "$RET"
+            BR=$(git branch)
+            COMMIT_SHORT_SHA=$(git rev-parse --short HEAD)
+
+            if ! _vers=$(dune exec octez-version 2>/dev/null); then
+                echo "Cannot get version. Try eval \`opam env\`?" >&2
+                exit 1
+            fi
+            _vers_fix=$(echo "$_vers" | sed -e 's/Octez //' -e 's/(.*$//' -e 's/(build.*$//'  -e 's/\~//' -e 's/^\+//' -e 's/^[[:blank:]]//' -e 's/[[:blank:]]$//')
+            case "$_vers" in
+           	*dev)
+           	    # Versions must start with numbers on dpkg
+           	    RET="99$COMMIT_SHORT_SHA"
+           	    ;;
+           	*)
+           	    RET=$_vers_fix
+           	    ;;
+            esac
+        fi
+    fi
+
+    echo "$RET"
 
 }
 

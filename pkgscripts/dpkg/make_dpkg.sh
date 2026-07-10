@@ -61,10 +61,7 @@ if [ -z "$packages" ]; then
 fi
 
 warnings
-if [ -z "$pkg_vers" ]; then
-    pkg_vers=$(getOctezVersion)
-    [ "$?" != "0" ] && exit 1
-fi
+
 staging_root=_dpkgstage
 
 # Checking prerequisites
@@ -83,12 +80,10 @@ dpkg_arch=$DEB_BUILD_ARCH
 #
 for pg in $packages; do
   control_file="$myhome/${pg}-control.in"
-  _pkgv=${pkg_vers}
-
-  # EVM node and others don't use the parent version number
-  #
-  if [ -f "${common}/${pg}.vmeth" ]; then
-	_pkgv="$(sh ${common}/${pg}.vmeth)"
+  _pkgv="${pkg_vers}"
+  if [ -z "$pkg_vers" ]; then
+      _pkgv=$(getOctezVersion $common $pg)
+      [ "$?" != "0" ] && exit 1
   fi
 
   echo "===> Building package $pg v$_pkgv rev $pkg_rev"
