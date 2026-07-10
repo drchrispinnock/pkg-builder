@@ -1,8 +1,14 @@
 #!/bin/bash
 
+
+# Defaults
+#
 DEVELOPER=1 # XXX
+#DEVELOPER=0
+
+# Sync packages
 SYNCPKG=1
-PKGNAME=octez-ng
+PKGNAME=octez-ng # XXX
 #PKGNAME=octez
 
 # Default targets
@@ -37,14 +43,18 @@ while [ $# -gt 0 ]; do
     case $1 in
         --targets|-T) TARGETS="$2"; shift; ;;
         --branch|-B) BRANCH="$2"; shift; ;;
+        --devmode|-D) DEVELOPER=1; shift; ;;
         --srn-branch) SRNBRANCH="$2"; shift; ;;
         --evm-branch) EVMBRANCH="$2"; shift; ;;
     #    --override-version|-O) OVERRIDE="$2"; shift; ;;
         --revision|-R) REVISION="$2"; shift; ;;
         --project|-P) PROJECT="$2"; shift; ;;
+        --pkgname) PKGNAME="$2"; shift; ;;
         --service-account|-S) SERVICEACCT="$2"; shift; ;;
         --bucket|-b) BUCKET="$2"; shift; ;;
         --sleep) STATUSSLEEP="$2"; shift; ;;
+        --sync|--sync-packages) SYNCPKG=1; shift; ;;
+        --no-sync|--no-sync-packages) SYNCPKG=0; shift; ;;
         --help|-h) Usage 0; ;;
         -*) Usage 1; ;;
     esac
