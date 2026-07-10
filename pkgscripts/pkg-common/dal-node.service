@@ -1,12 +1,13 @@
 [Unit]
-Description=Octez-node
+Description=octez-dal-node
 Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="DATADIR=/var/tezos/.tezos-dal-node USER=tezos LOGDIR=/var/log/tezos"
+Environment="DATADIR=/var/tezos/.tezos-dal-node LOGDIR=/var/log/tezos"
 EnvironmentFile=-/etc/default/octez-dal-node
-User=$USER
+User=tezos
+Group=tezos
 WorkingDirectory=~
 Restart=on-failure
 RestartSec=10s
@@ -14,8 +15,11 @@ KillMode=control-group
 TimeoutStartSec=30s
 TimeoutStopSec=300s
 
-ExecStart=/usr/bin/octez-dal-node run --data-dir $DATADIR --log-output $LOGDIR/dal-node.log $RUNTIME_OPTS
+ExecStart=/usr/bin/octez-dal-node run --data-dir $DATADIR $RUNTIME_OPTS
 Slice=octez.slice
+
+StandardOutput=append:/var/log/tezos/dal-node.log
+StandardError=inherit
 
 [Install]
 WantedBy=multi-user.target

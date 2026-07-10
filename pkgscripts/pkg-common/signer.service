@@ -5,7 +5,6 @@ After=network.target
 
 [Service]
 Environment="DATADIR=/var/tezos/.tezos-signer"
-Environment="LOGDIR=/var/log/tezos"
 Environment="ADDRESS=127.0.0.1 PORT=6732"
 EnvironmentFile=-/etc/default/octez-signer
 User=tezos
@@ -19,11 +18,13 @@ TimeoutStopSec=300s
 
 ExecStart=/usr/bin/octez-signer launch http signer \
     --data-dir $DATADIR \
-    --log-output $LOGDIR/signer.log \
     --address $ADDRESS --port $PORT \
     $MAGIC_BYTES $HWM_CHECK \
     $RUNTIME_OPTS
 Slice=octez.slice
+
+StandardOutput=append:/var/log/tezos/signer.log
+StandardError=inherit
 
 [Install]
 WantedBy=multi-user.target

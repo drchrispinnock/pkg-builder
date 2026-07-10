@@ -1,7 +1,6 @@
 # Data Directory
 # An independent mount point of /var/tezos is recommended
 #
-LOGDIR=/var/log/tezos
 
 # Other options to pass to the accuser
 #

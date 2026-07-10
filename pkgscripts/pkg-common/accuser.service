@@ -4,7 +4,6 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="LOGDIR=/var/log/tezos"
 EnvironmentFile=-/etc/default/octez-accuser
 User=tezos
 Group=tezos
@@ -17,6 +16,9 @@ TimeoutStopSec=300s
 
 ExecStart=/usr/bin/octez-accuser run -K $RUNTIME_OPTS
 Slice=octez.slice
+
+StandardOutput=append:/var/log/tezos/accuser.log
+StandardError=inherit
 
 [Install]
 WantedBy=multi-user.target

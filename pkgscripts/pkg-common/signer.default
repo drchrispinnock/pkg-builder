@@ -2,7 +2,6 @@
 # If you want to do something different, you'll need to set your own one up.
 #
 DATADIR=/var/tezos/.tezos-signer
-LOGDIR=/var/log/tezos
 
 PORT=6732
 

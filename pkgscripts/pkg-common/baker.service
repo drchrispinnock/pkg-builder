@@ -18,5 +18,8 @@ TimeoutStopSec=300s
 ExecStart=/usr/bin/octez-baker run with local node $DATADIR -K --liquidity-baking-toggle-vote $LQ_VOTE $RUNTIME_OPTS $DAL_OPTIONS
 Slice=octez.slice
 
+StandardOutput=append:/var/log/tezos/baker.log
+StandardError=inherit
+
 [Install]
 WantedBy=multi-user.target

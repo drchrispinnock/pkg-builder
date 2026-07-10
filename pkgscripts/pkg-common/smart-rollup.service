@@ -4,7 +4,7 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="DATADIR=/var/tezos/.tezos-smart-rollup LOGDIR=/var/log/tezos"
+Environment="DATADIR=/var/tezos/.tezos-smart-rollup"
 EnvironmentFile=-/etc/default/octez-smart-rollup
 User=tezos
 Group=tezos
@@ -15,8 +15,11 @@ KillMode=control-group
 TimeoutStartSec=30s
 TimeoutStopSec=300s
 
-ExecStart=/usr/bin/octez-smart-rollup run --data-dir $DATADIR --log-output $LOGDIR/octez-smart-rollup.log $RUNTIME_OPTS
+ExecStart=/usr/bin/octez-smart-rollup run --data-dir $DATADIR $RUNTIME_OPTS
 Slice=octez.slice
+
+StandardOutput=append:/var/log/tezos/smart-rollup.log
+StandardError=inherit
 
 [Install]
 WantedBy=multi-user.target
