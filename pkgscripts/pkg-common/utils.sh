@@ -61,7 +61,7 @@ getOctezVersion() {
         RET=$(cat ${_pkgcommon}/${_pkgname}.version)
     else
         if [ -f "${_pkgcommon}/${_pkgname}.vshell" ]; then
-            _pkgv="$(sh ${common}/${pg}.vshell)"
+            RET="$(sh ${common}/${pg}.vshell)"
         else
 
             BR=$(git branch)
