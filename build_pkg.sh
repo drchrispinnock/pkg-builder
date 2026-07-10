@@ -136,6 +136,8 @@ log() {
 echo "===> Building from branch: ${BRANCH}"
 
 VMLIST=""
+declare -A OSFORNAME
+declare -A ZONEFORNAME
 
 # Setup VMs and despatch
 #
@@ -146,7 +148,6 @@ for OS in ${TARGETS}; do
 
 	IMAGE=`./helpers/parse_images.pl ${OS}`
 
-	TOS=$(echo $OS | sed -e 's/-lts*$//g')
 	MACHINE=${X86}
 	ZONE=${X86ZONE}
 	disktype="pd-balanced"
@@ -154,12 +155,10 @@ for OS in ${TARGETS}; do
 	if [ "$?" = "0" ]; then
 		MACHINE=${ARM64}
 		ZONE=${ARMZONE}
-		TOS=$(echo $TOS | sed -e 's/-arm64$//g')
 		disktype="hyperdisk-balanced"
 	fi
-
-	TARGETDIR=${BUCKET}/${TOS}
-	[ "$DEVELOPER" = "1" ] && TARGETDIR=${BUCKET}/testing/${TOS}
+	OSFORNAME[${NAME}]=${OS}
+	ZONEFORNAME[${NAME}]=${ZONE}
 
 	echo "=> Using image ${IMAGE}"
 	gcloud -q compute instances create ${NAME} \
@@ -198,8 +197,14 @@ echo "===> Starting build"
 NEWVMLIST=""
 
 for NAME in ${VMLIST}; do
-	echo "==> $NAME"
+
 	VMFAIL=3
+
+	OS=${OSFORNAME[${NAME}]}
+	ZONE=${ZONEFORNAME[${NAME}]}
+
+	echo "==> $NAME ($ZONE)"
+
 	while [ $VMFAIL -gt 0 ]; do
 	    gcloud -q compute scp helpers/_buildscript.sh ${NAME}:buildscript.sh --zone=${ZONE} \
 		    --project=${PROJECT} >> ${LOCALLOG} 2>&1
@@ -216,6 +221,8 @@ for NAME in ${VMLIST}; do
 		FAIL=1
 	else
 
+    TARGETDIR=${BUCKET}/${OS}
+	[ "$DEVELOPER" = "1" ] && TARGETDIR=${BUCKET}/testing/${OS}
 	    NEWVMLIST="${NEWVMLIST} ${NAME}"
 		gcloud -q compute scp --recurse pkgscripts \
 			${NAME}:pkgscripts \
@@ -237,8 +244,6 @@ for NAME in ${VMLIST}; do
 	fi
 done
 
-
-
 echo "rm -f ${CLEANUPSH} ${CONNECT} ${LOCALLOG}" >> ${CLEANUPSH}
 VMLIST=${NEWVMLIST}
 
@@ -250,14 +255,8 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 
 	for NAME in ${VMLIST}; do
 
-		ZONE=${X86ZONE}
-		echo ${NAME} | grep 'arm64' >/dev/null 2>&1
-
-		if [ "$?" = "0" ]; then
-			ZONE=${ARMZONE}
-		fi
-
-		printf "${NAME}\t"
+	    ZONE=${ZONEFORNAME[${NAME}]}
+		printf "${NAME} ($ZONE)\t"
 		# Poll for success
 		rm -f $statusfile
 		state="NONE"

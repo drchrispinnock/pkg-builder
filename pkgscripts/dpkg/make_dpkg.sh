@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
     case $1 in
         --pkgname)
             pkg_name="$2"; shift; ;;
-        --package|packages)
+        --package|--packages)
             packages="$2"; shift; ;;
         --dieonwarn)
             dieonwarn="1"; ;;
