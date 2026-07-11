@@ -8,4 +8,4 @@ DATADIR=/var/tezos/.tezos-dal-node
 RUNTIME_OPTS=""
 
 # For example, if your node is elsewhere:
-#RUNTIME_OPTS="--endpoint=http://mydalnode.local:8732"
+#RUNTIME_OPTS="--endpoint=http://mynode.local:8732"
