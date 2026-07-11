@@ -25,6 +25,9 @@ force=0
 eval `opam env`
 [ "$?" != "0" ] && echo "Cannot eval opam environment" >&2 && exit 1
 
+#echo "I've been called with"
+#echo "$@"
+
 while [ $# -gt 0 ]; do
     case $1 in
         --force)

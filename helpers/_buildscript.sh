@@ -8,6 +8,7 @@ OCTEZ_PKGREV=1
 OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
 IGNOREOPAMDEPS=0
 DEVELOPER=0
+PKGNAME="octez"
 
 ME=$HOME/pkg-builder/pkgscripts
 
@@ -60,7 +61,7 @@ export OPAMYES="true"
 
 [ -z "$BRANCH" ] && BRANCH=master
 
-echo "PKGNAME: ${OCTEZ_PKGNAME}"
+echo "PKGNAME: ${PKGNAME}"
 echo "BRANCH: $BRANCH"
 
 case $BRANCH in
@@ -93,11 +94,11 @@ REGULARPKG="client node baker dal-node teztale-archiver"
 [ "$EVMBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG evm-node"
 [ "$SRNBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG smart-rollup"
 
-CLIOPTS="--revision $OCTEZ_PKGREV --pkgname $OCTEZ_PKGNAME"
+CLIOPTS="--revision $OCTEZ_PKGREV --pkgname $PKGNAME"
 
 build $BRANCH
 status "PACKAGES"
-$TOOL --packages \"${REGULARPKG}\" $CLIOPTS
+$TOOL --packages "${REGULARPKG}" $CLIOPTS
 [ "$?" != "0" ] && fail "PACKAGES"
 mv octez*$EXT $STAGING
 
@@ -112,7 +113,7 @@ fi
 if [ "$SRNBRANCH" != "$BRANCH" ]; then
     build $SRNBRANCH
     status "SRN PACKAGES"
-    $TOOL --packages "smart-rollup" --$CLIOPTS
+    $TOOL --packages "smart-rollup" $CLIOPTS
     [ "$?" != "0" ] && softfail "SRN PACKAGES"
     mv octez-smart-rollup*$EXT $STAGING
 fi
