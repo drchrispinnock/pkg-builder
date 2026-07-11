@@ -17,7 +17,7 @@ TimeoutStopSec=300s
 ExecStart=/usr/bin/octez-accuser run -K $RUNTIME_OPTS
 Slice=octez.slice
 
-StandardOutput=append:/var/log/tezos/accuser.log
+StandardOutput=append:/var/log/tezos/octez-accuser.log
 StandardError=inherit
 
 [Install]

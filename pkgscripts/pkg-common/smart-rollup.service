@@ -18,7 +18,7 @@ TimeoutStopSec=300s
 ExecStart=/usr/bin/octez-smart-rollup run --data-dir $DATADIR $RUNTIME_OPTS
 Slice=octez.slice
 
-StandardOutput=append:/var/log/tezos/smart-rollup.log
+StandardOutput=append:/var/log/tezos/octez-smart-rollup.log
 StandardError=inherit
 
 [Install]

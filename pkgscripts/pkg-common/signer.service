@@ -23,7 +23,7 @@ ExecStart=/usr/bin/octez-signer launch http signer \
     $RUNTIME_OPTS
 Slice=octez.slice
 
-StandardOutput=append:/var/log/tezos/signer.log
+StandardOutput=append:/var/log/tezos/octez-signer.log
 StandardError=inherit
 
 [Install]

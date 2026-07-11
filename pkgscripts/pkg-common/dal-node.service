@@ -4,7 +4,7 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="DATADIR=/var/tezos/.tezos-dal-node LOGDIR=/var/log/tezos"
+Environment="DATADIR=/var/tezos/.tezos-dal-node" 
 EnvironmentFile=-/etc/default/octez-dal-node
 User=tezos
 Group=tezos
@@ -18,7 +18,7 @@ TimeoutStopSec=300s
 ExecStart=/usr/bin/octez-dal-node run --data-dir $DATADIR $RUNTIME_OPTS
 Slice=octez.slice
 
-StandardOutput=append:/var/log/tezos/dal-node.log
+StandardOutput=append:/var/log/tezos/octez-dal-node.log
 StandardError=inherit
 
 [Install]

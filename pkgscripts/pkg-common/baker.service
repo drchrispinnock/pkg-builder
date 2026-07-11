@@ -4,7 +4,7 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="LQ_VOTE=break DATADIR=/var/tezos/.tezos-node DAL_OPTIONS="--without-dal" LOGDIR=/var/log/tezos"
+Environment="LQ_VOTE=break DATADIR=/var/tezos/.tezos-node DAL_OPTIONS=--without-dal" 
 EnvironmentFile=-/etc/default/octez-baker
 User=tezos
 Group=tezos
@@ -18,7 +18,7 @@ TimeoutStopSec=300s
 ExecStart=/usr/bin/octez-baker run with local node $DATADIR -K --liquidity-baking-toggle-vote $LQ_VOTE $RUNTIME_OPTS $DAL_OPTIONS
 Slice=octez.slice
 
-StandardOutput=append:/var/log/tezos/baker.log
+StandardOutput=append:/var/log/tezos/octez-baker.log
 StandardError=inherit
 
 [Install]
