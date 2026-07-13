@@ -4,4 +4,3 @@ Architecture: @ARCH@
 Maintainer: @MAINT@
 Description: The Octez EVM node
 Depends: @DEPENDS@
-
