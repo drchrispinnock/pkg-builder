@@ -9,3 +9,4 @@ Depends: bash, @DPKG@-node (>=@VERSION@),
  @DPKG@-client (>=@VERSION@), @DEPENDS@,
  systemd
 Replaces: octez-unoff-baker
+Recommends: $DPKG@-dal-node
