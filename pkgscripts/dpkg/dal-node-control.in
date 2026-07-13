@@ -5,3 +5,4 @@ Maintainer: @MAINT@
 Description: The Octez DAL node binaries
 Recommends: @DPKG@-client (>=@VERSION@)
 Depends: @DEPENDS@
+Replaces: octez-unoff-dal-node

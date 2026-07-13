@@ -6,3 +6,4 @@ Description: The Octez Baker daemons
 Depends: bash, @DPKG@-node (>=@VERSION@),
  @DPKG@-client (>=@VERSION@), @DEPENDS@,
  systemd
+Replaces: octez-unoff-baker

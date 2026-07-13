@@ -5,3 +5,4 @@ Maintainer: @MAINT@
 Description: The Octez node server
 Recommends: @DPKG@-client (>=@VERSION@)
 Depends: bash, adduser, systemd, @DEPENDS@, @DPKG@-zcash-params
+Replaces: octez-unoff-node
