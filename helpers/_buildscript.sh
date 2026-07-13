@@ -60,16 +60,6 @@ export OPAMYES="true"
 echo "PKGNAME: ${PKGNAME}"
 echo "BRANCH: $BRANCH"
 
-case $BRANCH in
-	octez-v*)
-		;;
-	latest-release)
-		;;
-	*)
-	TARGET=${TARGET}/dev
-	;;
-esac
-
 EXTRACLIOPTS=""
 [ "$DEVELOPER" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --devmode"
 [ -n "$OVERRIDEVERS" ] && EXTRACLIOPTS="$EXTRACLIOPTS --override-version $OVERRIDEVERS"
@@ -91,9 +81,9 @@ fi
 initialPrep;
 
 # Regular
-REGULARPKG="client node baker dal-node teztale-archiver"
+REGULARPKG="zcash-params client node baker dal-node teztale-archiver"
 [ "$EVMBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG evm-node"
-[ "$SRNBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG smart-rollup"
+[ "$SRNBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG smart-rollup-node"
 
 CLIOPTS="--revision $OCTEZ_PKGREV --pkgname $PKGNAME $EXTRACLIOPTS"
 
@@ -114,7 +104,7 @@ fi
 if [ "$SRNBRANCH" != "$BRANCH" ]; then
     build $SRNBRANCH
     status "SRN PACKAGES"
-    $TOOL --packages "smart-rollup" $CLIOPTS
+    $TOOL --packages "smart-rollup-node" $CLIOPTS
     [ "$?" != "0" ] && softfail "SRN PACKAGES"
     mv octez-smart-rollup*$EXT $STAGING
 fi
