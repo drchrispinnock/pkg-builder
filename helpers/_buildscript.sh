@@ -1,19 +1,15 @@
 #!/bin/bash
 #
-#
-#
-#
+
 TARGET=""
 OCTEZ_PKGREV=1
 OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
 IGNOREOPAMDEPS=0
 DEVELOPER=0
 PKGNAME="octez"
+OVERRIDEVERS=""
 
 ME=$HOME/pkg-builder/pkgscripts
-
-#EVMBRANCH=${EVMBRANCH} SRNBRANCH=${SRNBRANCH} BRANCH=${BRANCH} \
-#			    ./buildscript.sh ${TARGETDIR} ${PKGNAME} ${REVISION} ${DEVELOPER}
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -74,6 +70,11 @@ case $BRANCH in
 	;;
 esac
 
+EXTRACLIOPTS=""
+[ "$DEVELOPER" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --devmode"
+[ -n "$OVERRIDEVERS" ] && EXTRACLIOPTS="$EXTRACLIOPTS --override-version $OVERRIDEVERS"
+
+
 # If there is apt it's a Debian style system
 # We assume everything else uses RPM and YUM
 #
@@ -94,7 +95,7 @@ REGULARPKG="client node baker dal-node teztale-archiver"
 [ "$EVMBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG evm-node"
 [ "$SRNBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG smart-rollup"
 
-CLIOPTS="--revision $OCTEZ_PKGREV --pkgname $PKGNAME"
+CLIOPTS="--revision $OCTEZ_PKGREV --pkgname $PKGNAME $EXTRACLIOPTS"
 
 build $BRANCH
 status "PACKAGES"

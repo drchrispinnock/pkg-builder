@@ -12,6 +12,7 @@ fi
 #
 DEVELOPER=0
 GPGKEY=""
+OVERRIDEVERS=""
 
 # Sync packages
 #
@@ -234,14 +235,15 @@ for NAME in ${VMLIST}; do
 			--zone=${ZONE} \
 			--project=${PROJECT} >> ${LOCALLOG} 2>&1
 
-        DEVMODE=""
-        [ "$DEVELOPER" = "1" ] && DEVMODE="--devmode"
+        EXTRACLIOPTS=""
+        [ "$DEVELOPER" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --devmode"
+        [ -n "$OVERRIDEVERS" ] && EXTRACLIOPTS="$EXTRACLIOPTS --override-version $OVERRIDEVERS"
 		gcloud -q compute ssh ${NAME} --zone=${ZONE} \
 			--project=${PROJECT} \
 			--command="./buildscript.sh --targetdir ${TARGETDIR} \
 			        --branch ${BRANCH} \
 					--evm-branch ${EVMBRANCH} --srn-branch ${SRNBRANCH} \
-					--pkgname ${PKGNAME} --revision ${REVISION} ${DEVMODE}> buildlog.log 2>&1 &" \
+					--pkgname ${PKGNAME} --revision ${REVISION} ${EXTRACLIOPTS}> buildlog.log 2>&1 &" \
 			>> ${LOCALLOG} 2>&1
 		echo "gcloud -q compute instances delete ${NAME} \
 	        --zone=${ZONE} --delete-disks=all --project=${PROJECT}" >> ${CLEANUPSH}

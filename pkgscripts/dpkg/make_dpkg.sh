@@ -21,6 +21,7 @@ pkg_realname="octez"
 systemd_dir="/lib/systemd/system"
 defaults_dir="/etc/default"
 force=0
+devmode=0
 
 eval `opam env`
 [ "$?" != "0" ] && echo "Cannot eval opam environment" >&2 && exit 1
@@ -30,6 +31,8 @@ eval `opam env`
 
 while [ $# -gt 0 ]; do
     case $1 in
+        --devmode)
+            devmode=1 ;;
         --force)
             force=1; ;;
         --pkgname)
