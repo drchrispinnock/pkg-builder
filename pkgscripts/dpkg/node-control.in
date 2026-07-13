@@ -2,6 +2,8 @@ Package: @PKG@
 Version: @VERSION@
 Architecture: @ARCH@
 Maintainer: @MAINT@
+Section: net
+Priority: optional
 Description: The Octez node server
 Recommends: @DPKG@-client (>=@VERSION@)
 Depends: bash, adduser, systemd, @DEPENDS@, @DPKG@-zcash-params

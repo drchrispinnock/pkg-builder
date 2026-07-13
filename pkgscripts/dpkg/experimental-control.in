@@ -2,6 +2,8 @@ Package: @PKG@
 Version: @VERSION@
 Architecture: @ARCH@
 Maintainer: @MAINT@
+Section: net
+Priority: optional
 Description: The Octez experimental binaries
 Recommends: @DPKG@-baker (>=@VERSION@), @DPKG@-client (>=@VERSION@)
 Depends: @DEPENDS@

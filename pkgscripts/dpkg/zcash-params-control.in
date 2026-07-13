@@ -2,4 +2,6 @@ Package: @PKG@
 Version: @VERSION@
 Architecture: @ARCH@
 Maintainer: @MAINT@
+Section: misc
+Priority: optional
 Description: The Zcash parameters
