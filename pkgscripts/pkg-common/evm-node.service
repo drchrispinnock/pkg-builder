@@ -1,0 +1,26 @@
+[Unit]
+Description=octez-evm-node
+Documentation=https://tezos.gitlab.io/
+After=network.target
+
+[Service]
+Environment="DATADIR=/var/tezos/.octez-evm-node RPCADDR=0.0.0.0 RPCPORT=8545"
+Environment="ENDPOINT=http://localhost:8932"
+EnvironmentFile=-/etc/default/octez-node
+User=tezos
+Group=tezos
+WorkingDirectory=~
+Restart=on-failure
+RestartSec=10s
+KillMode=control-group
+TimeoutStartSec=30s
+TimeoutStopSec=300s
+
+ExecStart=/usr/bin/octez-evm-node run observer --rollup-node-endpoint $ENDPOINT --rpc-addr $RPCADDR --rpc-port $RPCPORT --data-dir $DATADIR $RUNTIME_OPTS
+Slice=octez.slice
+
+StandardOutput=append:/var/log/tezos/octez-evm-node.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target
