@@ -68,6 +68,7 @@ for os in debian ubuntu; do
             fi
 
         fi
+        reprepro -b $aptrepos/$os export $codename
 
     done
 
