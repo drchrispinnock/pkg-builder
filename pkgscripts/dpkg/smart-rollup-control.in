@@ -5,3 +5,4 @@ Maintainer: @MAINT@
 Description: The Octez Smart Rollup daemons
 Recommends: @DPKG@-client (>=@VERSION@)
 Depends: adduser, systemd, @DEPENDS@
+Replaces: octez-smartrollup
