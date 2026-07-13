@@ -17,8 +17,7 @@ OVERRIDEVERS=""
 # Sync packages
 #
 SYNCPKG=1
-PKGNAME=octez-ng # XXX
-#PKGNAME=octez
+PKGNAME=octez
 
 # Default targets
 #
@@ -222,7 +221,7 @@ for NAME in ${VMLIST}; do
 		FAIL=1
 	else
 
-    TARGETDIR=${BUCKET}/${OS}
+    TARGETDIR=${BUCKET}/incoming/${OS}
 	[ "$DEVELOPER" = "1" ] && TARGETDIR=${BUCKET}/testing/${OS}
 	    NEWVMLIST="${NEWVMLIST} ${NAME}"
 		gcloud -q compute ssh $NAME \
@@ -309,7 +308,7 @@ rm -f ${LOCALLOG}
 rm -f ${CONNECT}
 
 if [ "$SYNCPKG" = "1" ]; then
-    sh helpers/sync_pkg.sh down
-    sh helpers/index.sh
-    sh helpers/sync_pkg.sh up
+    bash helpers/dwn_pkg.sh
+    bash helpers/aptrepo.sh
+
 fi
