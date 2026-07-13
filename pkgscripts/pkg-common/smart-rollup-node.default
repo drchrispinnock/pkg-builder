@@ -1,7 +1,7 @@
 # Data Directory
 # An independent mount point of /var/tezos is recommended
 #
-DATADIR=/var/tezos/.tezos-smart-rollup
+DATADIR=/var/tezos/.tezos-smart-rollup-node
 
 # Other options to pass the node
 #
