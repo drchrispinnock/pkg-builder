@@ -7,8 +7,8 @@ After=network.target
 Environment="DATADIR=/var/tezos/.tezos-signer"
 Environment="ADDRESS=127.0.0.1 PORT=6732"
 EnvironmentFile=-/etc/default/octez-signer
-User=tezos
-Group=tezos
+User=tzsigner
+Group=tzsigner
 WorkingDirectory=~
 Restart=on-failure
 RestartSec=10s

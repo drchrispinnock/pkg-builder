@@ -1,0 +1,8 @@
+Origin: Tzinit
+Label: Tzinit
+Codename: trixie
+Suite: stable
+Architectures: amd64 arm64 
+Components: main
+Description: Tzinit package repository
+SignWith: D72B1186B6845C466CB04E1BAEB3EA0F8F02929C

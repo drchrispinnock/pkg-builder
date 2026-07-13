@@ -1,0 +1,3 @@
+verbose
+basedir /home/cjep/tezos/pkg-builder/srv/apt
+ask-passphrase
