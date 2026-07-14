@@ -11,13 +11,13 @@ fi
 # Defaults
 #
 DEVELOPER=0
-GPGKEY=""
 OVERRIDEVERS=""
 
 # Sync packages
 #
 SYNCPKG=1
 PKGNAME=octez
+BUILDAPT=0
 
 # Default targets
 #
@@ -77,8 +77,8 @@ while [ $# -gt 0 ]; do
             SYNCPKG=1; ;;
         --no-sync|--no-sync-packages)
             SYNCPKG=0; ;;
-        --gpg-key|-g)
-            GPGKEY="$2"; shift ;;
+        --buildapt)
+            BUILDAPT=1; ;;
         --help|-h) Usage 0; ;;
         -*) Usage 1; ;;
     esac
@@ -309,6 +309,9 @@ rm -f ${CONNECT}
 
 if [ "$SYNCPKG" = "1" ]; then
     bash helpers/dwn_pkg.sh
-    bash helpers/aptrepo.sh
-
+    if [ "$BUILDAPT" = "1" ]; then
+        bash helpers/aptrepo.sh
+    else
+        echo "Run bash helpers/aptrepo.sh at your convenience"
+    fi
 fi

@@ -62,11 +62,8 @@ for os in debian ubuntu; do
 
         if [ "$resolve" = "$os" ]; then
             echo "===> $targ"
-            ls -l $incoming/$targ
-            if [ -f $incoming/$targ/octez-client*.deb ]; then
-                reprepro -b $aptrepos/$os includedeb $codename $incoming/$targ/*.deb
-            fi
-
+            #ls -l $incoming/$targ
+            reprepro -b $aptrepos/$os includedeb $codename $incoming/$targ/*.deb
         fi
         reprepro -b $aptrepos/$os export $codename
 
