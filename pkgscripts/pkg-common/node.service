@@ -1,0 +1,25 @@
+[Unit]
+Description=octez-node
+Documentation=https://tezos.gitlab.io/
+After=network.target
+
+[Service]
+Environment="DATADIR=/var/tezos/.tezos-node"
+EnvironmentFile=-/etc/default/octez-node
+User=tezos
+Group=tezos
+WorkingDirectory=~
+Restart=on-failure
+RestartSec=10s
+KillMode=control-group
+TimeoutStartSec=30s
+TimeoutStopSec=300s
+
+ExecStart=/usr/bin/octez-node run --data-dir $DATADIR $RUNTIME_OPTS
+Slice=octez.slice
+
+StandardOutput=append:/var/log/tezos/octez-node.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target

@@ -2,6 +2,9 @@ Package: @PKG@
 Version: @VERSION@
 Architecture: @ARCH@
 Maintainer: @MAINT@
+Section: net
+Priority: optional
 Description: The Octez DAL node binaries
 Recommends: @DPKG@-client (>=@VERSION@)
 Depends: @DEPENDS@
+Replaces: octez-unoff-dal-node

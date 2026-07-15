@@ -7,15 +7,26 @@
 
 set -eu
 
+packages="$1"
+
 # Setup
 #
 myhome=$HOME/pkgscripts/rpm
 common=$HOME/pkgscripts/pkg-common
 dieonwarn=${dieonwarn:-0}
 
+systemd_dir="/usr/lib/systemd/system" # XXX
+defaults_dir="/etc/defaults"
+
 #shellcheck disable=SC1091
 . ${common}/utils.sh
-protocols=${protocols:?protocols not specified}
+
+if [ -z "$packages" ]; then
+    for specfile in "$myhome"/*spec.in; do
+        pg=$(basename "$specfile" | sed -e 's/-spec.in$//g')
+        package="$packages $pg"
+    done
+fi
 
 warnings
 pkg_vers=$(getOctezVersion)
@@ -45,8 +56,10 @@ rpm_arch=$(uname -m)
 
 # For each spec file in the directory, build a package
 #
-for specfile in "$myhome"/*spec.in; do
-  pg=$(basename "$specfile" | sed -e 's/-spec.in$//g')
+
+
+for pg in $packages; do
+    specfile="$myhome/${pg}-spec.in"
   echo "===> Building package $pg v$pkg_vers rev $OCTEZ_PKGREV"
 
   # Derivative variables
@@ -86,20 +99,20 @@ for specfile in "$myhome"/*spec.in; do
     done
   fi
 
-  # init.d scripts
+    # Systemctl conversation
   #
-  initdScripts "${common}/${pg}.initd" "${init_name}" "${build_dir}"
-  if [ "$pg" = "baker" ]; then
-    initdScripts "${common}/vdf.initd" octez-vdf \
-      "${build_dir}"
+  if [ -f "${common}/${pg}.service" ]; then
+      mkdir -p ${build_dir}/${systemd_dir}
+      cp ${common}/${pg}.service ${build_dir}/${systemd_dir}/octez-${pg}.service
+      #
+      if [ -f "${common}/${pg}.default" ]; then
+          mkdir -p ${build_dir}/${defaults_dir}
+          cp ${common}/${pg}.default ${build_dir}/${defaults_dir}/octez-${pg}
+      fi
   fi
 
-  # Configuration files
-  #
-  if [ -f "${common}/${pg}.conf" ]; then
-    echo "=> Config files"
-    mkdir -p "${build_dir}/etc/octez"
-    cp "${common}/${pg}.conf" "${build_dir}/etc/octez/${pg}.conf"
+  if [ "$pg" = "baker" ]; then
+    cp ${common}/vdf.service ${staging_dir}/${systemd_dir}/octez-vdf.service
   fi
 
   # Zcash parameters must ship with the node

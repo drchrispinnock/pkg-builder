@@ -1,0 +1,3 @@
+# Other options to pass to the accuser
+#
+RUNTIME_OPTS=""

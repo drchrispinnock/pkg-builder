@@ -1,0 +1,25 @@
+[Unit]
+Description=octez-teztale-archiver
+Documentation=https://tezos.gitlab.io/
+After=network.target
+
+[Service]
+Environment="TARGET=SETME@SETME"
+EnvironmentFile=-/etc/default/octez-teztale-archiver
+User=tezos
+Group=tezos
+WorkingDirectory=~
+Restart=on-failure
+RestartSec=10s
+KillMode=control-group
+TimeoutStartSec=30s
+TimeoutStopSec=300s
+
+ExecStart=/usr/bin/octez-teztale-archiver feed $TARGET $RUNTIME_OPTS
+Slice=octez.slice
+
+StandardOutput=append:/var/log/tezos/octez-teztale-archiver.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target

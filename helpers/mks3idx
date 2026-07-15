@@ -1,5 +1,7 @@
 #!/bin/sh
 
+[ ! -z "$1" ] && cd $1
+
 echo "<html><body><ul>"
 for item in $(ls); do
 	[ "$item" = "index.html" ] && continue

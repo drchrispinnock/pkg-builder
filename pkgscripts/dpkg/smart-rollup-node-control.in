@@ -2,6 +2,9 @@ Package: @PKG@
 Version: @VERSION@
 Architecture: @ARCH@
 Maintainer: @MAINT@
+Section: net
+Priority: optional
 Description: The Octez Smart Rollup daemons
 Recommends: @DPKG@-client (>=@VERSION@)
 Depends: adduser, systemd, @DEPENDS@
+Replaces: octez-smartrollup, octez-smart-rollup, octez-unoff-smartrollup

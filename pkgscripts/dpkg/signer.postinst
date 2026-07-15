@@ -3,14 +3,26 @@
 user=tzsigner
 group=tzsigner
 homedir=/var/tzsigner
+logdir=/var/log/tzsigner
 
-# Ensure the tzsigner user is created
+# Ensure the tezos user is created
 getent group ${group} >/dev/null 2>&1 || addgroup ${group}
 getent passwd ${user} >/dev/null 2>&1 || adduser --home $homedir \
             --gecos "tezos signer" \
 						--shell /bin/bash \
 						--disabled-password \
 						--ingroup ${group} ${user}
+
+if [ ! -d "${homedir}" ]; then
+	mkdir -p "${homedir}"
+	chown $user:$group "${homedir}"
+fi
+
+
+if [ ! -d "${logdir}" ]; then
+	mkdir -p "${logdir}"
+	chown $user:$group "${logdir}"
+fi
 
 # Reload to get new init scripts
 /usr/bin/systemctl daemon-reload

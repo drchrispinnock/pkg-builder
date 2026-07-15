@@ -1,0 +1,11 @@
+# Data Directory
+# An independent mount point of /var/tezos is recommended
+#
+DATADIR=/var/tezos/.tezos-dal-node
+
+# Other options to pass the node
+#
+RUNTIME_OPTS=""
+
+# For example, if your node is elsewhere:
+#RUNTIME_OPTS="--endpoint=http://mynode.local:8732"

@@ -1,2 +1,8 @@
 Sources
 cleanup.*.sh
+environment
+connect*txt
+log*txt
+incoming
+repos
+website

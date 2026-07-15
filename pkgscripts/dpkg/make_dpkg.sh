@@ -2,28 +2,76 @@
 
 # Debian/Ubuntu package build for Octez
 #
-# (c) Chris Pinnock 2022-3, Supplied under a MIT license.
+# (c) Chris Pinnock 2022, 2023, 2026, Supplied under a MIT license.
+# (c) Nomadic Labs 2023-2025
 # see ../pkg-common/utils.sh for more detail
 
-set -eu
+#set -eu XXX
 
-# Setup
+# Defaults
 #
-#myhome=${1:-scripts/dpkg}
-#common=scripts/pkg-common
+packages=""
+myroot=../pkg-builder/pkgscripts
 
-myhome=$HOME/pkgscripts/dpkg
-common=$HOME/pkgscripts/pkg-common
-dieonwarn=${dieonwarn:-0}
+dieonwarn=${dieonwarn:-1}
+pkg_vers=""
+pkg_rev="1"
+pkg_name="octez"
+pkg_realname="octez"
+systemd_dir="/lib/systemd/system"
+defaults_dir="/etc/default"
+force=0
+devmode=0
+
+eval `opam env`
+[ "$?" != "0" ] && echo "Cannot eval opam environment" >&2 && exit 1
+
+#echo "I've been called with"
+#echo "$@"
+
+while [ $# -gt 0 ]; do
+    case $1 in
+        --devmode)
+            devmode=1 ;;
+        --force)
+            force=1; ;;
+        --pkgname)
+            pkg_name="$2"; shift; ;;
+        --package|--packages)
+            packages="$2"; shift; ;;
+        --dieonwarn)
+            dieonwarn="1"; ;;
+        --no-dieonwarn)
+            dieonwarn="0"; ;;
+        --override-version)
+            pkg_vers="$2"; shift; ;;
+        --revision)
+            pkg_rev="$2"; shift; ;;
+        --myroot)
+            myroot="$2"; shift; ;;
+        -*) echo "Unknown option $1" && exit 1 ;;
+        *) echo "What is this? $1" && exit 1 ;;
+    esac
+    shift
+done
+
+myhome=${myroot}/dpkg
+common=${myroot}/pkg-common
 
 export TIMESTAMP="${TIMESTAMP-$(date +'%Y%m%d%H%M')}"
 
 #shellcheck disable=SC1091
 . ${common}/utils.sh
-protocols=${protocols:?protocols not specified} # Not used?
+
+if [ -z "$packages" ]; then
+    for control_file in "$myhome"/*control.in; do
+        pg=$(basename "$control_file" | sed -e 's/-control.in$//g')
+        packages="$packages $pg"
+    done
+fi
 
 warnings
-pkg_vers=$(getOctezVersion)
+
 staging_root=_dpkgstage
 
 # Checking prerequisites
@@ -40,37 +88,37 @@ dpkg_arch=$DEB_BUILD_ARCH
 
 # For each control file in the directory, build a package
 #
-for control_file in "$myhome"/*control.in; do
-  pg=$(basename "$control_file" | sed -e 's/-control.in$//g')
-  _pkgv=${pkg_vers}
-
-  # EVM node and others don't use the parent version number
-  #  
-  if [ -f "${common}/${pg}.vmeth" ]; then
-	_pkgv="$(sh ${common}/${pg}.vmeth)"
+for pg in $packages; do
+  control_file="$myhome/${pg}-control.in"
+  _pkgv="${pkg_vers}"
+  if [ -z "$pkg_vers" ]; then
+      _pkgv=$(getOctezVersion $common $pg)
+      [ "$?" != "0" ] && exit 1
   fi
 
-  echo "===> Building package $pg v$_pkgv rev $OCTEZ_PKGREV"
+  echo "===> Building package $pg v$_pkgv rev $pkg_rev"
 
   # Derivative variables
   #
-  dpkg_name=${OCTEZ_PKGNAME}-${pg}
-  init_name=${OCTEZ_REALNAME}-${pg}
+  dpkg_name=${pkg_name}-${pg}
+  init_name=${pkg_realname}-${pg}
   dpkg_vers=$(echo "${_pkgv}" | tr '~' '-')
-  dpkg_dir="${dpkg_name}_${dpkg_vers}-${OCTEZ_PKGREV}_${dpkg_arch}"
+  dpkg_dir="${dpkg_name}_${dpkg_vers}-${pkg_rev}_${dpkg_arch}"
   dpkg_fullname="${dpkg_dir}.deb"
 
   binaries=$(fixBinaryList "${common}/${pg}-binaries")
 
-  if [ -f "$dpkg_fullname" ]; then
+  if [ -f "$dpkg_fullname" ] && [ "$force" = 0 ]; then
     echo "built already - skipping"
     continue
   fi
+  rm -f "$dpkg_fullname"
 
   # Populate the staging directory with control scripts
   # binaries and configuration as appropriate
   #
   staging_dir="$staging_root/$dpkg_dir"
+
 
   rm -rf "${staging_dir}"
   mkdir -p "${staging_dir}/DEBIAN"
@@ -100,12 +148,14 @@ for control_file in "$myhome"/*control.in; do
     rmdir "${staging_dir}/debian"
   fi
 
+  # Manual pages XXX
+
   # Edit the control file to contain real values
   #
   sed -e "s/@ARCH@/${dpkg_arch}/g" -e "s/@VERSION@/$_pkgv/g" \
     -e "s/@MAINT@/${OCTEZ_PKGMAINTAINER}/g" \
     -e "s/@PKG@/${dpkg_name}/g" \
-    -e "s/@DPKG@/${OCTEZ_PKGNAME}/g" \
+    -e "s/@DPKG@/${pkg_name}/g" \
     -e "s/@DEPENDS@/${deps}/g" < "$control_file" \
     > "${staging_dir}/DEBIAN/control"
 
@@ -118,34 +168,34 @@ for control_file in "$myhome"/*control.in; do
     fi
   done
 
-  # init.d scripts
+    # Systemctl conversation
+    #
+    if [ -f "${common}/${pg}.service" ]; then
+        mkdir -p ${staging_dir}/${systemd_dir}
+        cp ${common}/${pg}.service ${staging_dir}/${systemd_dir}/octez-${pg}.service
+        #
+        if [ -f "${common}/${pg}.default" ]; then
+            mkdir -p ${staging_dir}/${defaults_dir}
+            cp ${common}/${pg}.default ${staging_dir}/${defaults_dir}/octez-${pg}
+            echo "${defaults_dir}/octez-${pg}" >> "${staging_dir}/DEBIAN/conffiles"
+        fi
+    fi
+    if [ "$pg" = "baker" ]; then
+      cp ${common}/vdf.service ${staging_dir}/${systemd_dir}/octez-vdf.service
+    fi
+
+  # Zcash parameters need slightly different handling
   #
-  initdScripts "${common}/${pg}.initd" "${init_name}" "${staging_dir}"
-  if [ "$pg" = "baker" ]; then
-    initdScripts "${common}/vdf.initd" octez-vdf "${staging_dir}"
+  if [ "$pg" = "zcash-params" ]; then
+     zcashParams "${staging_dir}/usr/share/zcash-params"
   fi
 
-  # Configuration files
-  #
-  if [ -f "${common}/${pg}.conf" ]; then
-    mkdir -p "${staging_dir}/etc/octez"
-    cp "${common}/${pg}.conf" "${staging_dir}/etc/octez/${pg}.conf"
-    echo "/etc/octez/${pg}.conf" > "${staging_dir}/DEBIAN/conffiles"
-  fi
-
-  # Zcash parameters ships with some packages
-  #
-  if [ "$pg" = "node" ]; then
-    zcashParams "${common}/${pg}-zcash" \
-      "${staging_dir}/usr/share/zcash-params"
-  fi
-
+# XXX
   if [ "$pg" = "dal-node" ]; then
     # call the install script to make available the
     # zcash parameters on the build host
     scripts/install_dal_trusted_setup.sh
-    zcashParams "${common}/${pg}-zcash" \
-      "${staging_dir}/usr/share/dal-trusted-setup" \
+    zcashParams "${staging_dir}/usr/share/dal-trusted-setup" \
       _opam/share/dal-trusted-setup
   fi
 

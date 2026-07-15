@@ -1,0 +1,30 @@
+[Unit]
+Description=octez-signer
+Documentation=https://tezos.gitlab.io/
+After=network.target
+
+[Service]
+Environment="DATADIR=/var/tezos/.tezos-signer"
+Environment="ADDRESS=127.0.0.1 PORT=6732"
+EnvironmentFile=-/etc/default/octez-signer
+User=tzsigner
+Group=tzsigner
+WorkingDirectory=~
+Restart=on-failure
+RestartSec=10s
+KillMode=control-group
+TimeoutStartSec=30s
+TimeoutStopSec=300s
+
+ExecStart=/usr/bin/octez-signer launch http signer \
+    --data-dir $DATADIR \
+    --address $ADDRESS --port $PORT \
+    $MAGIC_BYTES $HWM_CHECK \
+    $RUNTIME_OPTS
+Slice=octez.slice
+
+StandardOutput=append:/var/log/tezos/octez-signer.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target

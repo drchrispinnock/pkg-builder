@@ -2,32 +2,61 @@
 
 <h1>Octez packages</h1>
 
-<em>Warning: these packages have diverged from the official packages supplied by Nomadic Labs. I suggest you use those packages unless you are following one of Chris's tutorials (or know what you are doing).</em>
+<em>Looking for the old site? Go here <a href="https://oldpackages.tzinit.org/"<oldpackages.tzinit.org</a>.</em>
+
+<em>These packages are provided by the Tezos Foundation and are currently under test. They are different from the official packages supplied by Nomadic Labs, which are being deprecated.</em>
+
+<p>For Debian and Ubuntu, you import the GPG key and use the apt repository.
+
+    <pre>
+curl -s "https://apt.tzinit.org/keys/tzinit.asc" | \
+    sudo gpg --dearmor -o /etc/apt/keyrings/tzinit.gpg
+
+echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/debian trixie main" | \
+    sudo tee /etc/apt/sources.list.d/tzinit-octez.list
+
+sudo apt update
+sudo apt install -y octez-baker
+    </pre>
+
+Replace <em>debian</em> with <em>ubuntu</em> and <em>trixie</em> with <em>bookworm</em>, etc.
 
 <table>
 <tr>
 <td>OS</td>
 <td>Debian 13</td>
 <td>Debian 13</td>
-<td>Rocky Linux 9</td>
+<td>Ubuntu 24.04</td>
+<td>Ubuntu 24.04</td>
 </tr>
+<tr>
+    <td></td>
+<td>trixie</td>
+<td>trixie</td>
+<td>noble</td>
+<td>noble</td>
+</tr>
+<tr></tr>
 <tr>
 <td>Arch</td>
 <td>x86_64</td>
 <td>arm64</td>
 <td>x86_64</td>
+<td>arm64</td>
 </tr>
 <tr>
 <td>Release</td>
-<td><a href="debian-13/">release</a>
-<td><a href="debian-13-arm64/">release</a>
-<td><a href="rocky-linux-9/">release</a>
+<td><a href="release/debian-13/">release</a>
+<td><a href="release/debian-13-arm64/">release</a>
+<td><a href="release/ubuntu-2404-lts/">release</a>
+<td><a href="release/ubuntu-2404-lts-arm64/">release</a>
 </tr>
 <tr>
 <td>Dev versions</td>
-<td><a href="debian-13/dev/">dev</a>
-<td><a href="debian-13-arm64/dev/">dev</a>
-<td><a href="rocky-linux-9/dev/">dev</a>
+<td><a href="DEVEL/debian-13/">dev</a>
+<td><a href="DEVEL/debian-13-arm64/">dev</a>
+<td><a href="DEVEL/ubuntu-2404-lts/">release</a>
+<td><a href="DEVEL/ubuntu-2404-lts-arm64/">release</a>
 </tr>
 </table>
 
@@ -42,4 +71,3 @@
 </ul>
 
 </body></html>
-

@@ -1,43 +1,157 @@
 #!/bin/bash
 
-# $0 [branch [target1 [target2 [ ... ]]]]
+# Check for Google Cloud tools
+#
+which gcloud >/dev/null 2>&1
+if [ "$?" != "0" ]; then
+    echo "Please install gcloud and initiate a login session" >&2
+    exit 1
+fi
 
-[ -z "$1" ] && echo "Usage: $0 branch [targets [revision]]" && exit 1
+# Defaults
+#
+DEVELOPER=0
+OVERRIDEVERS=""
+
+# Sync packages
+#
+SYNCPKG=1
+PKGNAME=octez
+BUILDAPT=0
+BUILDSITE=0
+
+# Default targets
+#
+TARGETS="debian-13"
+[ -f "platforms" ] && TARGETS=$(cat platforms)
+
+# Default branch in latest-release
+#
+BRANCH="latest-release"
+ROOT="release"
+TROOT=""
+
+# Status sleep - poll every n minutes
+#
+STATUSSLEEP=180 # 3 minutes
+
+# Pull in environment
+#
+[ -f "environment" ] && . ./environment
+
+# The package revision
+#
+REVISION=1
+
+usagestring="Usage: build_pkg.sh [--branch GitBranch]                                                            [--srn-branch Branch for Smart Rollup Node]                                     [--evm-branch Branch for EVM Node]                                              [--targets \"debian-13 ...\"]                                                     [--revision package revision]                                                   [--project GCP project]                                                         [--service-account GCP service account]                                         [--bucket GCP storage bucket]                                                   [--(no)-sync] whether to sync the packages to the bucket                        [--sleep seconds] interval between polls                                        [--devmode] push a developer variable through the process"
+
+Usage() {
+    _exit="$1"
+    echo "$usagestring" >&2
+    exit $_exit
+}
+
+while [ $# -gt 0 ]; do
+    case $1 in
+        --targets|--target|-T)
+            TARGETS="$2"; shift; ;;
+        --branch|-B)
+            BRANCH="$2"; shift; ;;
+        --devmode|-D)
+            DEVELOPER=1 ;;
+        --srn-branch)
+            SRNBRANCH="$2"; shift; ;;
+        --evm-branch)
+            EVMBRANCH="$2"; shift; ;;
+        --override-version|-O) OVERRIDEVERS="$2"; shift; ;;
+        --revision|-R)
+            REVISION="$2"; shift; ;;
+        --project|-P)
+            PROJECT="$2"; shift; ;;
+        --pkgname)
+            PKGNAME="$2"; shift; ;;
+        --service-account|-S)
+            SERVICEACCT="$2"; shift; ;;
+        --bucket|-b)
+            BUCKET="$2"; shift; ;;
+        --sleep)
+            STATUSSLEEP="$2"; shift; ;;
+        --sync|--sync-packages)
+            SYNCPKG=1; ;;
+        --no-sync|--no-sync-packages)
+            SYNCPKG=0; ;;
+        --buildapt)
+            BUILDAPT=1; ;;
+        --buildsite)
+            BUILDSITE=1; ;;
+        --help|-h) Usage 0; ;;
+        -*) Usage 1; ;;
+    esac
+    shift
+done
+
+case $BRANCH in
+    octez-v*rc*|octez-v*beta*)
+        echo "Release candidate"
+        TROOT=${BUCKET}/incoming/RC
+        [ "$DEVELOPER" = "1" ] && TROOT=${BUCKET}/testing/RC
+        ROOT="rc"
+        ;;
+    latest-release|octez-v*)
+        echo "Release"
+        TROOT=${BUCKET}/incoming
+        [ "$DEVELOPER" = "1" ] && TROOT=${BUCKET}/testing
+        ;;
+    *)
+        echo "Development"
+        TROOT=${BUCKET}/incoming/DEVEL
+        [ "$DEVELOPER" = "1" ] && TROOT=${BUCKET}/testing/DEVEL
+        ROOT="dev"
+        ;;
+esac
+
+
+# Nous the EVM and SRN branch
+if [ "$BRANCH" = "latest-release" ] && [ -z "$EVMBRANCH" ] && [ -z "$SRNBRANCH" ] && [ -f latest-releases.env ]; then
+    . ./latest-releases.env
+fi
+
+[ -z "$EVMBRANCH" ] && EVMBRANCH=${BRANCH}
+[ -z "$SRNBRANCH" ] && SRNBRANCH=${BRANCH}
 
 # Project - must be setup
 #
-[ -f environment ] && . environment
+[ -z "${PROJECT}" ] && echo "GCP PROJECT must be set" && exit 1
+[ -z "${SERVICEACCT}" ] && echo "GCP SERVICEACCT must be set" && exit 1
+[ -z "${BUCKET}" ] && echo "GCP BUCKET must be set" && exit 1
 
-[ -z "${PROJECT}" ] && echo "PROJECT must be set" && exit 1
-[ -z "${SERVICEACCT}" ] && echo "SERVICEACCT must be set" && exit 1
-[ -z "${BUCKET}" ] && echo "BUCKET must be set" && exit 1
-
-X86=${X86:-c3-standard-8}
-X86ZONE=${X86ZONE:-europe-west1-b}
-ARM64=${ARM64:-t2a-standard-8}
-ARMZONE=${ARMZONE:-us-central1-a}
+X86=${X86:-e2-standard-8}
+X86ZONE=${X86ZONE:-europe-west6-a}
+ARM64=${ARM64:-c4a-standard-8}
+ARMZONE=${ARMZONE:-europe-west6-b}
 SIZE=${SIZE:-200}
 
 FAIL=0
 
-TARGETS="debian-12" 
-
-[ -f "platforms" ] && TARGETS=$(cat platforms)
-
-[ -z "$OVERRIDE" ] && echo "Override version: $OVERRIDE"
-
-BRANCH="latest-release"
-[ ! -z "$1" ] && BRANCH=$1
-[ ! -z "$2" ] && TARGETS="$2"
-[ ! -z "$3" ] && REVISION="$3"
-
-FORCE=1
-STATUSSLEEP=120 # 2 minutes
-
-CLEANUPSH=cleanup.$$.sh
-CONNECT=connect.$$.txt
+TAG=$$
+CLEANUPSH=cleanup.$TAG.sh
+CONNECT=connect.$TAG.txt
+LOCALLOG=log.$TAG.txt
 rm -f ${CLEANUPSH}
-LOCALLOG=log.$$.txt
+
+echo "Package build"
+printf "TARGETS:  ";
+for t in ${TARGETS}; do printf "$t "; done; echo ""
+echo "BRANCH:   ${BRANCH}"
+echo "EVM:      ${EVMBRANCH}"
+echo "SRN:      ${SRNBRANCH}"
+echo "Revision: ${REVISION}"
+echo "Clean-up: ${CLEANUPSH}"
+echo "Connect:  ${CONNECT}"
+echo "Log:      ${LOCALLOG}"
+echo "Root:     ${TROOT}"
+echo "CTRL+C to break. Sleeping 5 seconds..."
+sleep 5
 
 seed=`date +%Y%m%d%H%M%S`
 
@@ -46,47 +160,39 @@ log() {
 	echo "$date: $1"
 }
 
-# Can be run from cron and will use git-monitor to see if 
-# there are any changes on the branch
-#
-if [ "$FORCE" = "0" ]; then
-	git-monitor check | grep ${BRANCH}
-	if [ "$?" != "0" ]; then
-		log "Nothing to do"
-		exit 0
-	fi
-fi
-
 echo "===> Building from branch: ${BRANCH}"
-	
-PKGNAME=octez-unoff
+
+VMLIST=""
+declare -A OSFORNAME
+declare -A ZONEFORNAME
 
 # Setup VMs and despatch
 #
 for OS in ${TARGETS}; do
 
 	NAME=bd-${seed}-${OS}
-	echo "===> ${NAME}"
+	echo "==> ${NAME}"
 
 	IMAGE=`./helpers/parse_images.pl ${OS}`
-	TARGETDIR=${BUCKET}/${OS}
-	
-	# Bring up a VM
-	#
+
 	MACHINE=${X86}
 	ZONE=${X86ZONE}
+	disktype="pd-balanced"
 	echo ${OS} | grep 'arm64' >/dev/null 2>&1
 	if [ "$?" = "0" ]; then
 		MACHINE=${ARM64}
 		ZONE=${ARMZONE}
+		disktype="hyperdisk-balanced"
 	fi
-	
+	OSFORNAME[${NAME}]=${OS}
+	ZONEFORNAME[${NAME}]=${ZONE}
+
 	echo "=> Using image ${IMAGE}"
 	gcloud -q compute instances create ${NAME} \
-       	 --zone=${ZONE} \
-	 --project=${PROJECT} \
+        --zone=${ZONE} \
+        --project=${PROJECT} \
         --machine-type=${MACHINE} \
-        --create-disk=auto-delete=yes,boot=yes,device-name=${NAME},image=${IMAGE},mode=rw,size=${SIZE},type=projects/${PROJECT}/zones/${ZONE}/diskTypes/pd-balanced \
+        --create-disk=auto-delete=yes,boot=yes,device-name=${NAME},image=${IMAGE},mode=rw,size=${SIZE},type=projects/${PROJECT}/zones/${ZONE}/diskTypes/${disktype} \
         --network-interface=network-tier=PREMIUM,stack-type=IPV4_ONLY,subnet=default \
         --maintenance-policy=MIGRATE \
         --provisioning-model=STANDARD \
@@ -101,62 +207,90 @@ for OS in ${TARGETS}; do
 	if [ "$?" != "0" ]; then
 		echo ${OS} initiation failure
 	else
-		
-		echo "=> Waiting for VM"
-		sleep 30
+
+
 		echo "=> To connect use:"
 		echo "gcloud compute ssh ${NAME} --zone=${ZONE} --project=${PROJECT}"
 		echo "gcloud compute ssh ${NAME} --zone=${ZONE} --project=${PROJECT}" >> ${CONNECT}
-		echo "=> Starting build"
-		FAIL=3
-		while [ $FAIL -gt 0 ]; do
-			gcloud -q compute scp --recurse pkgscripts \
-				${NAME}:pkgscripts \
-				--zone=${ZONE} \
-				--project=${PROJECT}
-			gcloud -q compute scp helpers/_buildscript.sh ${NAME}:buildscript.sh --zone=${ZONE} \
-				--project=${PROJECT} >> ${LOCALLOG} 2>&1
-			[ "$?" = "0" ] && break
-			FAIL=$((FAIL-1))
-			sleep 5
-			
-		done
+		VMLIST="${VMLIST} ${NAME}"
 
-		if [ "$FAIL" = "0" ]; then
-			echo buildscript initiation failure
-		else
-			VMLIST="${VMLIST} ${NAME}"
-			gcloud -q compute ssh ${NAME} --zone=${ZONE} \
-				--project=${PROJECT} \
-				--command="nohup sh ./buildscript.sh ${TARGETDIR} ${BRANCH} ${PKGNAME} ${REVISION} > buildlog.log 2>&1 &" \
-				>> ${LOCALLOG} 2>&1
-			echo "gcloud -q compute instances delete ${NAME} \
-		        --zone=${ZONE} --delete-disks=all --project=${PROJECT}" >> ${CLEANUPSH}
-			chmod +x ${CLEANUPSH}
-		fi
 	fi
+done
 
+echo "=> Waiting for dust to settle"
+sleep 45
+
+echo "===> Starting build"
+NEWVMLIST=""
+
+for NAME in ${VMLIST}; do
+
+	VMFAIL=3
+
+	OS=${OSFORNAME[${NAME}]}
+	ZONE=${ZONEFORNAME[${NAME}]}
+
+	echo "==> $NAME ($ZONE)"
+
+	while [ $VMFAIL -gt 0 ]; do
+	    gcloud -q compute scp helpers/_buildscript.sh ${NAME}:buildscript.sh --zone=${ZONE} \
+		    --project=${PROJECT} >> ${LOCALLOG} 2>&1
+
+		[ "$?" = "0" ] && break
+		VMFAIL=$((VMFAIL-1))
+		echo "Cannot connect - waiting"
+		sleep 30
+
+	done
+
+	if [ "$VMFAIL" = "0" ]; then
+		echo Cannot start build on $NAME
+		FAIL=1
+	else
+
+
+        TARGETDIR=${TROOT}/${OS}
+	    NEWVMLIST="${NEWVMLIST} ${NAME}"
+		gcloud -q compute ssh $NAME \
+			--command "mkdir -p pkg-builder" \
+			--zone=${ZONE} \
+			--project=${PROJECT}
+
+		gcloud -q compute scp --recurse pkgscripts \
+			${NAME}:pkg-builder/pkgscripts \
+			--zone=${ZONE} \
+			--project=${PROJECT} >> ${LOCALLOG} 2>&1
+
+        EXTRACLIOPTS=""
+        [ "$DEVELOPER" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --devmode"
+        [ -n "$OVERRIDEVERS" ] && EXTRACLIOPTS="$EXTRACLIOPTS --override-version $OVERRIDEVERS"
+		gcloud -q compute ssh ${NAME} --zone=${ZONE} \
+			--project=${PROJECT} \
+			--command="./buildscript.sh --targetdir ${TARGETDIR} \
+			        --branch ${BRANCH} \
+					--evm-branch ${EVMBRANCH} --srn-branch ${SRNBRANCH} \
+					--pkgname ${PKGNAME} --revision ${REVISION} \
+					    ${EXTRACLIOPTS}> buildlog.log 2>&1 &" \
+			>> ${LOCALLOG} 2>&1
+		echo "gcloud -q compute instances delete ${NAME} \
+	        --zone=${ZONE} --delete-disks=all --project=${PROJECT}" >> ${CLEANUPSH}
+		chmod +x ${CLEANUPSH}
+	fi
 done
 
 echo "rm -f ${CLEANUPSH} ${CONNECT} ${LOCALLOG}" >> ${CLEANUPSH}
+VMLIST=${NEWVMLIST}
 
 while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
-
+    NEWVMLIST=""
 	echo "====> Status at `date`"
 
-	NEWVMLIST=""
+	statusfile="status.$$"
 
-	statusfile="status.$$"	
 	for NAME in ${VMLIST}; do
-	
-		ZONE=${X86ZONE}
-		echo ${NAME} | grep 'arm64' >/dev/null 2>&1
-	
-		if [ "$?" = "0" ]; then
-			ZONE=${ARMZONE}
-		fi
-		
-		printf "${NAME}\t"
+
+	    ZONE=${ZONEFORNAME[${NAME}]}
+		printf "${NAME} ($ZONE)\t"
 		# Poll for success
 		rm -f $statusfile
 		state="NONE"
@@ -170,19 +304,23 @@ while [ "`echo ${VMLIST} | tr -d ' '`" != "" ]; do
 		#
 
 		if [ "$state" = "FINISHED" ]; then
-			gcloud -q compute instances delete ${NAME} \
-			        --zone=${ZONE} --delete-disks=all \
-				--project=${PROJECT} >> ${LOCALLOG} 2>&1
+		    if [ "$DEVELOPER" = "0" ]; then
+				gcloud -q compute instances delete ${NAME} \
+		            --zone=${ZONE} --delete-disks=all \
+					--project=${PROJECT} >> ${LOCALLOG} 2>&1
+			fi
 			echo "FINISHED"
-		else if [[ "$state" =~ "FAILED:".* ]]; then
-			echo "$state"
-			FAIL=1
-			FAILVMLIST="${FAILVMLIST} ${NAME}"
-		else
-			echo "$state"
-			NEWVMLIST="${NEWVMLIST} ${NAME}"
-		fi; fi
 
+		else
+		    if [[ "$state" =~ "FAILED:".* ]]; then
+				echo "$state"
+				FAIL=1
+				FAILVMLIST="${FAILVMLIST} ${NAME}"
+		    else
+				echo "$state"
+				NEWVMLIST="${NEWVMLIST} ${NAME}"
+		    fi
+		fi
 	done
 
 	if [ "${NEWVMLIST}" != "" ]; then
@@ -197,7 +335,16 @@ rm -f ${CLEANUPSH}
 rm -f ${LOCALLOG}
 rm -f ${CONNECT}
 
-sh helpers/sync_pkg.sh down
-sh helpers/index.sh
-sh helpers/sync_pkg.sh up
-
+if [ "$SYNCPKG" = "1" ]; then
+    bash helpers/dwn_pkg.sh
+    if [ "$BUILDAPT" = "1" ]; then
+        bash helpers/aptrepo.sh --root $ROOT
+    else
+        echo "Run bash helpers/aptrepo.sh --root $ROOT at your convenience"
+    fi
+    if [ "$BUILDSITE" = "1" ]; then
+        bash helpers/mksite.sh
+    else
+        echo "Run bash helpers/mksite.sh at your convenience"
+    fi
+fi

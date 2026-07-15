@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./octez-evm-node --version | sed -e 's/)$//g' -e 's/.*octez-evm-node //g' -e 's/ (build.*$//g'

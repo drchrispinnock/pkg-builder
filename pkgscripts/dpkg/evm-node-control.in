@@ -1,0 +1,8 @@
+Package: @PKG@
+Version: @VERSION@
+Architecture: @ARCH@
+Maintainer: @MAINT@
+Section: net
+Priority: optional
+Description: The Octez EVM node
+Depends: @DEPENDS@

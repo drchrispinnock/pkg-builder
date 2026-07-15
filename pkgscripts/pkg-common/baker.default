@@ -1,0 +1,20 @@
+# Data Directory
+# An independent mount point of /var/tezos is recommended
+#
+DATADIR=/var/tezos/.tezos-node
+
+# Keys to bake with (if empty, try to bake with all in the wallet)
+KEYS=""
+
+# To use DAL, install the DAL node package, configure and
+# use localhost.
+#
+DAL_OPTIONS="--without-dal"
+#DAL_OPTIONS="--dal-node http://localhost:8732"
+
+# This must be set and is your decision
+#LQ_VOTE="pass"
+
+# Other options to pass to the baker
+#
+RUNTIME_OPTS=""

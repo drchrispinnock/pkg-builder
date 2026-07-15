@@ -1,0 +1,16 @@
+# This setup will help you run an operator/observer end endpoint
+# If you want to run the sequencer you'll need to install your
+# own systemctl file.
+#
+DATADIR=/var/tezos/.octez-evm-node
+
+# Open RPC
+RPCADDR=0.0.0.0
+RPCPORT=8545
+
+# Smart Rollup node
+ENDPOINT=http://localhost:8932"
+
+# Other options to pass the node
+#
+RUNTIME_OPTS=""

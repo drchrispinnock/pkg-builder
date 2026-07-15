@@ -1,0 +1,38 @@
+# The Octez Signer systemctl scripts are setup for serving over HTTP only
+# If you want to do something different, you'll need to set your own one up.
+#
+DATADIR=/var/tezos/.tezos-signer
+
+PORT=6732
+
+# To run on the network use 0.0.0.0
+ADDRESS=127.0.0.1
+#ADDRESS=0.0.0.0
+
+# HWM restriction check (double bake protection)
+#
+HWM_CHECK=""
+#HWM_CHECK="-W"
+
+# Restrict the signer to the following types - the default
+# is to allow all types. This may not be what you want for your
+# production system. Prepend with -M
+# Magic bytes:
+#
+# Legacy block 		0x01
+# Legacy end. 	    0x02
+# Transfer 		    0x03
+# Auth'ed signing request 0x04
+# Michelson data 	0x05
+# Block 	    	0x11
+# Pre-attest'n 	    0x12
+# Attestation	    0x13
+#
+MAGIC_BYTES=""
+
+# For Baking and Attesting (Endorsing) you might want
+#MAGIC_BYTES="-M 0x11,0x12,0x13"
+#HWM_CHECK="-W"
+
+# Your options
+RUNTIME_OPTS=""
