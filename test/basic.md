@@ -1,5 +1,7 @@
 # Basic test suite for hermes/claw
 
+(Successfully tested last on 15/7/2026)
+
 Hi Terry. I would like you to test a set of Octez packages for me. I would also like you to start afresh and do this from a fresh perspective, i.e. avoid any implicit knowledge that might skew the testing.
 
 Please set up a VM on GCP with 16GB RAM and 200GB of disc. Please follow the instructions at
