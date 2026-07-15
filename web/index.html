@@ -2,11 +2,13 @@
 
 <h1>Octez packages</h1>
 
-<em>These packages are provided by the Tezos Foundation and are currently under test. They are different from the official packages supplied by Nomadic Labs, which are being deprecated.</>
+<em>Looking for the old site? Go here <a href="https://oldpackages.tzinit.org/"<oldpackages.tzinit.org</a>.</em>
+
+<em>These packages are provided by the Tezos Foundation and are currently under test. They are different from the official packages supplied by Nomadic Labs, which are being deprecated.</em>
 
 <p>For Debian and Ubuntu, you import the GPG key and use the apt repository.
 
-    <code>
+    <pre>
 curl -s "https://apt.tzinit.org/keys/tzinit.asc" | \
     sudo gpg --dearmor -o /etc/apt/keyrings/tzinit.gpg
 
@@ -15,7 +17,7 @@ echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/debian
 
 sudo apt update
 sudo apt install -y octez-baker
-    </code>
+    </pre>
 
 Replace <em>debian</em> with <em>ubuntu</em> and <em>trixie</em> with <em>bookworm</em>, etc.
 
