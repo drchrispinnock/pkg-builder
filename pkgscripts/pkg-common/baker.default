@@ -3,6 +3,9 @@
 #
 DATADIR=/var/tezos/.tezos-node
 
+# Keys to bake with (if empty, try to bake with all in the wallet)
+KEYS=""
+
 # To use DAL, install the DAL node package, configure and
 # use localhost.
 #
