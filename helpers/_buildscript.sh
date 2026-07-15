@@ -3,13 +3,17 @@
 
 TARGET=""
 OCTEZ_PKGREV=1
-OCTEZ_PKGMAINTAINER="dpkg@chrispinnock.com" # XXX
+OCTEZ_PKGMAINTAINER="packages@tezos.foundation"
 IGNOREOPAMDEPS=0
 DEVELOPER=0
 PKGNAME="octez"
 OVERRIDEVERS=""
 
 ME=$HOME/pkg-builder/pkgscripts
+
+BRANCH=""
+EVMBRANCH=""
+SRNBRANCH=""
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -56,6 +60,8 @@ fail () {
 export OPAMYES="true"
 
 [ -z "$BRANCH" ] && BRANCH=master
+[ -z "$EVMBRANCH" ] && EVMBRANCH=$BRANCH
+[ -z "$SRNBRANCH" ] && SRNBRANCH=$BRANCH
 
 echo "PKGNAME: ${PKGNAME}"
 echo "BRANCH: $BRANCH"
@@ -87,6 +93,11 @@ REGULARPKG="zcash-params client node baker dal-node teztale-archiver"
 
 CLIOPTS="--revision $OCTEZ_PKGREV --pkgname $PKGNAME $EXTRACLIOPTS"
 
+if [ "$BRANCH" = "master" ]; then
+    today="$(date +%Y%m%d%H%M)"
+    [ -z "$OVERRIDEVERS" ] && OVERRIDEVERS=$today
+fi
+
 build $BRANCH
 status "PACKAGES"
 $TOOL --packages "${REGULARPKG}" $CLIOPTS
@@ -104,7 +115,12 @@ fi
 if [ "$SRNBRANCH" != "$BRANCH" ]; then
     build $SRNBRANCH
     status "SRN PACKAGES"
-    $TOOL --packages "smart-rollup-node" $CLIOPTS
+    echo $SRNBRANCH | grep ^octez-smart-rollup-node-v >/dev/null
+    if [ $? = "0" ]; then
+        $_vers_sr=$(echo $SRNBRANCH | sed -e 's/^octez-smart-rollup-node-v//g')
+        CLIOPTS="$CLIOPTS --override-version $_vers_sr"
+    fi
+    $TOOL --packages "smart-rollup-node"  $CLIOPTS
     [ "$?" != "0" ] && softfail "SRN PACKAGES"
     mv octez-smart-rollup*$EXT $STAGING
 fi
@@ -113,6 +129,8 @@ fi
 #
 
 status "COPY TO CLOUD"
+touch .init
+gcloud storage cp .init ${TARGET}/.init
 gcloud storage cp $STAGING/octez-*${EXT} ${TARGET}
 [ "$?" != "0" ] && fail "COPY TO CLOUD"
 

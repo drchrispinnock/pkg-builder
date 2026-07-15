@@ -1,7 +1,9 @@
 # Basic test suite for hermes/claw
 
-Hi Terry. I would like you to test this set of packages for me. Please set up a VM on GCP with 16GB RAM and 200GB of disc. Please follow the instructions at
-https://chrispinnock.com/2026/04/03/quick-start-guide-for-the-impatient-bakers.html more or less with the following changes:
+Hi Terry. I would like you to test a set of Octez packages for me. I would also like you to start afresh and do this from a fresh perspective, i.e. avoid any implicit knowledge that might skew the testing.
+
+Please set up a VM on GCP with 16GB RAM and 200GB of disc. Please follow the instructions at
+https://chrispinnock.com/2026/04/03/quick-start-guide-for-the-impatient-bakers.html with the following changes:
 
 1. I want you to use this GPG key and APT repository setup.
 

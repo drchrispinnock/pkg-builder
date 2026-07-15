@@ -2,6 +2,8 @@
 
 aptrepos="./repos"
 incoming="./incoming"
+root="release"
+maproot=""
 grepos="gs://apt-tzinit-org"
 tidy=0
 
@@ -26,10 +28,33 @@ while [ $# -gt 0 ]; do
             tidy=1 ;;
         --no-tidy)
             tidy=0 ;;
+        --root)
+            root="$2"; shift ;;
         -*) echo "WARN: unknown option $1" >&2; ;;
     esac
     shift
 done
+
+# Multiple repos handling for DEVEL, RC, etc
+#
+subdir="$aptrepos"
+case $root in
+    release)
+        subdir="$aptrepos"
+        maproot=""
+        ;;
+    dev|devel|DEVEL)
+        subdir="$aptrepos/DEVEL"
+        maproot="DEVEL"
+        ;;
+    rc|RC)
+        subdir="$aptrepos/RC"
+        maproot="RC"
+        ;;
+    *)
+        echo "Root must be release, dev or rc" && exit 2
+        ;;
+esac
 
 gcliops=""
 [ "$tidy" = "1" ] && gcliops="$gcliops --delete-unmatched-destination-objects"
@@ -45,14 +70,14 @@ cp apt/keys/*.asc $aptrepos/keys
 
 for os in debian ubuntu; do
     echo "==> $os"
-    mkdir -p $aptrepos/$os/conf
+    mkdir -p $subdir/$os/conf
     if [ ! -f apt/$os/distributions ]; then
         echo "No config for $os"
         continue
     fi
 
-    cp apt/$os/distributions $aptrepos/$os/conf
-    cp apt/$os/options $aptrepos/$os/conf
+    cp apt/$os/distributions $subdir/$os/conf
+    cp apt/$os/options $subdir/$os/conf
 
     for targ in $targets; do
 
@@ -61,14 +86,14 @@ for os in debian ubuntu; do
         resolve=$(echo $targ | awk -F'-' '{print $1}')
 
         if [ "$resolve" = "$os" ]; then
-            echo "===> $targ"
-            #ls -l $incoming/$targ
-            reprepro -b $aptrepos/$os includedeb $codename $incoming/$targ/*.deb
+            echo "===> $targ ($root - target $subdir/$os)"
+            reprepro -b $subdir/$os includedeb $codename $incoming/$maproot/$targ/*.deb
+            reprepro -b $subdir/$os export $codename
         fi
-        reprepro -b $aptrepos/$os export $codename
 
     done
 
+    echo "Syncing $aptrespos to $grepos"
     gcloud storage rsync -r $gcliops $aptrepos/ $grepos
 
 done

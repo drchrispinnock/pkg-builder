@@ -27,6 +27,8 @@ TARGETS="debian-13"
 # Default branch in latest-release
 #
 BRANCH="latest-release"
+ROOT="release"
+TROOT=""
 
 # Status sleep - poll every n minutes
 #
@@ -85,6 +87,27 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+case $BRANCH in
+    octez-v*rc*|octez-v*beta*)
+        echo "Release candidate"
+        TROOT=${BUCKET}/incoming/RC
+        [ "$DEVELOPER" = "1" ] && TROOT=${BUCKET}/testing/RC
+        ROOT="rc"
+        ;;
+    latest-release|octez-v*)
+        echo "Release"
+        TROOT=${BUCKET}/incoming
+        [ "$DEVELOPER" = "1" ] && TROOT=${BUCKET}/testing
+        ;;
+    *)
+        echo "Development"
+        TROOT=${BUCKET}/incoming/DEVEL
+        [ "$DEVELOPER" = "1" ] && TROOT=${BUCKET}/testing/DEVEL
+        ROOT="dev"
+        ;;
+esac
+
+
 # Nous the EVM and SRN branch
 if [ "$BRANCH" = "latest-release" ] && [ -z "$EVMBRANCH" ] && [ -z "$SRNBRANCH" ] && [ -f latest-releases.env ]; then
     . ./latest-releases.env
@@ -123,6 +146,7 @@ echo "Revision: ${REVISION}"
 echo "Clean-up: ${CLEANUPSH}"
 echo "Connect:  ${CONNECT}"
 echo "Log:      ${LOCALLOG}"
+echo "Root:     ${TROOT}"
 echo "CTRL+C to break. Sleeping 5 seconds..."
 sleep 5
 
@@ -221,8 +245,8 @@ for NAME in ${VMLIST}; do
 		FAIL=1
 	else
 
-    TARGETDIR=${BUCKET}/incoming/${OS}
-	[ "$DEVELOPER" = "1" ] && TARGETDIR=${BUCKET}/testing/${OS}
+
+        TARGETDIR=${TROOT}/${OS}
 	    NEWVMLIST="${NEWVMLIST} ${NAME}"
 		gcloud -q compute ssh $NAME \
 			--command "mkdir -p pkg-builder" \
@@ -242,7 +266,8 @@ for NAME in ${VMLIST}; do
 			--command="./buildscript.sh --targetdir ${TARGETDIR} \
 			        --branch ${BRANCH} \
 					--evm-branch ${EVMBRANCH} --srn-branch ${SRNBRANCH} \
-					--pkgname ${PKGNAME} --revision ${REVISION} ${EXTRACLIOPTS}> buildlog.log 2>&1 &" \
+					--pkgname ${PKGNAME} --revision ${REVISION} \
+					    ${EXTRACLIOPTS}> buildlog.log 2>&1 &" \
 			>> ${LOCALLOG} 2>&1
 		echo "gcloud -q compute instances delete ${NAME} \
 	        --zone=${ZONE} --delete-disks=all --project=${PROJECT}" >> ${CLEANUPSH}
@@ -310,8 +335,8 @@ rm -f ${CONNECT}
 if [ "$SYNCPKG" = "1" ]; then
     bash helpers/dwn_pkg.sh
     if [ "$BUILDAPT" = "1" ]; then
-        bash helpers/aptrepo.sh
+        bash helpers/aptrepo.sh --root $ROOT
     else
-        echo "Run bash helpers/aptrepo.sh at your convenience"
+        echo "Run bash helpers/aptrepo.sh --root $ROOT at your convenience"
     fi
 fi

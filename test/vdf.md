@@ -1,5 +1,7 @@
 # VDF server
 
+(Success run on 15/7/2026)
+
 1. Please set up a GCP instance with 16GB of RAM and 200GB of hard disc.
 
 2. Set up the APT repos
