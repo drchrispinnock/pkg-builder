@@ -117,7 +117,7 @@ if [ "$SRNBRANCH" != "$BRANCH" ]; then
     status "SRN PACKAGES"
     echo $SRNBRANCH | grep ^octez-smart-rollup-node-v >/dev/null
     if [ $? = "0" ]; then
-        $_vers_sr=$(echo $SRNBRANCH | sed -e 's/^octez-smart-rollup-node-v//g')
+        _vers_sr=$(echo $SRNBRANCH | sed -e 's/^octez-smart-rollup-node-v//g')
         CLIOPTS="$CLIOPTS --override-version $_vers_sr"
     fi
     $TOOL --packages "smart-rollup-node"  $CLIOPTS
@@ -134,6 +134,10 @@ gcloud storage cp .init ${TARGET}/.init
 gcloud storage cp $STAGING/octez-*${EXT} ${TARGET}
 [ "$?" != "0" ] && fail "COPY TO CLOUD"
 
+
+if [ "$DEVELOPER" = "1" ]; then
+    status "DEVELOPER MODE"
+fi
 # Sending this will tell the master process to take down this VM
 #
 status "FINISHED"
