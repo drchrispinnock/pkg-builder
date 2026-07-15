@@ -8,8 +8,12 @@ TARGETS="debian-12 debian-12-arm64"
 [ -f "platforms" ] && TARGETS=$(cat platforms)
 TARGETS="$TARGETS macos"
 
-mkdir -p $downloadsite
+mkdir -p $downloadsite/keys
 cp web/index.html $downloadsite
+cp apt/keys/*.asc $downloadsite/keys
+
+bash ./helpers/mks3idx $downloadsite/keys > $downloadsite/keys/index.html
+
 mkdir -p $downloadsite/release
 mkdir -p $downloadsite/DEVEL
 mkdir -p $downloadsite/RC
@@ -25,7 +29,8 @@ for t in release DEVEL RC; do
            mkdir -p $downloadsite/$t/$target
            cp -pR incoming/$s/$target/*.deb $downloadsite/$t/$target
            for file in $downloadsite/$t/$target/*.deb; do
-               gpg -u packages@tezos.foundation --sign --detach --armor $file
+               rm -f "$file".asc
+               gpg --quiet -u packages@tezos.foundation --sign --detach --armor $file
            done
            bash ./helpers/mks3idx $downloadsite/$t/$target > $downloadsite/$t/$target/index.html
         fi
