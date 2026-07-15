@@ -18,6 +18,7 @@ OVERRIDEVERS=""
 SYNCPKG=1
 PKGNAME=octez
 BUILDAPT=0
+BUILDSITE=0
 
 # Default targets
 #
@@ -81,6 +82,8 @@ while [ $# -gt 0 ]; do
             SYNCPKG=0; ;;
         --buildapt)
             BUILDAPT=1; ;;
+        --buildsite)
+            BUILDSITE=1; ;;
         --help|-h) Usage 0; ;;
         -*) Usage 1; ;;
     esac
@@ -338,5 +341,10 @@ if [ "$SYNCPKG" = "1" ]; then
         bash helpers/aptrepo.sh --root $ROOT
     else
         echo "Run bash helpers/aptrepo.sh --root $ROOT at your convenience"
+    fi
+    if [ "$BUILDSITE" = "1" ]; then
+        bash helpers/mksite.sh
+    else
+        echo "Run bash helpers/mksite.sh at your convenience"
     fi
 fi
