@@ -13,6 +13,8 @@ targets="debian-13"
 declare -A CODENAMES
 CODENAMES["debian-13"]="trixie"
 CODENAMES["debian-12"]="bookworm"
+CODENAMES["ubuntu-2404-lts"]="noble"
+CODENAMES["ubuntu-2604-lts"]="resolute"
 
 while [ $# -gt 0 ]; do
     case $1 in
