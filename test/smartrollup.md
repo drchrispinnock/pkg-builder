@@ -34,5 +34,11 @@ octez-smart-rollup-node init observer config for sr19fMYrr5C4qqvQqQrDSjtP31GcrWj
   with operators --history-mode full --rpc-addr 0.0.0.0 --rpc-port 8932 \
                 --pre-images-endpoint "https://snapshots.tzinit.org/etherlink-shadownet/wasm_2_0_0"
 ```
+7. Get a snapshot from https://snapshots.tzinit.org/etherlink-shadownet/eth-shadownet.full
+and import it:
 
-7. Configure it and see what happens...
+```
+octez-smart-rollup-node snapshot import eth.shadownet.full
+```
+
+7. Start the smart rollup node with systemctl and see what happens!

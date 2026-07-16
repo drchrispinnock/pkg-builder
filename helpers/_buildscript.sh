@@ -8,6 +8,7 @@ IGNOREOPAMDEPS=0
 DEVELOPER=0
 PKGNAME="octez"
 OVERRIDEVERS=""
+BLSTP="0"
 
 ME=$HOME/pkg-builder/pkgscripts
 
@@ -32,6 +33,9 @@ while [ $# -gt 0 ]; do
             PKGNAME="$2"; shift; ;;
         --targetdir)
             TARGET="$2"; shift; ;;
+        --blst-portable)
+            BLSTP=1 ;;
+            ;;
         -*) echo "WARN: unknown option" >&2; ;;
     esac
     shift
@@ -98,14 +102,14 @@ if [ "$BRANCH" = "master" ]; then
     [ -z "$OVERRIDEVERS" ] && OVERRIDEVERS=$today
 fi
 
-build $BRANCH
+build $BRANCH $BLSTP
 status "PACKAGES"
 $TOOL --packages "${REGULARPKG}" $CLIOPTS
 [ "$?" != "0" ] && fail "PACKAGES"
 mv octez*$EXT $STAGING
 
 if [ "$EVMBRANCH" != "$BRANCH" ]; then
-    build $EVMBRANCH
+    build $EVMBRANCH $BLSTP
     status "EVM PACKAGES"
     $TOOL --packages "evm-node" $CLIOPTS
     [ "$?" != "0" ] && softfail "EVM PACKAGES"
@@ -113,7 +117,7 @@ if [ "$EVMBRANCH" != "$BRANCH" ]; then
 fi
 
 if [ "$SRNBRANCH" != "$BRANCH" ]; then
-    build $SRNBRANCH
+    build $SRNBRANCH $BLSTP
     status "SRN PACKAGES"
     echo $SRNBRANCH | grep ^octez-smart-rollup-node-v >/dev/null
     if [ $? = "0" ]; then

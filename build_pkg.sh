@@ -19,6 +19,7 @@ SYNCPKG=1
 PKGNAME=octez
 BUILDAPT=0
 BUILDSITE=0
+BLSTP=0
 
 # Default targets
 #
@@ -84,6 +85,8 @@ while [ $# -gt 0 ]; do
             BUILDAPT=1; ;;
         --buildsite)
             BUILDSITE=1; ;;
+        --blst-portable)
+            BLSTP=1 ;;
         --help|-h) Usage 0; ;;
         -*) Usage 1; ;;
     esac
@@ -101,6 +104,10 @@ case $BRANCH in
         echo "Release"
         TROOT=${BUCKET}/incoming
         [ "$DEVELOPER" = "1" ] && TROOT=${BUCKET}/testing
+        if [ "$BLSTP" = 1 ]; then
+            TROOT=${BUCKET}/incoming/BLSTPORTABLE
+            ROOT="BLSTPORTABLE"
+        fi
         ;;
     *)
         echo "Development"
@@ -109,6 +116,7 @@ case $BRANCH in
         ROOT="dev"
         ;;
 esac
+
 
 
 # Nous the EVM and SRN branch
@@ -264,6 +272,7 @@ for NAME in ${VMLIST}; do
         EXTRACLIOPTS=""
         [ "$DEVELOPER" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --devmode"
         [ -n "$OVERRIDEVERS" ] && EXTRACLIOPTS="$EXTRACLIOPTS --override-version $OVERRIDEVERS"
+        [ "$BLSTP" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --blst-portable"
 		gcloud -q compute ssh ${NAME} --zone=${ZONE} \
 			--project=${PROJECT} \
 			--command="./buildscript.sh --targetdir ${TARGETDIR} \

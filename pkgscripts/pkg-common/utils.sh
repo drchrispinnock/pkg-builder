@@ -34,14 +34,7 @@ RUSTVERSION=${RUSTVERSION:-1.88.0}
 #
 
 warnings() {
-  # Generic warning about BLST_PORTABLE=yes
-  #
-  BLST_PORTABLE=${BLST_PORTABLE:-notused}
-  if [ "$BLST_PORTABLE" != "yes" ]; then
-    echo "WARNING: BLST_PORTABLE is not set to yes in your environment"
-    echo "If the binaries were not made with BLST_PORTABLE=yes then they"
-    echo "might not run on some platforms."
-  fi
+
   if [ -z "$OCTEZ_PKGMAINTAINER" ]; then
     echo "WARNING: OCTEZ_PKGMAINTAINER is not set"
     exit 1
@@ -194,6 +187,7 @@ zcashParams() {
 build() {
 
     _br=${1}
+    _blstp=${2}
     git checkout $_br
     git pull
     rm -rf _build _opam ~/.opam
@@ -220,8 +214,12 @@ build() {
     # Make
     #
     status "MAKE ($_br)"
-    export BLST_PORTABLE=yes
-    make BLST_PORTABLE=yes
+    if [ "$_blstp" = "1" ]; then
+        export BLST_PORTABLE=yes
+        make BLST_PORTABLE=yes
+    else
+        make
+    fi
     [ "$?" != "0" ] && fail "MAKE"
     eval `opam env`
 }
