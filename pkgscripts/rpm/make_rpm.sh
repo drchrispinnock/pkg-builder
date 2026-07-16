@@ -19,7 +19,7 @@ myroot=../pkg-builder/pkgscripts
 
 
 dieonwarn=${dieonwarn:-1}
-pkg_vers=""
+override_pkg_vers=""
 pkg_rev="1"
 pkg_name="octez"
 pkg_realname="octez"
@@ -46,7 +46,7 @@ while [ $# -gt 0 ]; do
         --no-dieonwarn)
             dieonwarn="0"; ;;
         --override-version)
-            pkg_vers="$2"; shift; ;;
+            override_pkg_vers="$2"; shift; ;;
         --revision)
             pkg_rev="$2"; shift; ;;
         --myroot)
@@ -107,7 +107,8 @@ for pg in $packages; do
     specfile="$myhome/${pg}-spec.in"
     # Derivative variables
     #
-    pkg_vers=$(getOctezVersion $common $pg)
+    pkg_vers="$override_pkg_vers"
+    [ -z "$override_pkg_vers" ] && pkg_vers=$(getOctezVersion $common $pg)
     echo "===> Building package $pg v$pkg_vers rev $pkg_rev"
     rpm_name=${pkg_name}-${pg}
     init_name=${pkg_realname}-${pg}

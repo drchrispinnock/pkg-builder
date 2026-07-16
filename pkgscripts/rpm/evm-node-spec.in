@@ -20,7 +20,7 @@ The Octez EVM node
 
 %files
 %{_bindir}/octez-*
-%config %{_sysconfdir}/defaults/octez-evm-node
+%config %{_sysconfdir}/default/octez-evm-node
 %{_unitdir}/octez-evm-node.service
 
 %post

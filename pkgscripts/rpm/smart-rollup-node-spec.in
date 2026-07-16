@@ -20,7 +20,7 @@ The Octez Smart Rollup daemons
 
 %files
 %{_bindir}/octez-*
-%config %{_sysconfdir}/defaults/octez-smart-rollup
+%config %{_sysconfdir}/default/octez-smart-rollup
 %{_unitdir}/octez-smart-rollup.service
 
 %post
