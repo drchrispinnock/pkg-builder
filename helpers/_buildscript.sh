@@ -70,9 +70,7 @@ export OPAMYES="true"
 echo "PKGNAME: ${PKGNAME}"
 echo "BRANCH: $BRANCH"
 
-EXTRACLIOPTS=""
-[ "$DEVELOPER" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --devmode"
-[ -n "$OVERRIDEVERS" ] && EXTRACLIOPTS="$EXTRACLIOPTS --override-version $OVERRIDEVERS"
+
 
 
 # If there is apt it's a Debian style system
@@ -95,12 +93,16 @@ REGULARPKG="zcash-params client node baker dal-node teztale-archiver"
 [ "$EVMBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG evm-node"
 [ "$SRNBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG smart-rollup-node"
 
-CLIOPTS="--revision $REVISION --pkgname $PKGNAME $EXTRACLIOPTS"
-
 if [ "$BRANCH" = "master" ]; then
     today="$(date +%Y%m%d%H%M)"
     [ -z "$OVERRIDEVERS" ] && OVERRIDEVERS=$today
 fi
+
+EXTRACLIOPTS=""
+[ "$DEVELOPER" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --devmode"
+[ -n "$OVERRIDEVERS" ] && EXTRACLIOPTS="$EXTRACLIOPTS --override-version $OVERRIDEVERS"
+
+CLIOPTS="--revision $REVISION --pkgname $PKGNAME $EXTRACLIOPTS"
 
 build $BRANCH $BLSTP
 status "PACKAGES"
