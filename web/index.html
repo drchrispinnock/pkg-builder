@@ -4,22 +4,39 @@
 
 <em>Looking for the old site? Go here <a href="https://oldpackages.tzinit.org/">oldpackages.tzinit.org</a>.</em>
 
+<h2>APT Repository</h2>
+
 <em>These packages are provided by the Tezos Foundation and are currently under test. They are different from the official packages supplied by Nomadic Labs, which are being deprecated.</em>
 
-<p>For Debian and Ubuntu, you import the GPG key and use the apt repository.
+<p>For Debian and Ubuntu, you import the GPG key.
 
     <pre>
 curl -s "https://apt.tzinit.org/keys/tzinit.asc" | \
     sudo gpg --dearmor -o /etc/apt/keyrings/tzinit.gpg
+</pre>
 
-echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/debian trixie main" | \
-    sudo tee /etc/apt/sources.list.d/tzinit-octez.list
+    <p>Set up the Apt repository. For Debian 13(trixie) use:
 
+<pre>
+echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/debian trixie main" \
+    | sudo tee /etc/apt/sources.list.d/tzinit-octez.list
+</pre>
+
+<p>For Ubuntu 24.04 (noble) use:
+
+<pre>
+echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/ubuntu noble main" \
+    | sudo tee /etc/apt/sources.list.d/tzinit-octez.list
+</pre>
+
+<p>Then:
+
+<pre>
 sudo apt update
 sudo apt install -y octez-baker
     </pre>
 
-Replace <em>debian</em> with <em>ubuntu</em> and <em>trixie</em> with <em>bookworm</em>, etc.
+<h2>Direct Downloads</h2>
 
 <table>
 <tr>
@@ -60,7 +77,7 @@ Replace <em>debian</em> with <em>ubuntu</em> and <em>trixie</em> with <em>bookwo
 </tr>
 </table>
 
-<h2>How to use:</h2>
+<h2>How to use</h2>
 
 <ul>
   <li><a href="https://chrispinnock.com/tezos/packages/">How to use the packages</a></li>

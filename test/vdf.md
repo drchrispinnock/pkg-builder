@@ -12,7 +12,7 @@ $ curl -s "https://apt.tzinit.org/keys/tzinit.asc" | \
     sudo gpg --dearmor -o /etc/apt/keyrings/tzinit.gpg
 ```
 
-Set up the Apt repository
+Set up the Apt repository. For Debian 13(trixie) use:
 
 ```
 $ echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/debian trixie main" \

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+mapreposbycodename=0
 aptrepos="./repos"
 incoming="./incoming"
 root="release"
@@ -26,6 +28,10 @@ while [ $# -gt 0 ]; do
             incoming="$2"; shift ;;
         --gcloud)
             grepos="$2"; shift; ;;
+        --map-repos-by-codename)
+            mapreposbycodename="1" ;;
+        --no-map-repos-by-codename)
+            mapreposbycodename="0" ;;
         --tidy)
             tidy=1 ;;
         --no-tidy)
@@ -76,25 +82,42 @@ cp apt/keys/*.asc $aptrepos/keys
 
 for os in debian ubuntu; do
     echo "==> $os"
-    mkdir -p $subdir/$os/conf
-    if [ ! -f apt/$os/distributions ]; then
-        echo "No config for $os"
-        continue
-    fi
 
-    cp apt/$os/distributions $subdir/$os/conf
-    cp apt/$os/options $subdir/$os/conf
+    if [ "$mapreposbycodename" = "0" ]; then
+        mkdir -p $subdir/$os/conf
+            if [ ! -f apt/$os/distributions ]; then
+                echo "No config for $os"
+                continue
+            fi
+
+        cp apt/$os/distributions $subdir/$os/conf
+        cp apt/$os/options $subdir/$os/conf
+    fi
 
     for targ in $targets; do
 
+
         baseos=$(echo $targ | awk -F'-' '{print $1 "-" $2}')
         codename=${CODENAMES[${baseos}]}
+        _code=""
+        if [ "$mapreposbycodename" = "1" ]; then
+            _code="$codename"
+            mkdir -p $subdir/$os/$_code/conf
+            if [ ! -f apt/$os/$_code/distributions ]; then
+                echo "No config for $os/$_code"
+                continue
+            fi
+
+            cp apt/$os/distributions $subdir/$os/$_code/conf
+            cp apt/$os/options $subdir/$os/$_code/conf
+        fi
+
         resolve=$(echo $targ | awk -F'-' '{print $1}')
 
         if [ "$resolve" = "$os" ]; then
-            echo "===> $targ ($root - target $subdir/$os)"
-            reprepro -b $subdir/$os includedeb $codename $incoming/$maproot/$targ/*.deb
-            reprepro -b $subdir/$os export $codename
+            echo "===> $targ ($root - target $subdir/$os/$_code)"
+            reprepro -b $subdir/$os/$_code includedeb $codename $incoming/$maproot/$targ/*.deb
+            reprepro -b $subdir/$os/$_code export $codename
         fi
 
     done
