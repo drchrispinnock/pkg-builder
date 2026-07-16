@@ -1,5 +1,7 @@
 # Testing a Smart Rollup setup
 
+(Successfully tested on 16/7/2026, although Hermes did go a little offscript...)
+
 Hi Terry. I would like you to set up a smart rollup operator that participates on the Test Etherlink Rollup. This is to test some packages from my APT repository. To do this follow these steps:
 
 1. Set up a GCP instance with 32GB RAM, at least 4 cores and 800GB of hard disc
@@ -26,7 +28,7 @@ octez-node config init --network=https://teztnets.com/shadownet --history=full:5
 
 5. Start the node with systemctl and sync it.
 
-6. Configure the octez-smart-rollup-node to participate as an observer on the etherlink rollup
+6. Configure the octez-smart-rollup-node to participate as an observer on the etherlink rollup. Note that this will use the local node on the same machine so there is no need to make provision for that.
 
 ```
 sudo su - tezos
