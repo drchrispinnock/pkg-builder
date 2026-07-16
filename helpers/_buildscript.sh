@@ -2,7 +2,7 @@
 #
 
 TARGET=""
-OCTEZ_PKGREV=1
+REVISION=1
 OCTEZ_PKGMAINTAINER="packages@tezos.foundation"
 IGNOREOPAMDEPS=0
 DEVELOPER=0
@@ -91,7 +91,7 @@ REGULARPKG="zcash-params client node baker dal-node teztale-archiver"
 [ "$EVMBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG evm-node"
 [ "$SRNBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG smart-rollup-node"
 
-CLIOPTS="--revision $OCTEZ_PKGREV --pkgname $PKGNAME $EXTRACLIOPTS"
+CLIOPTS="--revision $REVISION --pkgname $PKGNAME $EXTRACLIOPTS"
 
 if [ "$BRANCH" = "master" ]; then
     today="$(date +%Y%m%d%H%M)"
