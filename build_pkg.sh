@@ -108,6 +108,11 @@ case $BRANCH in
             TROOT=${BUCKET}/incoming/BLSTPORTABLE
             ROOT="BLSTPORTABLE"
         fi
+        # Nous the EVM and SRN branch for releases
+        #
+        if [ -z "$EVMBRANCH" ] && [ -z "$SRNBRANCH" ] && [ -f latest-releases.env ]; then
+            . ./latest-releases.env
+        fi
         ;;
     *)
         echo "Development"
@@ -117,13 +122,8 @@ case $BRANCH in
         ;;
 esac
 
-
-
-# Nous the EVM and SRN branch
-if [ "$BRANCH" = "latest-release" ] && [ -z "$EVMBRANCH" ] && [ -z "$SRNBRANCH" ] && [ -f latest-releases.env ]; then
-    . ./latest-releases.env
-fi
-
+# If no specific branchs, use the current one for EVM and SRN
+#
 [ -z "$EVMBRANCH" ] && EVMBRANCH=${BRANCH}
 [ -z "$SRNBRANCH" ] && SRNBRANCH=${BRANCH}
 
