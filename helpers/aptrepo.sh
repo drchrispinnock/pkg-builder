@@ -49,6 +49,10 @@ case $root in
         subdir="$aptrepos/DEVEL"
         maproot="DEVEL"
         ;;
+    blstportable|BLSTPORTABLE)
+        subdir="$aptrepos/BLSTPORTABLE"
+        maproot="BLSTPORTABLE"
+        ;;
     rc|RC)
         subdir="$aptrepos/RC"
         maproot="RC"
