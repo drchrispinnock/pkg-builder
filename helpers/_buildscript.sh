@@ -34,7 +34,7 @@ while [ $# -gt 0 ]; do
         --targetdir)
             TARGET="$2"; shift; ;;
         --blst-portable)
-            BLSTP=1 ;;
+            BLSTP=1
             ;;
         -*) echo "WARN: unknown option" >&2; ;;
     esac
