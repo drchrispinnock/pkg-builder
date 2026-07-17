@@ -27,8 +27,9 @@ for t in release DEVEL RC; do
 
         if [ -d incoming/$s/$target ]; then
            mkdir -p $downloadsite/$t/$target
-           cp -pR incoming/$s/$target/*.deb $downloadsite/$t/$target
-           for file in $downloadsite/$t/$target/*.deb; do
+           filelist=$(ls incoming/$s/$target/*.{deb,rpm} 2>/dev/null)
+           cp -pR $filelist $downloadsite/$t/$target
+           for file in $filelist; do
                rm -f "$file".asc
                gpg --quiet -u packages@tezos.foundation --sign --detach --armor $file
            done
