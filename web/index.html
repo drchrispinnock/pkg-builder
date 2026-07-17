@@ -151,7 +151,7 @@
   </div>
   <div>
     <h1>Octez Packages</h1>
-    <p>Debian &amp; RPM packages for the Octez Tezos node, built and published by the Tezos Foundation.</p>
+    <p>Debian &amp; RPM packages for the Octez suite.</p>
   </div>
 </header>
 
@@ -179,6 +179,9 @@
   <p>Then:</p>
 <pre>sudo apt update
 sudo apt install -y octez-baker</pre>
+
+<p>For development versions, use https://apt.tzinit.org/DEVEL/debian or https://apt.tzinit.org/DEVEL/ubuntu.
+    If you are running on older hardware and have trouble with the BLS optimisations, you can use https://apt.tzinit.org/BLSTPORTABLE/debian or https://apt.tzinit.org/BLSTPORTABLE/ubuntu</p>
 </section>
 
 <section>
@@ -190,17 +193,9 @@ sudo apt install -y octez-baker</pre>
 <table>
 <tr class="head">
 <td>OS</td>
-<td>Debian 13</td>
-<td>Debian 13</td>
-<td>Ubuntu 24.04</td>
-<td>Ubuntu 24.04</td>
-</tr>
-<tr>
-<td></td>
-<td>trixie</td>
-<td>trixie</td>
-<td>noble</td>
-<td>noble</td>
+<td colspan="2">Debian 13 (Trixie)</td>
+<td colspan="2">Ubuntu 24.04 (Noble)</td>
+<td colspan="1">Rocky Linux 9</td>
 </tr>
 <tr>
 <td>Arch</td>
@@ -215,6 +210,7 @@ sudo apt install -y octez-baker</pre>
 <td><a href="release/debian-13-arm64/">release</a></td>
 <td><a href="release/ubuntu-2404-lts-amd64/">release</a></td>
 <td><a href="release/ubuntu-2404-lts-arm64/">release</a></td>
+<td><a href="release/rocky-linux-9/">release</a></td>
 </tr>
 <tr>
 <td>Dev versions</td>
@@ -222,6 +218,7 @@ sudo apt install -y octez-baker</pre>
 <td><a href="DEVEL/debian-13-arm64/">dev</a></td>
 <td><a href="DEVEL/ubuntu-2404-lts-amd64/">dev</a></td>
 <td><a href="DEVEL/ubuntu-2404-lts-arm64/">dev</a></td>
+<td><a href="DEVEL/rocky-linux-9/">dev</a></td>
 </tr>
 </table>
 </section>
