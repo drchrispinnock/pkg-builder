@@ -2,9 +2,9 @@
 
 ## Tezos Foundation
 
-- [ ] Migrate snapshot service to new packages
+- [x] Migrate snapshot service to new packages
 - [ ] Migrate boot nodes to new packages
-- [ ] Migrate archive nodes to new packages
+- [ ] Migrate archive and cutter nodes to new packages
 - [ ] Adjust and simplify upgrade pipelines to use APT
 
 ## Signer
