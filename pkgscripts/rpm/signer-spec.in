@@ -26,4 +26,6 @@ The Octez Signer
 %post
 getent group tzsigner >/dev/null 2>&1 || groupadd tzsigner
 getent passwd tzsigner >/dev/null 2>&1 || useradd -g tzsigner tzsigner
+mkdir /var/tzsigner >/dev/null 2>&1 && chown tzsigner:tzsigner /var/tzsigner
+mkdir -p /var/log/tezos
 /usr/bin/systemctl daemon-reload

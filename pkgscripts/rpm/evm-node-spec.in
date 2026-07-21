@@ -26,4 +26,6 @@ The Octez EVM node
 %post
 getent group tezos >/dev/null 2>&1 || groupadd tezos
 getent passwd tezos >/dev/null 2>&1 || useradd -g tezos -d /var/tezos tezos
+mkdir /var/tezos >/dev/null 2>&1 && chown tezos:tezos /var/tezos
+mkdir -p /var/log/tezos
 /usr/bin/systemctl daemon-reload

@@ -1,13 +1,14 @@
 Name:		@PKG@
 Version:	@VERSION@
 Release:	@REVISION@
-Summary:	The Octez Smart Rollup daemons
+Summary:	The Octez DAL Node
 
 Packager:   @MAINT@
 License:	MIT
 URL:		http://tezos.gitlab.io
 
 Source0:	@FAKESRC@
+Requires:	@DPKG@-zcash-params
 
 %prep
 %setup -q
@@ -16,16 +17,16 @@ Source0:	@FAKESRC@
 tar cpf - . | (cd $RPM_BUILD_ROOT && tar xpf -)
 
 %description
-The Octez Smart Rollup daemons
+The Octez DAL Node daemons
 
 %files
 %{_bindir}/octez-*
-%config %{_sysconfdir}/default/octez-smart-rollup
-%{_unitdir}/octez-smart-rollup.service
+%config %{_sysconfdir}/default/octez-dal-node
+%{_unitdir}/octez-dal-node.service
 
 %post
 getent group tezos >/dev/null 2>&1 || groupadd tezos
 getent passwd tezos >/dev/null 2>&1 || useradd -g tezos -d /var/tezos tezos
 mkdir /var/tezos >/dev/null 2>&1 && chown tezos:tezos /var/tezos
-mkdir -p /var/log/tezos
+mkdir -p /var/log/tezos 
 /usr/bin/systemctl daemon-reload

@@ -12,4 +12,4 @@ mkdir -p $root
 
 echo "===> Syncing from $prod21"
 (cd $root && \
-	gcloud storage rsync -r $prod21 . )
+	gcloud storage rsync --delete-unmatched-destination-objects -r $prod21 . )
