@@ -10,7 +10,7 @@ KEYS=""
 # use localhost.
 #
 DAL_OPTIONS="--without-dal"
-#DAL_OPTIONS="--dal-node http://localhost:8732"
+#DAL_OPTIONS="--dal-node http://localhost:10732"
 
 # This must be set and is your decision
 #LQ_VOTE="pass"
