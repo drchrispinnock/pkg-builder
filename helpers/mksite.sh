@@ -32,6 +32,7 @@ for t in release DEVEL RC; do
            for file in $filelist; do
                rm -f "$file".asc
                gpg --quiet -u packages@tezos.foundation --sign --detach --armor $file
+	       mv "$file".asc $downloadsite/$t/$target
            done
            bash ./helpers/mks3idx $downloadsite/$t/$target > $downloadsite/$t/$target/index.html
         fi
