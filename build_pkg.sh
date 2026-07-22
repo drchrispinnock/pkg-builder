@@ -133,7 +133,7 @@ esac
 [ -z "${SERVICEACCT}" ] && echo "GCP SERVICEACCT must be set" && exit 1
 [ -z "${BUCKET}" ] && echo "GCP BUCKET must be set" && exit 1
 
-X86=${X86:-e2-standard-8}
+X86=${X86:-c4-standard-8}
 X86ZONE=${X86ZONE:-europe-west6-a}
 ARM64=${ARM64:-c4a-standard-8}
 ARMZONE=${ARMZONE:-europe-west6-b}
