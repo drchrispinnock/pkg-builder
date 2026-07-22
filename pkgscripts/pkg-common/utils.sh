@@ -117,9 +117,10 @@ initialPrep() {
 
     	status "OS UPDATE (YUM)"
     	sudo dnf install -y 'dnf-command(config-manager)'
+        sudo dnf install -y epel-release
     	sudo dnf config-manager --set-enabled devel
     	sudo dnf config-manager --set-enabled crb
-
+        sudo dnf makecache
 
 	    status "OCTEZ DEPENDENCIES"
 		sudo dnf update -y
