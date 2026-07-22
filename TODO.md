@@ -10,14 +10,11 @@
 ## Signer
 
 - [X] Resurrect package
-- [ ] Is there a better way to handle magic bytes and command line arguments to the signer?
 - [X] Check systemd scripts
 - [ ] Write Hermes deployment tests
 
 ## APT Repos
 
-- [ ] Handle revision upgrades
-- [ ] Handle multiple debian repositories - should we have one per codename? What is the best practice? deb13, ...
 - [X] Check upgrades are working (e.g. with 25.1)
 - [ ] Get others to sign the tzinit package key
 
@@ -26,7 +23,24 @@
 - [ ] Set up a machine with NL and move it to tzinit packages
 - [ ] Set up a machine with Unoff packages and move it to tzinit packages
 
-# Release 2
+# Future
+
+## Log Rotation
+
+- [ ] Each package should have a default log.rotate.d script
+  - [ ] octez-signer
+  - [ ] octez-node
+  - [ ] octez-dal-node
+  - [ ] octez-baker
+  - [ ] octez-accuser
+  - [ ] octez-smart-rollup-node
+  - [ ] octez-evm-node
+  - [ ] octez-teztale-archiver
+
+## APT Repos
+
+- [ ] Handle revision upgrades
+- [ ] Handle multiple debian repositories - should we have one per codename? What is the best practice? deb13, .
 
 ## RPM Repos
 
@@ -36,10 +50,13 @@
 - [X] What about arm64?
 - [X] Need Hermes tests
 
+## Signer
+
+- [ ] Is there a better way to handle magic bytes and command line arguments to the signer?
+
 ## Client
 
-- [ ] Include bash completion script?
-	./src/bin_client/bash-completion.sh
+- [ ] Include bash completion script? ./src/bin_client/bash-completion.sh
 
 ## EVM node
 
