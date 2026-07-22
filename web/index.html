@@ -224,6 +224,29 @@ sudo apt install -y octez-baker</pre>
 </table>
 </section>
 
+<section><h2>
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 19c-4.4-2.4-8-5.7-8-10a5 5 0 0 1 8-4 5 5 0 0 1 8 4c0 4.3-3.6 7.6-8 10Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+  Using the RPMs on Rocky Linux
+</h2>
+
+<p>The RPMs are treated as second-class citizens I'm afraid. Please report problems to the Chief Baker. To make your Rocky Linux machine ready, do the following as root:</p>
+<pre>dnf install -y 'dnf-command(config-manager)'
+dnf config-manager --set-enabled crb
+dnf config-manager --set-enabled devel
+dnf update -y</pre>
+
+<p>To install the client (replace 25.1 with the version of your choice):</p>
+
+<pre>sudo dnf install -y https://packages.tzinit.org/release/rocky-linux-9/octez-client-25.1-1.x86_64.rpm</pre>
+
+<p>To install the node:</p>
+<pre>dnf install -y https://packages.tzinit.org/release/rocky-linux-9/octez-zcash-params-1.0.0-2.x86_64.rpm
+dnf install -y https://packages.tzinit.org/release/rocky-linux-9/octez-node-25.1-1.x86_64.rpm</pre>
+
+<p>etc.</p>
+
+</section>
+
 <section>
   <h2>
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 19c-4.4-2.4-8-5.7-8-10a5 5 0 0 1 8-4 5 5 0 0 1 8 4c0 4.3-3.6 7.6-8 10Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>

@@ -20,7 +20,7 @@ sudo dnf install -y https://packages.tzinit.org/release/rocky-linux-9/octez-clie
 3. Install the node
 
 ```
-sudo dnf install -y https://packages.tzinit.org/release/rocky-linux-9/octez-zcash-params-1.0.0-2.x86_64.rpm
+sudo dnf install -y https://packages.tzinit.org/release/rocky-linux-9/octez-zcash-params-1.0.0-1.x86_64.rpm
 sudo dnf install -y https://packages.tzinit.org/release/rocky-linux-9/octez-node-25.1-1.x86_64.rpm
 ```
 

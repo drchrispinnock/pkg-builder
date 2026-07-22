@@ -39,4 +39,4 @@ for t in release DEVEL RC; do
     bash ./helpers/mks3idx $downloadsite/$t > $downloadsite/$t/index.html
 done
 
-gcloud storage rsync -r $downloadsite/ gs://packages-tzinit-org/
+gcloud storage rsync --delete-unmatched-destination-objects -r $downloadsite/ gs://packages-tzinit-org/
