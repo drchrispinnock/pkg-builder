@@ -9,16 +9,16 @@
 
 ## Signer
 
-- [ ] Resurrect package
+- [X] Resurrect package
 - [ ] Is there a better way to handle magic bytes and command line arguments to the signer?
-- [ ] Check systemd scripts
+- [X] Check systemd scripts
 - [ ] Write Hermes deployment tests
 
 ## APT Repos
 
 - [ ] Handle revision upgrades
-- [ ] Handle multiple debian repositories - should we have one per codename? What is the best practice?
-- [ ] Check upgrades are working (e.g. with 25.1)
+- [ ] Handle multiple debian repositories - should we have one per codename? What is the best practice? deb13, ...
+- [X] Check upgrades are working (e.g. with 25.1)
 - [ ] Get others to sign the tzinit package key
 
 ## Nomadic Labs/Unoff -> Tzinit migration
@@ -32,13 +32,14 @@
 
 - [ ] Set up a Rocky repository
 - [ ] Look at other RPM Linux distributions
-- [ ] Fix Rocky Linux 10 builds
-- [ ] What about arm64?
-- [ ] Need Hermes tests
+- [X] Fix Rocky Linux 10 builds
+- [X] What about arm64?
+- [X] Need Hermes tests
 
 ## Client
 
 - [ ] Include bash completion script?
+	./src/bin_client/bash-completion.sh
 
 ## EVM node
 
@@ -52,4 +53,3 @@
 ## Versioning
 
 - [ ] Will NL continue to release EVM, Smart Rollup separately from the main stream binaries?
-- [ ]
