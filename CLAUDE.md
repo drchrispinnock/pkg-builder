@@ -103,7 +103,7 @@ To add a package: create `dpkg/<name>-control.in` (and/or `rpm/<name>-spec.in`) 
 
 ### VM detection (Debian vs RPM)
 
-`_buildscript.sh` detects the OS at runtime: if `apt` is in `PATH` → Debian path (`DEBIAN=1`, `make_dpkg.sh`, `.deb`); otherwise → RPM path (`make_rpm.sh`, `.rpm`). Note the defaults dir differs: dpkg installs to `/etc/default/`, rpm to `/etc/defaults/`; systemd units go to `/lib/systemd/system` (dpkg) vs `/usr/lib/systemd/system` (rpm). The dpkg script is the actively maintained, flag-driven path.
+`_buildscript.sh` detects the OS at runtime: if `apt` is in `PATH` → Debian path (`DEBIAN=1`, `make_dpkg.sh`, `.deb`); otherwise → RPM path (`make_rpm.sh`, `.rpm`). Both install the defaults file to `/etc/default/`; systemd units go to `/lib/systemd/system` (dpkg) vs `/usr/lib/systemd/system` (rpm). The dpkg script is the actively maintained, flag-driven path.
 
 ### GCS buckets and layout
 
