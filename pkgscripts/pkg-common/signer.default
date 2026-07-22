@@ -1,7 +1,7 @@
 # The Octez Signer systemctl scripts are setup for serving over HTTP only
 # If you want to do something different, you'll need to set your own one up.
 #
-DATADIR=/var/tezos/.tezos-signer
+DATADIR=/var/tzsigner/.tezos-signer
 
 PORT=6732
 

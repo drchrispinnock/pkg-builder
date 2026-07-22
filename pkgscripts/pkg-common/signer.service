@@ -4,7 +4,7 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="DATADIR=/var/tezos/.tezos-signer"
+Environment="DATADIR=/var/tzsigner/.tezos-signer"
 Environment="ADDRESS=127.0.0.1 PORT=6732"
 EnvironmentFile=-/etc/default/octez-signer
 User=tzsigner
@@ -16,8 +16,8 @@ KillMode=control-group
 TimeoutStartSec=30s
 TimeoutStopSec=300s
 
-ExecStart=/usr/bin/octez-signer launch http signer \
-    --data-dir $DATADIR \
+ExecStart=/usr/bin/octez-signer --base-dir $DATADIR \
+    launch http signer \
     --address $ADDRESS --port $PORT \
     $MAGIC_BYTES $HWM_CHECK \
     $RUNTIME_OPTS

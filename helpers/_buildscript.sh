@@ -89,7 +89,7 @@ fi
 initialPrep;
 
 # Regular
-REGULARPKG="zcash-params client node baker dal-node teztale-archiver"
+REGULARPKG="zcash-params client signer node baker dal-node teztale-archiver"
 [ "$EVMBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG evm-node"
 [ "$SRNBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG smart-rollup-node"
 
