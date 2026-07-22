@@ -158,7 +158,7 @@ for pg in $packages; do
   fi
 
   if [ "$pg" = "baker" ]; then
-    cp ${common}/vdf.service ${staging_dir}/${systemd_dir}/octez-vdf.service
+    cp ${common}/vdf.service ${build_dir}/${systemd_dir}/octez-vdf.service
   fi
 
   # Zcash parameters need slightly different handling
