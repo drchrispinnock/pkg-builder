@@ -4,14 +4,14 @@
 
 - [x] Migrate snapshot service to new packages
 - [ ] Migrate boot nodes to new packages
-- [ ] Migrate archive and cutter nodes to new packages
+- [x] Migrate archive and cutter nodes to new packages
 - [ ] Adjust and simplify upgrade pipelines to use APT
 
 ## Signer
 
 - [X] Resurrect package
 - [X] Check systemd scripts
-- [ ] Write Hermes deployment tests
+- [x] Write Hermes deployment tests
 
 ## APT Repos
 
