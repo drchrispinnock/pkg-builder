@@ -40,7 +40,8 @@
 ## APT Repos
 
 - [ ] Handle revision upgrades
-- [ ] Handle multiple debian repositories - should we have one per codename? What is the best practice? deb13, .
+- [ ] Handle multiple debian repositories - should we have one per codename?
+- [ ] Handle latest debian. Split off to +deb13.
 
 ## RPM Repos
 
