@@ -20,8 +20,8 @@ The Octez Smart Rollup daemons
 
 %files
 %{_bindir}/octez-*
-%config %{_sysconfdir}/default/octez-smart-rollup
-%{_unitdir}/octez-smart-rollup.service
+%config %{_sysconfdir}/default/octez-smart-rollup-node
+%{_unitdir}/octez-smart-rollup-node.service
 
 %post
 getent group tezos >/dev/null 2>&1 || groupadd tezos
