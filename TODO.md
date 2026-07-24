@@ -20,8 +20,8 @@
 
 ## Nomadic Labs/Unoff -> Tzinit migration
 
-- [ ] Set up a machine with NL and move it to tzinit packages
-- [ ] Set up a machine with Unoff packages and move it to tzinit packages
+- [X] Set up a machine with NL and move it to tzinit packages
+- [X] Set up a machine with Unoff packages and move it to tzinit packages (zcash params doesn't work, but unlikely people are using the unoff packages - we should note it somewhere)
 
 # Future
 
