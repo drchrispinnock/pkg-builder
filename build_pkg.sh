@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 
 # Check for Google Cloud tools
 #
@@ -134,7 +134,7 @@ esac
 [ -z "${BUCKET}" ] && echo "GCP BUCKET must be set" && exit 1
 
 X86=${X86:-c4d-standard-8}
-X86ZONE=${X86ZONE:-europe-west6-a}
+X86ZONE=${X86ZONE:-europe-west2-a}
 ARM64=${ARM64:-c4a-standard-8}
 ARMZONE=${ARMZONE:-europe-west6-b}
 SIZE=${SIZE:-200}
