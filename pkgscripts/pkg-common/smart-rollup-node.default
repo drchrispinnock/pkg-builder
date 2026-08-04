@@ -3,6 +3,9 @@
 #
 DATADIR=/var/tezos/.tezos-smart-rollup-node
 
+# Where the tezos wallet files are stored
+CLIENTDIR=/var/tezos/.tezos-client
+
 # Other options to pass the node
 #
 RUNTIME_OPTS=""
