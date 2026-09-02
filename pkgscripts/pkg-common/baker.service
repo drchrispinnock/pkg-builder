@@ -4,7 +4,7 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="LQ_VOTE=break DATADIR=/var/tezos/.tezos-node CLIENTDIR=/var/tezos/.tezos-client DAL_OPTIONS=--without-dal"
+Environment="LQ_VOTE=break" "DATADIR=/var/tezos/.tezos-node" "CLIENTDIR=/var/tezos/.tezos-client" "DAL_OPTIONS=--without-dal"
 EnvironmentFile=-/etc/default/octez-baker
 User=tezos
 Group=tezos
