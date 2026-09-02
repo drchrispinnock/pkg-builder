@@ -4,7 +4,7 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="DATADIR=/var/tezos/.octez-evm-node RPCADDR=0.0.0.0 RPCPORT=8545"
+Environment="DATADIR=/var/tezos/.octez-evm-node" "RPCADDR=0.0.0.0" "RPCPORT=8545"
 Environment="ENDPOINT=http://localhost:8932"
 EnvironmentFile=-/etc/default/octez-node
 User=tezos

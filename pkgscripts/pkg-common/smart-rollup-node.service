@@ -4,7 +4,7 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="DATADIR=/var/tezos/.tezos-smart-rollup-node CLIENTDIR=/var/tezos/.tezos-client"
+Environment="DATADIR=/var/tezos/.tezos-smart-rollup-node" "CLIENTDIR=/var/tezos/.tezos-client"
 EnvironmentFile=-/etc/default/octez-smart-rollup
 User=tezos
 Group=tezos
