@@ -1,29 +1,8 @@
-# Release 1
-
-## Tezos Foundation
-
-- [x] Migrate snapshot service to new packages
-- [ ] Migrate boot nodes to new packages
-- [x] Migrate archive and cutter nodes to new packages
-- [ ] Adjust and simplify upgrade pipelines to use APT
-
-## Signer
-
-- [X] Resurrect package
-- [X] Check systemd scripts
-- [x] Write Hermes deployment tests
-
-## APT Repos
-
-- [X] Check upgrades are working (e.g. with 25.1)
-- [ ] Get others to sign the tzinit package key
-
-## Nomadic Labs/Unoff -> Tzinit migration
-
-- [X] Set up a machine with NL and move it to tzinit packages
-- [X] Set up a machine with Unoff packages and move it to tzinit packages (zcash params doesn't work, but unlikely people are using the unoff packages - we should note it somewhere)
-
 # Future
+
+## APT Repos (seperate)
+
+- [ ] Get others to sign the tzinit package key
 
 ## Log Rotation
 

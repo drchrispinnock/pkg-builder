@@ -4,7 +4,7 @@ Documentation=https://tezos.gitlab.io/
 After=network.target
 
 [Service]
-Environment="DATADIR=/var/tezos/.tezos-smart-rollup-node"
+Environment="DATADIR=/var/tezos/.tezos-smart-rollup-node CLIENTDIR=/var/tezos/.tezos-client"
 EnvironmentFile=-/etc/default/octez-smart-rollup
 User=tezos
 Group=tezos
@@ -15,7 +15,7 @@ KillMode=control-group
 TimeoutStartSec=30s
 TimeoutStopSec=300s
 
-ExecStart=/usr/bin/octez-smart-rollup-node run --data-dir $DATADIR $RUNTIME_OPTS
+ExecStart=/usr/bin/octez-smart-rollup-node -d "$CLIENTDIR" run --data-dir "$DATADIR" $RUNTIME_OPTS
 Slice=octez.slice
 
 StandardOutput=append:/var/log/tezos/octez-smart-rollup.log

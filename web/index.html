@@ -163,7 +163,8 @@
   <p class="notice">These packages are provided by the Tezos Foundation and are currently under test. They are different from the official packages supplied by Nomadic Labs, which are being deprecated.</p>
 
   <p>For Debian and Ubuntu, import the GPG key:</p>
-<pre>curl -s "https://apt.tzinit.org/keys/tzinit.asc" | \
+<pre>sudo apt install -y gpg curl
+curl -s "https://apt.tzinit.org/keys/tzinit.asc" | \
     sudo gpg --dearmor -o /etc/apt/keyrings/tzinit.gpg</pre>
 
   <p>Set up the APT repository. For Debian 13 (trixie) use:</p>

@@ -3,6 +3,9 @@
 #
 DATADIR=/var/tezos/.tezos-node
 
+# Where the tezos wallet files are stored
+CLIENTDIR=/var/tezos/.tezos-client
+
 # Keys to bake with (if empty, try to bake with all in the wallet)
 KEYS=""
 
