@@ -62,6 +62,7 @@ fail () {
 . $ME/pkg-common/utils.sh
 
 export OPAMYES="true"
+export GIT_TERMINAL_PROMPT=0
 
 [ -z "$BRANCH" ] && BRANCH=master
 [ -z "$EVMBRANCH" ] && EVMBRANCH=$BRANCH
