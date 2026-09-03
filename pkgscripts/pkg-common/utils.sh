@@ -112,6 +112,7 @@ initialPrep() {
     	sudo apt-get install -y bubblewrap
     	sudo apt-get install -y autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev libprotobuf-dev protobuf-compiler
     	sudo apt-get install -y sqlite3 libpq-dev libsqlite3-dev libzstd-dev
+	sudo apt-get install -y libclang-dev
 
     else
 
@@ -129,7 +130,7 @@ initialPrep() {
             python3-setuptools wget rsync which cargo autoconf \
             systemd systemd-rpm-macros cmake openssl-devel python3-wheel \
             gcc-c++ bubblewrap protobuf-compiler protobuf-devel \
-            python3-tox-current-env mock sqlite3 sqlite sqlite-devel jq libzstd-devel ; do
+            python3-tox-current-env mock sqlite3 sqlite sqlite-devel jq libzstd-devel libclang-dev; do
                 sudo dnf install -y $pkg
         done
 
