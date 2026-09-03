@@ -119,6 +119,7 @@ initialPrep() {
     	status "OS UPDATE (YUM)"
     	sudo dnf install -y 'dnf-command(config-manager)'
         sudo dnf install -y epel-release
+	sudo dnf install -y dnf-plugins-core
     	sudo dnf config-manager --set-enabled devel
     	sudo dnf config-manager --set-enabled crb
         sudo dnf makecache
@@ -130,7 +131,8 @@ initialPrep() {
             python3-setuptools wget rsync which cargo autoconf \
             systemd systemd-rpm-macros cmake openssl-devel python3-wheel \
             gcc-c++ bubblewrap protobuf-compiler protobuf-devel \
-            python3-tox-current-env mock sqlite3 sqlite sqlite-devel jq libzstd-devel libclang-dev; do
+            python3-tox-current-env mock sqlite3 sqlite sqlite-devel jq \
+	    libzstd-devel clang-devel; do
                 sudo dnf install -y $pkg
         done
 
