@@ -13,6 +13,7 @@
     rotate 7
     compress
     minsize 1M
+    missingok
 }
 
 /var/log/tezos/octez-vdf.log{
@@ -22,4 +23,5 @@
     rotate 7
     compress
     minsize 1M
+    missingok
 }
