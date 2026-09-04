@@ -14,3 +14,12 @@
     compress
     minsize 1M
 }
+
+/var/log/tezos/octez-vdf.log{
+    daily
+        # we use copytruncate to avoid stopping the service.
+    copytruncate
+    rotate 5
+    compress
+    minsize 1M
+}
