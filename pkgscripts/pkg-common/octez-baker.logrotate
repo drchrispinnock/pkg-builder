@@ -2,7 +2,7 @@
     daily
         # we use copytruncate to avoid stopping the service.
     copytruncate
-    rotate 5
+    rotate 7
     compress
     minsize 1M
 }
@@ -10,7 +10,7 @@
     daily
         # we use copytruncate to avoid stopping the service.
     copytruncate
-    rotate 5
+    rotate 7
     compress
     minsize 1M
 }
@@ -19,7 +19,7 @@
     daily
         # we use copytruncate to avoid stopping the service.
     copytruncate
-    rotate 5
+    rotate 7
     compress
     minsize 1M
 }
