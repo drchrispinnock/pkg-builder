@@ -5,4 +5,5 @@
     rotate 7
     compress
     minsize 1M
+    missingok
 }
