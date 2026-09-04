@@ -8,6 +8,7 @@ URL:		http://tezos.gitlab.io
 
 Packager:       @MAINT@
 Source0:	@FAKESRC@
+Requires:	logrotate
 
 %prep
 %setup -q
@@ -22,6 +23,7 @@ The Octez EVM node
 %{_bindir}/octez-*
 %config %{_sysconfdir}/default/octez-evm-node
 %{_unitdir}/octez-evm-node.service
+%config %{_sysconfdir}/logrotate.d/octez-evm-node
 
 %post
 getent group tezos >/dev/null 2>&1 || groupadd tezos

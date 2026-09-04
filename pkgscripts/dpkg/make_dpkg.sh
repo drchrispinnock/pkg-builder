@@ -19,6 +19,7 @@ pkg_rev="1"
 pkg_name="octez"
 pkg_realname="octez"
 systemd_dir="/usr/lib/systemd/system"
+logrotation_dir="/etc/logrotate.d"
 defaults_dir="/etc/default"
 force=0
 devmode=0
@@ -201,6 +202,12 @@ for pg in $packages; do
     zcashParams "${staging_dir}/usr/share/dal-trusted-setup" \
       _opam/share/dal-trusted-setup
   fi
+
+# Log rotation
+if [ -f ${common}/${pg}.logrotate ]; then
+  mkdir -p ${staging_dir}/${logrotation_dir}
+  cp ${common}/${pg}.logrotate ${staging_dir}/${logrotation_dir}/octez-${pg}
+fi
 
   # Build the package
   #

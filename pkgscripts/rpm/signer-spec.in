@@ -8,6 +8,7 @@ License:	MIT
 URL:		http://tezos.gitlab.io
 
 Source0:	@FAKESRC@
+Requires:	logrotate
 
 %prep
 %setup -q
@@ -22,6 +23,7 @@ The Octez Signer
 %{_bindir}/octez-*
 %config %{_sysconfdir}/default/octez-signer
 %{_unitdir}/octez-signer.service
+%config %{_sysconfdir}/logrotate.d/octez-signer
 
 %post
 getent group tzsigner >/dev/null 2>&1 || groupadd tzsigner

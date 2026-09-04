@@ -8,7 +8,7 @@ License:	MIT
 URL:		http://tezos.gitlab.io
 
 Source0:	@FAKESRC@
-Requires:	@DPKG@-zcash-params
+Requires:	logrotate, @DPKG@-zcash-params
 
 %prep
 %setup -q
@@ -23,10 +23,11 @@ The Octez DAL Node daemons
 %{_bindir}/octez-*
 %config %{_sysconfdir}/default/octez-dal-node
 %{_unitdir}/octez-dal-node.service
+%config %{_sysconfdir}/logrotate.d/octez-dal-node
 
 %post
 getent group tezos >/dev/null 2>&1 || groupadd tezos
 getent passwd tezos >/dev/null 2>&1 || useradd -g tezos -d /var/tezos tezos
 mkdir /var/tezos >/dev/null 2>&1 && chown tezos:tezos /var/tezos
-mkdir -p /var/log/tezos 
+mkdir -p /var/log/tezos
 /usr/bin/systemctl daemon-reload

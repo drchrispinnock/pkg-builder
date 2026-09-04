@@ -8,6 +8,8 @@ License:	MIT
 URL:		http://tezos.gitlab.io
 
 Source0:	@FAKESRC@
+Requires:	logrotate
+
 
 %prep
 %setup -q
@@ -22,6 +24,7 @@ The Octez Smart Rollup daemons
 %{_bindir}/octez-*
 %config %{_sysconfdir}/default/octez-smart-rollup-node
 %{_unitdir}/octez-smart-rollup-node.service
+%config %{_sysconfdir}/logrotate.d/octez-smart-rollup-node
 
 %post
 getent group tezos >/dev/null 2>&1 || groupadd tezos
