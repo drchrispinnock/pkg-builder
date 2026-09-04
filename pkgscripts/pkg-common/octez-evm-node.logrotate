@@ -1,6 +1,6 @@
 /var/log/tezos/octez-evm-node.log{
     daily
-    # we use copytruncate to avoid stopping node.
+    # we use copytruncate to avoid stopping the service.
     copytruncate
     rotate 5
     compress
