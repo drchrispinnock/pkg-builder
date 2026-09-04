@@ -5,5 +5,5 @@ Maintainer: @MAINT@
 Section: net
 Priority: optional
 Description: The Octez Signer
-Depends: adduser, systemd, @DEPENDS@
+Depends: adduser, systemd, logrotate, @DEPENDS@
 Replaces: octez-unoff-signer

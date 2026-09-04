@@ -5,4 +5,4 @@ Maintainer: @MAINT@
 Section: net
 Priority: optional
 Description: The Octez EVM node
-Depends: @DEPENDS@
+Depends: logrotate, @DEPENDS@

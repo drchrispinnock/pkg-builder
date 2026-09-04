@@ -1,0 +1,8 @@
+/var/log/tezos/octez-teztale-archiver.log{
+    daily
+    # we use copytruncate to avoid stopping node.
+    copytruncate
+    rotate 5
+    compress
+    minsize 1M
+}

@@ -6,5 +6,5 @@ Section: net
 Priority: optional
 Description: The Octez DAL node binaries
 Recommends: @DPKG@-client (>=@VERSION@)
-Depends: @DEPENDS@
+Depends: logrotate, @DEPENDS@
 Replaces: octez-unoff-dal-node

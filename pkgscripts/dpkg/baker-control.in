@@ -5,7 +5,7 @@ Maintainer: @MAINT@
 Section: net
 Priority: optional
 Description: The Octez Baker daemons
-Depends: bash, @DPKG@-node (>=@VERSION@),
+Depends: bash, logrotate, @DPKG@-node (>=@VERSION@),
  @DPKG@-client (>=@VERSION@), @DEPENDS@,
  systemd
 Replaces: octez-unoff-baker

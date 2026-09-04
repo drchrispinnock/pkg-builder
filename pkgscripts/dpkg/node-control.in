@@ -6,5 +6,5 @@ Section: net
 Priority: optional
 Description: The Octez node server
 Recommends: @DPKG@-client (>=@VERSION@)
-Depends: bash, adduser, systemd, @DEPENDS@, @DPKG@-zcash-params
+Depends: bash, adduser, systemd, logrotate, @DEPENDS@, @DPKG@-zcash-params
 Replaces: octez-unoff-node
