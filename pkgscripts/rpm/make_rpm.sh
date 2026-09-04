@@ -159,6 +159,8 @@ for pg in $packages; do
 
   if [ "$pg" = "baker" ]; then
     cp ${common}/vdf.service ${build_dir}/${systemd_dir}/octez-vdf.service
+    cp ${common}/accuser.service ${build_dir}/${systemd_dir}/octez-accuser.service
+    cp ${common}/accuser.default ${build_dir}/${defaults_dir}/octez-accuser
   fi
 
   # Zcash parameters need slightly different handling

@@ -181,7 +181,10 @@ for pg in $packages; do
         fi
     fi
     if [ "$pg" = "baker" ]; then
+      cp ${common}/accuser.service ${staging_dir}/${systemd_dir}/octez-accuser.service
       cp ${common}/vdf.service ${staging_dir}/${systemd_dir}/octez-vdf.service
+
+      cp ${common}/accuser.default ${staging_dir}/${defaults_dir}/octez-accuser
     fi
 
   # Zcash parameters need slightly different handling
