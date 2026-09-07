@@ -3,7 +3,7 @@
 #
 DATADIR=/var/tezos/.tezos-node
 
-# Other options to pass the node
+# Other options to pass to the node
 #
 RUNTIME_OPTS=""
 # On a test network you might need:
