@@ -11,6 +11,6 @@ RPCPORT=8545
 # Smart Rollup node
 ENDPOINT=http://localhost:8932"
 
-# Other options to pass the node
+# Other options to pass to the node
 #
 RUNTIME_OPTS=""
