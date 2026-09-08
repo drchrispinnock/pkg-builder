@@ -108,7 +108,7 @@ for pg in $packages; do
   dpkg_name=${pkg_name}-${pg}
   init_name=${pkg_realname}-${pg}
   dpkg_vers=$(echo "${_pkgv}" | tr '~' '-')
-  dpkg_dir="${dpkg_name}_${dpkg_vers}-${_prev}_${dpkg_arch}"
+  dpkg_dir="${dpkg_name}_${dpkg_vers}-${_pkgr}_${dpkg_arch}"
   dpkg_fullname="${dpkg_dir}.deb"
 
   binaries=$(fixBinaryList "${common}/${pg}-binaries")
