@@ -1,0 +1,9 @@
+/var/log/tezos/octez-signer.log{
+    daily
+    # we use copytruncate to avoid stopping the service.
+    copytruncate
+    rotate 7
+    compress
+    minsize 1M
+    missingok
+}
