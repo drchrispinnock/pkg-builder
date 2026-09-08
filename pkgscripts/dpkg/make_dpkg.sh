@@ -92,19 +92,23 @@ dpkg_arch=$DEB_BUILD_ARCH
 for pg in $packages; do
   control_file="$myhome/${pg}-control.in"
   _pkgv="${pkg_vers}"
+  _pkgr="${pkg_rev}"
   if [ -z "$pkg_vers" ]; then
       _pkgv=$(getOctezVersion $common $pg)
       [ "$?" != "0" ] && exit 1
   fi
+  if [ "$pg" = "zcash-params" ]; then
+     _pkgr="1"
+  fi
 
-  echo "===> Building package $pg v$_pkgv rev $pkg_rev"
+  echo "===> Building package $pg v$_pkgv rev $_pkgr
 
   # Derivative variables
   #
   dpkg_name=${pkg_name}-${pg}
   init_name=${pkg_realname}-${pg}
   dpkg_vers=$(echo "${_pkgv}" | tr '~' '-')
-  dpkg_dir="${dpkg_name}_${dpkg_vers}-${pkg_rev}_${dpkg_arch}"
+  dpkg_dir="${dpkg_name}_${dpkg_vers}-${_prev}_${dpkg_arch}"
   dpkg_fullname="${dpkg_dir}.deb"
 
   binaries=$(fixBinaryList "${common}/${pg}-binaries")
@@ -154,6 +158,7 @@ for pg in $packages; do
   # Edit the control file to contain real values
   #
   sed -e "s/@ARCH@/${dpkg_arch}/g" -e "s/@VERSION@/$_pkgv/g" \
+    -e "s/@REVISION@/${_pkgr}/g" \
     -e "s/@MAINT@/${OCTEZ_PKGMAINTAINER}/g" \
     -e "s/@PKG@/${dpkg_name}/g" \
     -e "s/@DPKG@/${pkg_name}/g" \

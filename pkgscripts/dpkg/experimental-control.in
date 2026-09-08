@@ -1,5 +1,5 @@
 Package: @PKG@
-Version: @VERSION@
+Version: @VERSION@-@REVISION@
 Architecture: @ARCH@
 Maintainer: @MAINT@
 Section: net
