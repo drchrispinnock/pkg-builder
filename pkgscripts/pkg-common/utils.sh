@@ -112,7 +112,7 @@ initialPrep() {
     	sudo apt-get install -y bubblewrap
     	sudo apt-get install -y autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev libprotobuf-dev protobuf-compiler
     	sudo apt-get install -y sqlite3 libpq-dev libsqlite3-dev libzstd-dev
-	sudo apt-get install -y libclang-dev
+	sudo apt-get install -y libclang-dev clang
 
     else
 
