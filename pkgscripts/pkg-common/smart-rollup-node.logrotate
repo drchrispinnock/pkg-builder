@@ -1,4 +1,4 @@
-/var/log/tezos/smart-rollup-node.log{
+/var/log/tezos/octez-smart-rollup.log{
     daily
     # we use copytruncate to avoid stopping the service.
     copytruncate
