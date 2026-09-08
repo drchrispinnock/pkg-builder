@@ -101,7 +101,7 @@ for pg in $packages; do
      _pkgr="1"
   fi
 
-  echo "===> Building package $pg v$_pkgv rev $_pkgr
+  echo "===> Building package $pg v$_pkgv rev $_pkgr"
 
   # Derivative variables
   #
