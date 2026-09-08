@@ -110,11 +110,16 @@ for pg in $packages; do
     #
     pkg_vers="$override_pkg_vers"
     [ -z "$override_pkg_vers" ] && pkg_vers=$(getOctezVersion $common $pg)
-    echo "===> Building package $pg v$pkg_vers rev $pkg_rev"
+    _pkgr="${pkg_rev}"
+  if [ "$pg" = "zcash-params" ]; then
+      _pkgr="1"
+  fi
+
+    echo "===> Building package $pg v$pkg_vers rev $_pkgr"
     rpm_name=${pkg_name}-${pg}
     init_name=${pkg_realname}-${pg}
     rpm_vers=$(echo "${pkg_vers}" | tr -d '~' | tr '-' '_')
-    rpm_fullname="${rpm_name}-${rpm_vers}-${pkg_rev}.${rpm_arch}.rpm"
+    rpm_fullname="${rpm_name}-${rpm_vers}-${_pkgr}.${rpm_arch}.rpm"
 
     binaries=$(fixBinaryList "${common}/${pg}-binaries")
 
@@ -190,7 +195,7 @@ fi
   #
   spec_file="${pg}.spec"
   sed -e "s/@ARCH@/${rpm_arch}/g" -e "s/@VERSION@/$rpm_vers/g" \
-    -e "s/@REVISION@/${pkg_rev}/g" \
+    -e "s/@REVISION@/${_pkgr}/g" \
     -e "s/@MAINT@/${OCTEZ_PKGMAINTAINER}/g" \
     -e "s/@PKG@/${rpm_name}/g" \
     -e "s/@DPKG@/${pkg_name}/g" \
