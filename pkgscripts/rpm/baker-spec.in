@@ -27,8 +27,6 @@ The Octez Baker daemons
 %{_unitdir}/octez-accuser.service
 %{_unitdir}/octez-vdf.service
 %config %{_sysconfdir}/logrotate.d/octez-baker
-%config %{_sysconfdir}/logrotate.d/octez-accuser
-%config %{_sysconfdir}/logrotate.d/octez-vdf
 
 %post
 getent group tezos >/dev/null 2>&1 || groupadd tezos
