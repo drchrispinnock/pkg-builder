@@ -162,13 +162,16 @@
   </h2>
   <p class="notice">These packages are provided by the Tezos Foundation and are currently under test. They are different from the official packages supplied by Nomadic Labs, which are being deprecated.</p>
 
+  <p>The following also works on Windows Subsystem for Linux. Use either Debian or Ubuntu distributions.</p>
+
   <p>For Debian and Ubuntu, import the GPG key:</p>
-<pre>sudo apt install -y gpg curl
+
+  <pre>sudo apt install -y gpg curl
 curl -s "https://apt.tzinit.org/keys/tzinit.asc" | \
     sudo gpg --dearmor -o /etc/apt/keyrings/tzinit.gpg</pre>
 
   <p>Set up the APT repository. For Debian 13 (trixie) use:</p>
-<pre>echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/debian trixie main" \
+  <pre>echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/debian trixie main" \
     | sudo tee /etc/apt/sources.list.d/tzinit-octez.list</pre>
 
   <p>For Ubuntu 24.04 (noble) use:</p>
