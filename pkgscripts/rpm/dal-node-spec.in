@@ -24,6 +24,8 @@ The Octez DAL Node daemons
 %config %{_sysconfdir}/default/octez-dal-node
 %{_unitdir}/octez-dal-node.service
 %config %{_sysconfdir}/logrotate.d/octez-dal-node
+%{_datadir}/dal-trusted-setup/srsu_zcash_g1
+%{_datadir}/dal-trusted-setup/srsu_zcash_g2
 
 %post
 getent group tezos >/dev/null 2>&1 || groupadd tezos
