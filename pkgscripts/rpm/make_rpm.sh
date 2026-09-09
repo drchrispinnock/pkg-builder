@@ -186,7 +186,7 @@ for pg in $packages; do
 
 # Log rotation
 if [ -f ${common}/${pg}.logrotate ]; then
-  mkdir -p ${staging_dir}/${logrotation_dir}
+  mkdir -p ${build_dir}/${logrotation_dir}
   cp ${common}/${pg}.logrotate ${build_dir}/${logrotation_dir}/octez-${pg}
 fi
 
