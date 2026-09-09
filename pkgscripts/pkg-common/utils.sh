@@ -28,6 +28,11 @@
 #
 #
 
+# Packages	
+rpmlist="libev-devel gmp-devel hidapi-devel libffi-devel zlib-devel libpq-devel m4 perl git pkg-config rpmdevtools python3-devel python3-setuptools wget rsync which cargo autoconf systemd systemd-rpm-macros cmake openssl-devel python3-wheel gcc-c++ bubblewrap protobuf-compiler protobuf-devel python3-tox-current-env mock sqlite3 sqlite sqlite-devel jq libzstd-devel clang-devel"
+rhellist=""
+dpkglist="rsync git m4 build-essential patch unzip wget jq bc bubblewrap autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev libprotobuf-dev protobuf-compiler sqlite3 libpq-dev libsqlite3-dev libzstd-dev libclang-dev clang"
+
 RUSTVERSION=${RUSTVERSION:-1.88.0}
 
 # Issue Warnings
@@ -103,18 +108,26 @@ initialPrep() {
     export PATH
 
     if [ "$DEBIAN" = "1" ]; then
+        IGNOREOPAMDEPS=0
     	status "OS UPDATE (APT)"
     	sudo apt-get update
     	sudo apt-get upgrade -y
 
     	status "OCTEZ DEPENDENCIES"
-    	sudo apt-get install -y rsync git m4 build-essential patch unzip wget jq bc
-    	sudo apt-get install -y bubblewrap
-    	sudo apt-get install -y autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev libprotobuf-dev protobuf-compiler
-    	sudo apt-get install -y sqlite3 libpq-dev libsqlite3-dev libzstd-dev
-	sudo apt-get install -y libclang-dev clang
+	sudo apt-get install -y ${dpkglist}
 
     else
+        IGNOREOPAMDEPS=0
+	
+	if [ -f "/etc/redhat-release" ]; then
+		grep '^Red Hat Enterprise Linux' /etc/redhat-release
+        	if [ "$?" = "0" ]; then
+			# Redhat additions
+			sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+			rpmlist="$rpmlist $rhellist"
+	    		IGNOREOPAMDEPS=1
+		fi
+        fi
 
     	status "OS UPDATE (YUM)"
     	sudo dnf install -y 'dnf-command(config-manager)'
@@ -122,21 +135,18 @@ initialPrep() {
 	sudo dnf install -y dnf-plugins-core
     	sudo dnf config-manager --set-enabled devel
     	sudo dnf config-manager --set-enabled crb
+	for _pkg in `dnf repolist all | grep -i "codeready" | awk -F' ' '{print $1}'`; do
+		sudo dnf config-manager --set-enabled $_pkg
+	done
         sudo dnf makecache
+
 
 	    status "OCTEZ DEPENDENCIES"
 		sudo dnf update -y
-     	for pkg in libev-devel gmp-devel hidapi-devel libffi-devel zlib-devel \
-            libpq-devel m4 perl git pkg-config rpmdevtools python3-devel \
-            python3-setuptools wget rsync which cargo autoconf \
-            systemd systemd-rpm-macros cmake openssl-devel python3-wheel \
-            gcc-c++ bubblewrap protobuf-compiler protobuf-devel \
-            python3-tox-current-env mock sqlite3 sqlite sqlite-devel jq \
-	    libzstd-devel clang-devel; do
+     	for pkg in $rpmlist; do
                 sudo dnf install -y $pkg
         done
 
-	    IGNOREOPAMDEPS=0
     fi
 
     status "OPAM"
@@ -210,7 +220,7 @@ build() {
     # Make all the build dependencies
     #
     status "BUILD DEPS ($_br)"
-    make build-deps
+    make build-deps 
     [ "$?" != "0" ] && fail "BUILD DEPS"
 
     eval `opam env`
