@@ -1,7 +1,11 @@
-# Data Directory
+# Data Directory for local bakers
 # An independent mount point of /var/tezos is recommended
 #
 DATADIR=/var/tezos/.tezos-node
+
+# Endpoint for remote bakers
+# Change if it is a different machine
+ENDPOINT="http://127.0.0.1:8732"
 
 # Where the tezos wallet files are stored
 CLIENTDIR=/var/tezos/.tezos-client

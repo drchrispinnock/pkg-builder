@@ -189,6 +189,7 @@ for pg in $packages; do
     if [ "$pg" = "baker" ]; then
       cp ${common}/accuser.service ${staging_dir}/${systemd_dir}/octez-accuser.service
       cp ${common}/vdf.service ${staging_dir}/${systemd_dir}/octez-vdf.service
+      cp ${common}/baker-remote.service ${staging_dir}/${systemd_dir}/octez-baker-remote.service
 
       cp ${common}/accuser.default ${staging_dir}/${defaults_dir}/octez-accuser
     fi
