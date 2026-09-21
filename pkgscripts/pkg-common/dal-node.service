@@ -1,6 +1,6 @@
 [Unit]
 Description=octez-dal-node
-Documentation=https://tezos.gitlab.io/
+Documentation=https://octez.tezos.com/
 After=network.target
 
 [Service]
