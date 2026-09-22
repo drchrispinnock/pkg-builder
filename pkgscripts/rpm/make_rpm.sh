@@ -221,5 +221,7 @@ fi
   fi
 done
 
-echo "Cleanup staging directories"
-rm -Rf "${staging_dir}"
+if [ "$devmode" = "0" ]; then
+	echo "Cleanup staging directories"
+	rm -Rf "${staging_dir}"
+fi
