@@ -2,8 +2,8 @@
 Description=octez-baker
 Documentation=https://octez.tezos.com/
 Wants=octez-node.service
-After=network.target octez-node.service baker-remote.service
-Conflicts=baker-remote.service
+After=network.target octez-node.service octez-baker-remote.service
+Conflicts=octez-baker-remote.service
 
 [Service]
 Environment="LQ_VOTE=break" "DATADIR=/var/tezos/.tezos-node" "CLIENTDIR=/var/tezos/.tezos-client" "DAL_OPTIONS=--without-dal"

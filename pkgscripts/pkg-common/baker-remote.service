@@ -2,8 +2,8 @@
 Description=octez-baker-remote
 Documentation=https://octez.tezos.com/
 Wants=network-online.target
-After=network-online.target baker.service
-Conflicts=baker.service
+After=network-online.target octez-baker.service
+Conflicts=octez-baker.service
 
 [Service]
 Environment="LQ_VOTE=break" "CLIENTDIR=/var/tezos/.tezos-client" "DAL_OPTIONS=--without-dal" "ENDPOINT=http://127.0.0.1:8732"
