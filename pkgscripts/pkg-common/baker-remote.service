@@ -2,7 +2,7 @@
 Description=octez-baker-remote
 Documentation=https://octez.tezos.com/
 Wants=network-online.target
-After=network-online.target octez-baker.service
+After=network-online.target
 Conflicts=octez-baker.service
 
 [Service]
