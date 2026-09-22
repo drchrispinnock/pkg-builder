@@ -222,5 +222,7 @@ fi
   mv "${staging_root}/${dpkg_fullname}" .
 done
 
-echo "Cleanup staging directories"
-rm -Rf "${staging_root}"
+if [ "$devmode" = "0" ]; then
+	echo "Cleanup staging directories"
+	rm -Rf "${staging_root}"
+fi
