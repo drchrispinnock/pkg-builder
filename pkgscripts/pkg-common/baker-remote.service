@@ -1,0 +1,27 @@
+[Unit]
+Description=octez-baker-remote
+Documentation=https://octez.tezos.com/
+Wants=network-online.target
+After=network-online.target
+Conflicts=octez-baker.service
+
+[Service]
+Environment="LQ_VOTE=break" "CLIENTDIR=/var/tezos/.tezos-client" "DAL_OPTIONS=--without-dal" "ENDPOINT=http://127.0.0.1:8732"
+EnvironmentFile=-/etc/default/octez-baker
+User=tezos
+Group=tezos
+WorkingDirectory=~
+Restart=on-failure
+RestartSec=10s
+KillMode=control-group
+TimeoutStartSec=30s
+TimeoutStopSec=300s
+
+ExecStart=/usr/bin/octez-baker -d ${CLIENTDIR} -E ${ENDPOINT} run remotely $KEYS -K --liquidity-baking-toggle-vote $LQ_VOTE $RUNTIME_OPTS $DAL_OPTIONS
+Slice=octez.slice
+
+StandardOutput=append:/var/log/tezos/octez-baker-remote.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target
