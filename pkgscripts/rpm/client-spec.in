@@ -20,4 +20,5 @@ The Octez Client and Wallet
 
 %files
 %{_bindir}/octez-*
+%{_datadir}/octez/client/bash-completion.sh
 

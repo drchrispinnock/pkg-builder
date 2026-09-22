@@ -192,6 +192,10 @@ for pg in $packages; do
 
       cp ${common}/accuser.default ${staging_dir}/${defaults_dir}/octez-accuser
     fi
+    if [ "$pg" = "client" ]; then
+        mkdir -p ${staging_dir}/usr/share/octez/client
+      cp src/bin_client/bash-completion.sh ${staging_dir}/usr/share/octez/client
+    fi
 
   # Zcash parameters need slightly different handling
   #

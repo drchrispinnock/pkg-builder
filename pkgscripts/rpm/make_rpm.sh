@@ -168,6 +168,10 @@ for pg in $packages; do
     cp ${common}/accuser.service ${build_dir}/${systemd_dir}/octez-accuser.service
     cp ${common}/accuser.default ${build_dir}/${defaults_dir}/octez-accuser
   fi
+      if [ "$pg" = "client" ]; then
+        mkdir -p ${build_dir}/usr/share/octez/client
+      cp src/bin_client/bash-completion.sh ${build_dir}/usr/share/octez/client
+    fi
 
   # Zcash parameters need slightly different handling
   #
