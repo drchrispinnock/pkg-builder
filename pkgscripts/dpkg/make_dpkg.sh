@@ -192,6 +192,7 @@ for pg in $packages; do
       cp ${common}/baker-remote.service ${staging_dir}/${systemd_dir}/octez-baker-remote.service
 
       cp ${common}/accuser.default ${staging_dir}/${defaults_dir}/octez-accuser
+      cp ${common}/vdf.default ${staging_dir}/${defaults_dir}/octez-vdf
     fi
 
   # Zcash parameters need slightly different handling

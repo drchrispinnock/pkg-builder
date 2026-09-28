@@ -1,0 +1,6 @@
+# Change if it is a different machine
+ENDPOINT="http://127.0.0.1:8732"
+
+# Other options to pass to the vdf service
+#
+RUNTIME_OPTS=""
