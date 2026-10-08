@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 Environment="DATADIR=/var/tezos/.tezos-smart-rollup-node" "CLIENTDIR=/var/tezos/.tezos-client"
-EnvironmentFile=-/etc/default/octez-smart-rollup
+EnvironmentFile=-/etc/default/octez-smart-rollup-node
 User=tezos
 Group=tezos
 WorkingDirectory=~

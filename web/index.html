@@ -164,19 +164,24 @@
 
   <p>The following also works on Windows Subsystem for Linux. Use either Debian or Ubuntu distributions.</p>
 
-  <p>For Debian and Ubuntu, import the GPG key:</p>
+  <p>For Debian, you can use <pre>extrepo</pre>:
+
+  <pre>sudo apt install extrepo
+sudo extrepo enable tzinit
+</pre>
+
+  <p>For Ubuntu 24.04, import the GPG key and set up the APT repos:</p>
 
   <pre>sudo apt install -y gpg curl
 curl -s "https://apt.tzinit.org/keys/tzinit.asc" | \
     sudo gpg --dearmor -o /etc/apt/keyrings/tzinit.gpg</pre>
-
+echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/ubuntu noble main" \
+    | sudo tee /etc/apt/sources.list.d/tzinit-octez.list</pre>
+<!--
   <p>Set up the APT repository. For Debian 13 (trixie) use:</p>
   <pre>echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/debian trixie main" \
     | sudo tee /etc/apt/sources.list.d/tzinit-octez.list</pre>
-
-  <p>For Ubuntu 24.04 (noble) use:</p>
-<pre>echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/ubuntu noble main" \
-    | sudo tee /etc/apt/sources.list.d/tzinit-octez.list</pre>
+-->
 
   <p>Then:</p>
 <pre>sudo apt update
