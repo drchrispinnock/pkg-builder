@@ -193,6 +193,8 @@ for pg in $packages; do
 
       cp ${common}/accuser.default ${staging_dir}/${defaults_dir}/octez-accuser
       cp ${common}/vdf.default ${staging_dir}/${defaults_dir}/octez-vdf
+      echo "${defaults_dir}/octez-accuser" >> "${staging_dir}/DEBIAN/conffiles"
+      echo "${defaults_dir}/octez-vdf" >> "${staging_dir}/DEBIAN/conffiles"
     fi
     if [ "$pg" = "client" ]; then
         mkdir -p ${staging_dir}/usr/share/octez/client

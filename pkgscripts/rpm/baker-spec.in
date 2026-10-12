@@ -23,6 +23,7 @@ The Octez Baker daemons
 %{_bindir}/octez-*
 %config %{_sysconfdir}/default/octez-baker
 %config %{_sysconfdir}/default/octez-accuser
+%config %{_sysconfdir}/default/octez-vdf
 %{_unitdir}/octez-baker.service
 %{_unitdir}/octez-accuser.service
 %{_unitdir}/octez-vdf.service
