@@ -63,6 +63,10 @@ case $root in
         subdir="$aptrepos/RC"
         maproot="RC"
         ;;
+    quantum)
+        subdir="$aptrepos/QUANTUM"
+        maproot="QUANTUM"
+        ;;
     *)
         echo "Root must be release, dev or rc" && exit 2
         ;;

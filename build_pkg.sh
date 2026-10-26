@@ -11,6 +11,7 @@ fi
 # Defaults
 #
 DEVELOPER=0
+QUANTUM=0
 OVERRIDEVERS=""
 
 # Sync packages
@@ -44,7 +45,7 @@ STATUSSLEEP=180 # 3 minutes
 #
 REVISION=1
 
-usagestring="Usage: build_pkg.sh [--branch GitBranch]                                                            [--srn-branch Branch for Smart Rollup Node]                                     [--evm-branch Branch for EVM Node]                                              [--targets \"debian-13 ...\"]                                                     [--revision package revision]                                                   [--project GCP project]                                                         [--service-account GCP service account]                                         [--bucket GCP storage bucket]                                                   [--(no)-sync] whether to sync the packages to the bucket                        [--sleep seconds] interval between polls                                        [--devmode] push a developer variable through the process"
+usagestring="Usage: build_pkg.sh [--branch GitBranch]                                                            [--srn-branch Branch for Smart Rollup Node]                                     [--evm-branch Branch for EVM Node]                                              [--targets \"debian-13 ...\"]                                                     [--revision package revision]                                                   [--project GCP project]                                                         [--service-account GCP service account]                                         [--bucket GCP storage bucket]                                                   [--(no)-sync] whether to sync the packages to the bucket                        [--sleep seconds] interval between polls                                        [--devmode] push a developer variable through the process                       [--quantum] attempt to build packages for quantumnet (exp)"
 
 Usage() {
     _exit="$1"
@@ -87,6 +88,8 @@ while [ $# -gt 0 ]; do
             BUILDSITE=1; ;;
         --blst-portable)
             BLSTP=1 ;;
+        --quantum)
+            QUANTUM=1 ;;
         --help|-h) Usage 0; ;;
         -*) Usage 1; ;;
     esac
@@ -122,6 +125,14 @@ case $BRANCH in
         ;;
 esac
 
+if [ "$QUANTUM" = "1" ]; then
+	echo "Building for quantum net"
+	BRANCH=${QUANTUMBRANCH}
+	EVMBRANCH=${QUANTUMBRANCH}
+	SRNBRANCH=${QUANTUMBRANCH}
+        TROOT=${BUCKET}/incoming/QUANTUM
+        ROOT="quantum"
+fi
 # If no specific branchs, use the current one for EVM and SRN
 #
 [ -z "$EVMBRANCH" ] && EVMBRANCH=${BRANCH}

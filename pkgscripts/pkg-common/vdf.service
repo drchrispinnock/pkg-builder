@@ -4,6 +4,8 @@ Documentation=https://octez.tezos.com/
 After=network.target
 
 [Service]
+Environment="ENDPOINT=http://127.0.0.1:8732"
+EnvironmentFile=-/etc/default/octez-vdf
 User=tezos
 Group=tezos
 WorkingDirectory=~
@@ -13,7 +15,7 @@ KillMode=control-group
 TimeoutStartSec=30s
 TimeoutStopSec=300s
 
-ExecStart=/usr/bin/octez-baker run vdf -K
+ExecStart=/usr/bin/octez-baker -E ${ENDPOINT} run vdf -K
 Slice=octez.slice
 
 StandardOutput=append:/var/log/tezos/octez-vdf.log

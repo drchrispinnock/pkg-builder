@@ -164,7 +164,7 @@
 
   <p>The following also works on Windows Subsystem for Linux. Use either Debian or Ubuntu distributions.</p>
 
-  <p>For Debian, you can use <pre>extrepo</pre>:
+  <p>For Debian, you can use extrepo:
 
   <pre>sudo apt install extrepo
 sudo extrepo enable tzinit
@@ -174,7 +174,8 @@ sudo extrepo enable tzinit
 
   <pre>sudo apt install -y gpg curl
 curl -s "https://apt.tzinit.org/keys/tzinit.asc" | \
-    sudo gpg --dearmor -o /etc/apt/keyrings/tzinit.gpg</pre>
+    sudo gpg --dearmor -o /etc/apt/keyrings/tzinit.gpg
+    
 echo "deb [signed-by=/etc/apt/keyrings/tzinit.gpg] https://apt.tzinit.org/ubuntu noble main" \
     | sudo tee /etc/apt/sources.list.d/tzinit-octez.list</pre>
 <!--
