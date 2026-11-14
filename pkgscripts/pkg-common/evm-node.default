@@ -9,7 +9,7 @@ RPCADDR=0.0.0.0
 RPCPORT=8545
 
 # Smart Rollup node
-ENDPOINT=http://localhost:8932"
+ENDPOINT=http://localhost:8932
 
 # Other options to pass to the node
 #
