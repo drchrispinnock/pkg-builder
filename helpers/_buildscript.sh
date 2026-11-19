@@ -16,8 +16,18 @@ BRANCH=""
 EVMBRANCH=""
 SRNBRANCH=""
 
+BASE="0"
+EVM="0"
+SRN="0"
+
 while [ $# -gt 0 ]; do
     case $1 in
+    	--base)
+		BASE="1"; ;;
+    	--evm)
+		EVM="1"; ;;
+    	--srn)
+		SRN="1"; ;;
         --branch|-B)
             BRANCH="$2"; shift; ;;
         --devmode|-D)
@@ -71,9 +81,6 @@ export GIT_TERMINAL_PROMPT=0
 echo "PKGNAME: ${PKGNAME}"
 echo "BRANCH: $BRANCH"
 
-
-
-
 # If there is apt it's a Debian style system
 # We assume everything else uses RPM and YUM
 #
@@ -91,8 +98,8 @@ initialPrep;
 
 # Regular
 REGULARPKG="zcash-params client signer node baker dal-node teztale-archiver"
-[ "$EVMBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG evm-node"
-[ "$SRNBRANCH" = "$BRANCH" ] && REGULARPKG="$REGULARPKG smart-rollup-node"
+[ "$EVMBRANCH" = "$BRANCH" ] && [ "$EVM" = "1" ] && REGULARPKG="$REGULARPKG evm-node"
+[ "$SRNBRANCH" = "$BRANCH" ] && [ "$SRN" = "1" ] && REGULARPKG="$REGULARPKG smart-rollup-node"
 
 if [ "$BRANCH" = "master" ]; then
     today="$(date +%Y%m%d%H%M)"
@@ -105,13 +112,15 @@ EXTRACLIOPTS=""
 
 CLIOPTS="--revision $REVISION --pkgname $PKGNAME $EXTRACLIOPTS"
 
-build $BRANCH $BLSTP
-status "PACKAGES"
-$TOOL --packages "${REGULARPKG}" $CLIOPTS
-[ "$?" != "0" ] && fail "PACKAGES"
-mv octez*$EXT $STAGING
+if [ "$BASE" = "1" ]; then
+	build $BRANCH $BLSTP
+	status "PACKAGES"
+	$TOOL --packages "${REGULARPKG}" $CLIOPTS
+	[ "$?" != "0" ] && fail "PACKAGES"
+	mv octez*$EXT $STAGING
+fi
 
-if [ "$EVMBRANCH" != "$BRANCH" ]; then
+if [ "$EVMBRANCH" != "$BRANCH" ] && [ "$EVM" = "1" ]; then
     build $EVMBRANCH $BLSTP
     status "EVM PACKAGES"
     $TOOL --packages "evm-node" $CLIOPTS
@@ -119,7 +128,7 @@ if [ "$EVMBRANCH" != "$BRANCH" ]; then
     mv octez-evm-node*$EXT $STAGING
 fi
 
-if [ "$SRNBRANCH" != "$BRANCH" ]; then
+if [ "$SRNBRANCH" != "$BRANCH" ] && [ "$SRN" = "1" ]; then
     build $SRNBRANCH $BLSTP
     status "SRN PACKAGES"
     echo $SRNBRANCH | grep ^octez-smart-rollup-node-v >/dev/null

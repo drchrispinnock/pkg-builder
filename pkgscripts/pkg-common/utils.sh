@@ -114,7 +114,8 @@ initialPrep() {
     	sudo apt-get upgrade -y
 
     	status "OCTEZ DEPENDENCIES"
-	sudo apt-get install -y ${dpkglist}
+	export DEBIAN_FRONTEND=noninteractive
+	sudo DEBIAN_FRONTEND=noninteractive apt-get install -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y ${dpkglist}
 
     else
         IGNOREOPAMDEPS=0
@@ -142,6 +143,7 @@ initialPrep() {
 
 
 	    status "OCTEZ DEPENDENCIES"
+#		sudo dnf update -y --exclude='kernel*' --exclude='grub2*' --exclude='shim*' --exclude='systemd*'
 		sudo dnf update -y
      	for pkg in $rpmlist; do
                 sudo dnf install -y $pkg

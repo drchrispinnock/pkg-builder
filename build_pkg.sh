@@ -33,6 +33,11 @@ BRANCH="latest-release"
 ROOT="release"
 TROOT=""
 
+# What to build
+EVM=1
+SRN=1
+BASE=1
+
 # Status sleep - poll every n minutes
 #
 STATUSSLEEP=180 # 3 minutes
@@ -57,6 +62,24 @@ while [ $# -gt 0 ]; do
     case $1 in
         --targets|--target|-T)
             TARGETS="$2"; shift; ;;
+	--evm)
+		EVM=1 ;;
+	--no-evm)
+		EVM=0 ;;
+	--srn)
+		SRN=1 ;;
+	--no-srn)
+		SRN=0 ;;
+	--base)
+		BASE=1 ;;
+	--no-base)
+		BASE=0 ;;
+	--just-evm)
+		BASE=0; EVM=1; SRN=0 ;;
+	--just-srn)
+		BASE=0; EVM=0; SRN=1 ;;
+	--just-base)
+		BASE=1; EVM=0; SRN=0 ;;
         --branch|-B)
             BRANCH="$2"; shift; ;;
         --devmode|-D)
@@ -161,9 +184,9 @@ rm -f ${CLEANUPSH}
 echo "Package build"
 printf "TARGETS:  ";
 for t in ${TARGETS}; do printf "$t "; done; echo ""
-echo "BRANCH:   ${BRANCH}"
-echo "EVM:      ${EVMBRANCH}"
-echo "SRN:      ${SRNBRANCH}"
+[ "$BASE" = "1" ] && echo "BRANCH:   ${BRANCH}"
+[ "$EVM" = "1" ] && echo "EVM:      ${EVMBRANCH}"
+[ "$SRN" = "1" ] && echo "SRN:      ${SRNBRANCH}"
 echo "Revision: ${REVISION}"
 echo "Clean-up: ${CLEANUPSH}"
 echo "Connect:  ${CONNECT}"
@@ -178,8 +201,6 @@ log() {
 	date=`date +"%Y%m%d %H:%M:%S"`
 	echo "$date: $1"
 }
-
-echo "===> Building from branch: ${BRANCH}"
 
 VMLIST=""
 declare -A OSFORNAME
@@ -286,6 +307,10 @@ for NAME in ${VMLIST}; do
         [ "$DEVELOPER" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --devmode"
         [ -n "$OVERRIDEVERS" ] && EXTRACLIOPTS="$EXTRACLIOPTS --override-version $OVERRIDEVERS"
         [ "$BLSTP" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --blst-portable"
+	[ "$BASE" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --base"
+	[ "$EVM" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --evm"
+	[ "$SRN" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --srn"
+
 		gcloud -q compute ssh ${NAME} --zone=${ZONE} \
 			--project=${PROJECT} \
 			--command="./buildscript.sh --targetdir ${TARGETDIR} \
