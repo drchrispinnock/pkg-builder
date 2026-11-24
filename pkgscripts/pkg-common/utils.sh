@@ -167,7 +167,11 @@ initialPrep() {
 
 
     status "SOURCE CHECKOUT"
-    git clone $_repos tezos
+    if [ -f "$_repos" ]; then
+	    tar zxvf "$_repos"
+    else
+ 	    git clone $_repos tezos
+    fi
     cd tezos
 
     export OCTEZ_PKGMAINTAINER

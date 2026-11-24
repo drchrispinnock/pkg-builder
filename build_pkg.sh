@@ -306,6 +306,13 @@ for NAME in ${VMLIST}; do
 			--zone=${ZONE} \
 			--project=${PROJECT} >> ${LOCALLOG} 2>&1
 
+		if [ -f "$REPOS" ]; then
+			gcloud -q compute scp "$REPOS" ${NAME}: \
+				--zone=${ZONE} \
+				--project=${PROJECT} >> ${LOCALLOG} 2>&1
+		fi
+
+
         EXTRACLIOPTS="--repos $REPOS"
         [ "$DEVELOPER" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --devmode"
         [ -n "$OVERRIDEVERS" ] && EXTRACLIOPTS="$EXTRACLIOPTS --override-version $OVERRIDEVERS"
@@ -313,6 +320,8 @@ for NAME in ${VMLIST}; do
 	[ "$BASE" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --base"
 	[ "$EVM" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --evm"
 	[ "$SRN" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --srn"
+
+	echo "./buildscript.sh --targetdir ${TARGETDIR} --branch ${BRANCH} --evm-branch ${EVMBRANCH} --srn-branch ${SRNBRANCH} --pkgname ${PKGNAME} --revision ${REVISION} ${EXTRACLIOPTS}"
 
 		gcloud -q compute ssh ${NAME} --zone=${ZONE} \
 			--project=${PROJECT} \
