@@ -13,6 +13,7 @@ fi
 DEVELOPER=0
 QUANTUM=0
 OVERRIDEVERS=""
+REPOS="https://gitlab.com/tezos/tezos.git"
 
 # Sync packages
 #
@@ -62,6 +63,8 @@ while [ $# -gt 0 ]; do
     case $1 in
         --targets|--target|-T)
             TARGETS="$2"; shift; ;;
+        --repos)
+            REPOS="$2"; shift; ;;
 	--evm)
 		EVM=1 ;;
 	--no-evm)
@@ -303,7 +306,7 @@ for NAME in ${VMLIST}; do
 			--zone=${ZONE} \
 			--project=${PROJECT} >> ${LOCALLOG} 2>&1
 
-        EXTRACLIOPTS=""
+        EXTRACLIOPTS="--repos $REPOS"
         [ "$DEVELOPER" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --devmode"
         [ -n "$OVERRIDEVERS" ] && EXTRACLIOPTS="$EXTRACLIOPTS --override-version $OVERRIDEVERS"
         [ "$BLSTP" = "1" ] && EXTRACLIOPTS="$EXTRACLIOPTS --blst-portable"

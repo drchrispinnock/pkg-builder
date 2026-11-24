@@ -9,6 +9,7 @@ DEVELOPER=0
 PKGNAME="octez"
 OVERRIDEVERS=""
 BLSTP="0"
+REPOS="https://gitlab.com/tezos/tezos.git"
 
 ME=$HOME/pkg-builder/pkgscripts
 
@@ -22,6 +23,8 @@ SRN="0"
 
 while [ $# -gt 0 ]; do
     case $1 in
+	--repos)
+		REPOS="$2"; shift; ;;
     	--base)
 		BASE="1"; ;;
     	--evm)
@@ -94,7 +97,7 @@ if [ "$?" = "0" ]; then
 	EXT=".deb"
 fi
 
-initialPrep;
+initialPrep $REPOS;
 
 # Regular
 REGULARPKG="zcash-params client signer node baker dal-node teztale-archiver"

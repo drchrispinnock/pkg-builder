@@ -104,6 +104,7 @@ initdScripts() {
 }
 
 initialPrep() {
+    _repos="$1"
     PATH=/usr/local/bin:$PATH
     export PATH
 
@@ -166,7 +167,7 @@ initialPrep() {
 
 
     status "SOURCE CHECKOUT"
-    git clone https://gitlab.com/tezos/tezos.git tezos
+    git clone $_repos tezos
     cd tezos
 
     export OCTEZ_PKGMAINTAINER
