@@ -29,7 +29,7 @@
 #
 
 # Packages	
-rpmlist="libev-devel gmp-devel hidapi-devel libffi-devel zlib-devel libpq-devel m4 perl git pkg-config rpmdevtools python3-devel python3-setuptools wget rsync which cargo autoconf systemd systemd-rpm-macros cmake openssl-devel python3-wheel gcc-c++ bubblewrap protobuf-compiler protobuf-devel python3-tox-current-env mock sqlite3 sqlite sqlite-devel jq libzstd-devel clang-devel"
+rpmlist="libev-devel gmp-devel hidapi-devel libffi-devel zlib-devel libpq-devel m4 perl git pkg-config rpmdevtools python3-devel python3-setuptools wget rsync which cargo autoconf systemd systemd-rpm-macros cmake openssl-devel python3-wheel gcc-c++ bubblewrap protobuf-compiler protobuf-devel python3-tox-current-env mock sqlite3 sqlite sqlite-devel jq libzstd-devel clang-devel bzip2"
 rhellist=""
 dpkglist="rsync git m4 build-essential patch unzip wget jq bc bubblewrap autoconf cmake libev-dev libffi-dev libgmp-dev libhidapi-dev pkg-config zlib1g-dev libprotobuf-dev protobuf-compiler sqlite3 libpq-dev libsqlite3-dev libzstd-dev libclang-dev clang"
 
